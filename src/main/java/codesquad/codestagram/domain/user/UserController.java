@@ -2,11 +2,13 @@ package codesquad.codestagram.domain.user;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@RequestMapping("/users")
 @Controller
 public class UserController {
 
@@ -16,7 +18,7 @@ public class UserController {
         this.users = new ArrayList<>();
     }
 
-    @PostMapping("/users")
+    @PostMapping("")
     public String signUp(@RequestParam String id,
                          @RequestParam String password,
                          @RequestParam String name,
