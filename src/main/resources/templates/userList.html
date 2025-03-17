@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>사용자 목록</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header>
+    <nav>
+        <div class="logo">
+            <a href="/">Codestagram</a>
+        </div>
+        <div class="menu">
+            <a href="/login" class="btn">로그인</a>
+            <a href="/register" class="btn">회원가입</a>
+        </div>
+    </nav>
+</header>
+<main>
+    <h1>사용자 목록</h1>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>아이디</th>
+            <th>이름</th>
+            <th>이메일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.userId}"></td>
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.email}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <a href="/register">회원가입 페이지로</a>
+</main>
+<footer>
+    <p>Codestagram</p>
+</footer>
+</body>
+</html>
+
+<style>
+    /* 기본 스타일 */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f9;
+    }
+
+    /* 헤더 스타일 */
+    header {
+        background-color: #4285f4;
+        padding: 20px 0;
+    }
+
+    nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .logo a {
+        font-size: 24px;
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .menu a {
+        color: white;
+        text-decoration: none;
+        padding: 8px 15px;
+        background-color: #0056b3;
+        border-radius: 5px;
+        margin-left: 10px;
+    }
+
+    .menu a:hover {
+        background-color: #004085;
+    }
+
+    /* 메인 내용 스타일 */
+    main {
+        padding: 20px;
+        text-align: center;
+        max-width: 900px;
+        margin: 0 auto;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    /* 테이블 스타일 */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #4285f4;
+        color: white;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #e1f5fe;
+    }
+
+    /* 버튼 링크 스타일 */
+    a {
+        display: inline-block;
+        margin-top: 10px;
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    /* 푸터 스타일 */
+    footer {
+        text-align: center;
+        background-color: #f8f9fa;
+        padding: 10px 0;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+    }
+
+</style>

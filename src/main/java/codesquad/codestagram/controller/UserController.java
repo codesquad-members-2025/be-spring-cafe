@@ -3,6 +3,8 @@ package codesquad.codestagram.controller;
 import codesquad.codestagram.User;
 import java.util.ArrayList;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -18,5 +20,11 @@ public class UserController {
     public String signUp(@ModelAttribute User user) {
         users.add(user);
         return "redirect:/users";
+    }
+
+    @GetMapping("/users")
+    public String showUsers(Model model) {
+        model.addAttribute("users", users);
+        return "userList";
     }
 }
