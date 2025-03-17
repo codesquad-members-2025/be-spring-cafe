@@ -1,6 +1,5 @@
 package codesquad.codestagram.domain.user;
 
-@
 public class User {
 
     private String id;
