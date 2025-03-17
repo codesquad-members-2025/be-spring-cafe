@@ -39,7 +39,7 @@ public class MemoryUserRepositoryTest {
         Optional<User> findUser = memoryUserRepository.fineByLoginId("jdragon");
         Optional<User> noUser = memoryUserRepository.fineByLoginId("jdragon55");
         assertThat(findUser.isPresent()).isTrue();
-        assertThat(findUser.get().getLoginId()).isEqualTo("jdragon");
+        assertThat(findUser.get().getUserId()).isEqualTo("jdragon");
         assertThat(noUser.isPresent()).isFalse();
     }
 

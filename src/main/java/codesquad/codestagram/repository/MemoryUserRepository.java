@@ -20,7 +20,7 @@ public class MemoryUserRepository implements UserRepository {
     @Override
     public Optional<User> fineByLoginId(String loginId) {
         for(User user : store) {
-            if(user.getLoginId().equals(loginId)) {
+            if(user.getUserId().equals(loginId)) {
                 return Optional.of(user);
             }
         }

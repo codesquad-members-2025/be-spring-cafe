@@ -1,11 +1,14 @@
-package codesquad.codestagram.domain;
+package codesquad.codestagram.controller;
 
-public class User {
+public class UserForm {
     private String userId;
     private String name;
     private String password;
 
-    public User(final String userId, final String name, final String password) {
+    public UserForm() {
+    }
+
+    public UserForm(String userId, String name, String password) {
         this.userId = userId;
         this.name = name;
         this.password = password;
@@ -35,4 +38,3 @@ public class User {
         this.password = password;
     }
 }
-

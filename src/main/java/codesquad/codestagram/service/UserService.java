@@ -13,7 +13,7 @@ public class UserService {
     private final UserRepository userRepository = new MemoryUserRepository();
 
     public User join(User user){
-        Optional<User> result = userRepository.fineByLoginId(user.getLoginId());
+        Optional<User> result = userRepository.fineByLoginId(user.getUserId());
         result.ifPresent(u-> {
             throw new IllegalStateException("이미 존재하는 아이디입니다.");
         });
