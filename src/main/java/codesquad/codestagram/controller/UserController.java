@@ -25,6 +25,6 @@ public class UserController {
     @GetMapping("/users")
     public String showUsers(Model model) {
         model.addAttribute("users", users);
-        return "userList";
+        return "user/list";
     }
 }
