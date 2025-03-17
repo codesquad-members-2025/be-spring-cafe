@@ -28,4 +28,8 @@ public class User {
     public String getEmail() {
         return email;
     }
+
+    public boolean equalUserId(String userId) {
+        return this.userId.equals(userId);
+    }
 }
