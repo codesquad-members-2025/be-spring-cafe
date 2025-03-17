@@ -3,51 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Codestagram</title>
+    <title th:fragment="title">Codestagram</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-    <style>
+    <style th:fragment="page-style">
         .post-container {
             max-width: 600px;
             margin: 20px auto;
         }
+
         .post-header {
             padding: 10px;
             display: flex;
             align-items: center;
         }
+
         .profile-img {
             width: 32px;
             height: 32px;
             border-radius: 50%;
             margin-right: 10px;
         }
+
         .post-actions {
             padding: 10px;
         }
+
         .post-actions i {
             margin-right: 15px;
             font-size: 1.5rem;
             cursor: pointer;
         }
-        .navbar-brand {
-            font-family: 'Instagram Sans Script', cursive;
-        }
+
     </style>
 </head>
 <body>
-    <!-- 네비게이션 바 -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-        <div class="container">
-            <a class="navbar-brand" href="#">Codestagram</a>
-            <div class="d-flex">
-                <a href="/login" class="btn btn-outline-primary me-2">로그인</a>
-                <a href="/signup" class="btn btn-primary">회원가입</a>
-            </div>
-        </div>
-    </nav>
+<!-- 네비게이션 바 -->
+<div th:replace="~{nav.html}"></div>
 
-    <!-- 메인 컨텐츠 -->
+<div th:fragment="content">
     <div class="container">
         <div class="post-container">
             <!-- 게시물 반복 시작 -->
@@ -56,15 +50,15 @@
                     <img class="profile-img" th:src="${post.userProfileImage}" alt="프로필 이미지">
                     <span th:text="${post.username}">사용자명</span>
                 </div>
-                
+
                 <img th:src="${post.imageUrl}" class="card-img-top" alt="게시물 이미지">
-                
+
                 <div class="post-actions">
                     <i class="bi bi-heart"></i>
                     <i class="bi bi-chat"></i>
                     <i class="bi bi-bookmark"></i>
                 </div>
-                
+
                 <div class="card-body">
                     <p class="card-text">
                         <span class="fw-bold" th:text="${post.username}">사용자명</span>
@@ -76,7 +70,8 @@
             <!-- 게시물 반복 끝 -->
         </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
