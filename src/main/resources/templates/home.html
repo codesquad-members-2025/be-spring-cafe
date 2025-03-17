@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>홈</title>
+    <link rel="stylesheet" href="/css/styles.css">  <!-- CSS 추가 가능 -->
+    <script>
+        // 댓글 전체 보기 버튼 클릭 시 모든 댓글을 보이게 하는 함수
+        function showAllComments() {
+            document.getElementById("all-comments").style.display = "block";
+            document.getElementById("more-comments-btn").style.display = "none";
+        }
+    </script>
+</head>
+<body>
+    <div th:replace="~{header.html}"></div>
+
+    <div th:replace="~{footer.html}"></div>
+
+</body>
+</html>
