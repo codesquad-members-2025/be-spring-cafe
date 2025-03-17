@@ -39,4 +39,8 @@ public class MemoryUserRepository implements UserRepository {
     public List<User> fineAll() {
         return new ArrayList<>(store);
     }
+
+    public void clearStore() {
+        store.clear();
+    }
 }
