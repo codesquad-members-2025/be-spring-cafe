@@ -10,4 +10,5 @@ public interface UserRepository {
     Optional<User> fineByLoginId(String loginId);
     Optional<User> fineByName(String name);
     List<User> fineAll();
+    void clearStore();
 }

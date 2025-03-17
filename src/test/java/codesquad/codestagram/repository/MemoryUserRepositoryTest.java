@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class MemoryUserRepositoryTest {
-    MemoryUserRepository memoryUserRepository = new MemoryUserRepository();
+    UserRepository memoryUserRepository = new MemoryUserRepository();
     @AfterEach
     void tearDown() {
         memoryUserRepository.clearStore();
