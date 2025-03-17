@@ -1,11 +1,13 @@
 package codesquad.codestagram.repository;
 
 import codesquad.codestagram.domain.User;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class MemoryUserRepository implements UserRepository {
     private static final List<User> store = new ArrayList<>();
 

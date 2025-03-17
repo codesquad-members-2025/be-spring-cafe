@@ -3,10 +3,12 @@ package codesquad.codestagram.service;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.repository.MemoryUserRepository;
 import codesquad.codestagram.repository.UserRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class UserService {
     private final UserRepository userRepository = new MemoryUserRepository();
 
