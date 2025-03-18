@@ -81,7 +81,10 @@ public class UserController {
 
         user.setEmail(email);
         user.setName(name);
-        user.setPassword(newPassword);
+
+        if (!newPassword.isEmpty()) {
+            user.setPassword(newPassword);
+        }
 
         return "redirect:/users/" + id;
     }
