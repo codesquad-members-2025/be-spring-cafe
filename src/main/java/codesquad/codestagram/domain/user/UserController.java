@@ -83,9 +83,6 @@ public class UserController {
         user.setName(name);
         user.setPassword(newPassword);
 
-        userRepository.delete(user);
-        userRepository.save(user);
-
         return "redirect:/users/" + id;
     }
 
