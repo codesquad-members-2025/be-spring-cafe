@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 - Codestagram</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .signup-container {
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-family: 'Instagram Sans Script', cursive;
+        }
+
+        .form-text {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{nav.html}"></div>
+<div class="container">
+    <div class="signup-container">
+        <div class="logo">
+            <a href="/" class="text-decoration-none text-dark">Codestagram</a>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <form th:action="@{/users}" method="post">
+                    <div class="mb-3">
+                        <label for="id" class="form-label">아이디</label>
+                        <input type="text" class="form-control" id="id" name="id" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">이름</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">이메일</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">비밀번호</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">가입하기</button>
+                </form>
+            </div>
+        </div>
+        <div class="login-link">
+            계정이 있으신가요? <a href="/login" class="text-decoration-none">로그인</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
