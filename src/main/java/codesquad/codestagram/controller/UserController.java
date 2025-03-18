@@ -43,6 +43,6 @@ public class UserController {
             model.addAttribute("user", findUser.get());
             return "user/profile";
         }
-        return "redirect:/";
+        return "index";
     }
 }
