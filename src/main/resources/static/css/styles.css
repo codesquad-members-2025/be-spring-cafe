@@ -420,3 +420,60 @@ textarea {
     text-overflow: ellipsis;
     max-width: 100%;
 }
+
+/* 게시글 상세 스타일 */
+.article-detail {
+    width: 80%; /* 부모 요소에 맞게 조정 */
+    max-width: 100%; /* 최대 너비 설정 */
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    margin: 50px auto;
+    white-space: pre-wrap; /* 줄바꿈과 공백을 유지 */
+    word-wrap: break-word; /* 긴 단어는 자동으로 줄바꿈 */
+}
+.article-link {
+    display: block;
+    text-decoration: none;
+    color: inherit; /* 기본 텍스트 색상 유지 */
+    padding: 10px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.article-link:hover {
+    background-color: #f0f0f0; /* hover 시 배경색 변화 */
+}
+
+.article-content {
+    display: flex;
+    align-items: center; /* 글 번호와 제목을 수평으로 배치 */
+}
+
+.article-number {
+    margin-right: 5px; /* 글 번호와 | 사이의 간격 */
+}
+
+.article-separator {
+    margin-right: 5px; /* |와 제목 사이의 간격 */
+}
+
+
+.article-content p {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+}
+
+.article-summary {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1; /* 첫 번째 줄만 표시 */
+    overflow: hidden;
+    text-overflow: ellipsis; /* 길어지면 '...'으로 잘림 */
+    white-space: normal;
+}
+
+
