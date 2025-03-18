@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class UserController {
+    public static final String WRONG_PASSWORD = "비밀번호가 틀렸습니다.";
     private final ArrayList<User> users;
 
     public UserController(ArrayList<User> users) {
@@ -44,4 +45,20 @@ public class UserController {
         model.addAttribute("user", user);
         return "user/updateForm";  // 정보 수정 페이지로 이동
     }
+
+    @PostMapping("/users/verify_password")
+    public String verifyPassword(@RequestParam String password, @RequestParam int id, Model model) {
+        User user = users.get(id-1);
+        model.addAttribute("user", user);
+
+        if (user.getPassword().equals(password)) {
+            model.addAttribute("passwordValid", true);
+        }else {
+            model.addAttribute("passwordValid", false);
+            model.addAttribute("error", WRONG_PASSWORD);
+        }
+
+        return "user/updateForm"; // 실패 시 프로필 화면으로 돌아가기
+    }
+
 }
