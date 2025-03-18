@@ -38,6 +38,16 @@ public class MemoryUserRepository implements UserRepository {
     }
 
     @Override
+    public Optional<User> fineByEmail(String email) {
+        for(User user : store) {
+            if(user.getEmail().equals(email)) {
+                return Optional.of(user);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
     public List<User> fineAll() {
         return new ArrayList<>(store);
     }
