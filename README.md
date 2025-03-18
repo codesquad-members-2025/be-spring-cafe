@@ -45,3 +45,51 @@
 ### HTML 중복 제거
 
 - `index.html`, `/user/form.html`, `/qna/form.html`에 중복된 코드가 존재
+
+## 2. 글쓰기 기능
+
+### 글쓰기
+
+- **`ArticleContoller`**
+  - `@Controller` 매핑
+  - 글쓰기 작성 요청
+    - `POST` + URL 매핑
+  - `Article` Entity 추가
+  - `List<Article>` 로 글 목록 관리
+  - 글쓰기 완료 후 페이지로 리다이렉션
+    - `redirect:/` 사용
+
+### 글 목록 조회
+
+- 메인 페이지에서 게시글 목록을 조회
+- 목록을 `Model`에 저장한 후에 `View`로 전달
+  - `List<Article>`그대로 전달한다
+
+### 게시글 상세보기
+
+- 게시글 목록의 **제목을 클릭**했을 때 게시글 상세 페이지로 접속
+  - `<a href="/articles/{{index}}" />`로 구현
+  - 게시글 객체에 id 필드 추가
+  - `List<Article>`에 추가할 때 `articles.size() + 1`로 id 부여
+- `articles`에서 `index - 1`로 데이터를 조회 후 `View`로 전달
+
+### 회원정보 수정 화면
+
+- `user/{id}/form` 로 접근
+- 업데이트 form을 통해 사용자 정보 수정
+
+### 회원정보 수정
+
+- `/users/{id}/update` 로 접근
+- `{id}`에 해당하는 User를 `UserRepository`에서 조회
+- `User` 객체를 수정
+- 수정된 `User` 객체를 `UserRepository`에 저장
+- 사용자 정보 수정 후 `redirect:/users`로 리다이렉션
+
+### PUT method
+
+- `PUT` method를 사용하여 사용자 정보 수정
+- `@PutMapping`을 사용하여 URL 매핑
+- `<input type="hidden" name="_method" value="PUT" />`을 사용하여 `PUT` method로 요청
+- Spring에서 `PUT` method를 사용하기 위해 `HiddenHttpMethodFilter`를 추가
+  - `spring.mvc.hiddenmethod.filter.enabled=true` 추가
