@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
@@ -59,6 +60,15 @@ public class UserController {
         }
 
         return "user/updateForm"; // 실패 시 프로필 화면으로 돌아가기
+    }
+
+    @PutMapping("users/update")
+    public String updateProfile(@RequestParam String name, @RequestParam String email, @RequestParam int id, Model model) {
+        User user = users.get(id-1);
+        user.updateUser(name, email);
+
+        model.addAttribute("user", user);
+        return "redirect:/users";
     }
 
 }
