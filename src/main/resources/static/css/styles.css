@@ -355,3 +355,22 @@ table {
 .profile-info strong {
     font-weight: bold;
 }
+
+.write-btn {
+    background-color: #34a853; /* 초록색 버튼 */
+}
+
+.write-btn:hover {
+    background-color: #2c8c44;
+}
+textarea {
+    width: 100%; /* 부모 요소에 맞게 조정 */
+    max-width: 100%; /* 최대 너비 설정 */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical;
+    height: 300px; /* 높이 조정 */
+    font-size: 16px;
+    box-sizing: border-box; /* padding 포함한 크기 계산 */
+}
