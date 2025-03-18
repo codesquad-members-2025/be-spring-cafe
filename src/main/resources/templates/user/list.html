@@ -83,12 +83,22 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                    <th scope="row">1</th> <td>javajigi</td> <td>자바지기</td> <td>javajigi@sample.net</td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th> <td>slipp</td> <td>슬립</td> <td>slipp@sample.net</td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
-                </tr>
+                  {{#userList}}
+                  <tr>
+                      <!-- index가 필요한 경우, 컨트롤러에서 미리 계산해 전달하거나, 각 User 객체에 index 필드를 추가해야 합니다. -->
+                      <th scope="row">1</th>
+                      <td><a href="/users/{{userId}}">{{userId}}</a></td>
+                      <td>{{name}}</td>
+                      <td>{{email}}</td>
+                      <td><a href="#" class="btn btn-success" role="button">수정</a></td>
+                  </tr>
+                  {{/userList}}
+
+                  {{^userList}}
+                  <tr>
+                      <td colspan="5" class="text-center">등록된 사용자가 없습니다.</td>
+                  </tr>
+                  {{/userList}}
               </tbody>
           </table>
         </div>
