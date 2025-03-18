@@ -43,6 +43,13 @@
 
 <div th:fragment="content">
     <div class="container">
+        <!-- 글쓰기 버튼 추가 -->
+        <div class="d-flex justify-content-end mb-4">
+            <a href="/write" class="btn btn-primary">
+                <i class="bi bi-pencil-square"></i> 게시글 작성
+            </a>
+        </div>
+        
         <div class="post-container">
             <!-- 게시물 반복 시작 -->
             <div th:each="post : ${posts}" class="card mb-4">
