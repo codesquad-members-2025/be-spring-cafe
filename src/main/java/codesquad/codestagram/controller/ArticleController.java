@@ -1,6 +1,6 @@
 package codesquad.codestagram.controller;
 
-import codesquad.codestagram.Article;
+import codesquad.codestagram.domain.Article;
 import java.util.ArrayList;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
