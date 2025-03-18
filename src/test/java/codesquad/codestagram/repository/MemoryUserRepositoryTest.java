@@ -19,9 +19,9 @@ public class MemoryUserRepositoryTest {
     @Test
     @DisplayName("유저를 추가하고, 모든 유저를 가져올 수 있다.")
     void add_user_and_get_all_users() {
-        User user1 = new User("jdragon","dino","1234");
+        User user1 = new User("jdragon","dino","1234","je@d");
         memoryUserRepository.save(user1);
-        User user2 = new User("jdragon2","dino2","12342");
+        User user2 = new User("jdragon2","dino2","12342","je@d");
         memoryUserRepository.save(user2);
         List<User> allUsers = memoryUserRepository.fineAll();
         assertThat(allUsers.size()).isEqualTo(2);
@@ -32,9 +32,9 @@ public class MemoryUserRepositoryTest {
     @Test
     @DisplayName("유저를 loginId로 찾을 수 있다.")
     void find_user_by_loginId() {
-        User user1 = new User("jdragon","dino","1234");
+        User user1 = new User("jdragon","dino","1234","je@d");
         memoryUserRepository.save(user1);
-        User user2 = new User("jdragon2","dino2","12342");
+        User user2 = new User("jdragon2","dino2","12342","je@d");
         memoryUserRepository.save(user2);
         Optional<User> findUser = memoryUserRepository.fineByUserId("jdragon");
         Optional<User> noUser = memoryUserRepository.fineByUserId("jdragon55");
@@ -46,9 +46,9 @@ public class MemoryUserRepositoryTest {
     @Test
     @DisplayName("유저를 이름으로 찾을 수 있다.")
     void find_user_by_name() {
-        User user1 = new User("jdragon","dino","1234");
+        User user1 = new User("jdragon","dino","1234","je@d");
         memoryUserRepository.save(user1);
-        User user2 = new User("jdragon2","dino2","12342");
+        User user2 = new User("jdragon2","dino2","12342","je@d");
         memoryUserRepository.save(user2);
         Optional<User> findUser = memoryUserRepository.fineByName("dino");
         Optional<User> noUser = memoryUserRepository.fineByName("dino55");
