@@ -26,7 +26,7 @@ public class UserServiceTest {
     void add_user() {
         User user = new User("jdragon","dino","1234");
         userService.join(user);
-        List<User> allUsers = userService.findALlUsers();
+        List<User> allUsers = userService.findAllUsers();
         assertThat(allUsers.size()).isEqualTo(1);
         assertThat(allUsers.get(0)).isEqualTo(user);
     }

@@ -4,8 +4,11 @@ import codesquad.codestagram.domain.User;
 import codesquad.codestagram.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -23,4 +26,13 @@ public class UserController {
         userService.join(user);
         return "redirect:/";
     }
+
+    @GetMapping("/user/list")
+    public String list(Model model) {
+        List<User> userList = userService.findAllUsers();
+        model.addAttribute("userList", userList);
+        return "user/list";
+    }
+
+
 }
