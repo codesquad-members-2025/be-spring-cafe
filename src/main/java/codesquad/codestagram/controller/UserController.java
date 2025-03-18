@@ -14,7 +14,7 @@ public class UserController {
 
     private static final ArrayList<User> userList = new ArrayList<>();
 
-    @PostMapping("/user")
+    @PostMapping("/users")
     public String addUser(@ModelAttribute User user) {
         userList.add(user);
         return "redirect:/users";
