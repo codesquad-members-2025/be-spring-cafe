@@ -4,11 +4,13 @@ public class User {
     private String userId;
     private String name;
     private String password;
+    private String email;
 
-    public User(final String userId, final String name, final String password) {
+    public User(final String userId, final String name, final String password, final String email) {
         this.userId = userId;
         this.name = name;
         this.password = password;
+        this.email = email;
     }
 
     public String getUserId() {
@@ -33,6 +35,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
 
