@@ -13,7 +13,7 @@ public class UserService {
     private final UserRepository userRepository = new MemoryUserRepository();
 
     public User join(User user){
-        Optional<User> result = userRepository.fineByLoginId(user.getUserId());
+        Optional<User> result = userRepository.fineByUserId(user.getUserId());
         result.ifPresent(u-> {
             throw new IllegalStateException("이미 존재하는 아이디입니다.");
         });
@@ -22,5 +22,9 @@ public class UserService {
 
     public List<User> findAllUsers(){
         return userRepository.fineAll();
+    }
+
+    public Optional<User> findByUserId(String userId){
+        return userRepository.fineByUserId(userId);
     }
 }
