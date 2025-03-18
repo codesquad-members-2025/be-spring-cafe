@@ -6,7 +6,7 @@ import codesquad.codestagram.dto.UserResponseDto;
 import codesquad.codestagram.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.SessionStatus;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public String login(@RequestParam String id, @RequestParam String password, Model model) {
+    public String login(@RequestParam String id, @RequestParam String password, HttpSession session) {
         System.out.println("[DEBUG] 로그인 시도: ID=" + id + ", Password=" + password);
 
         UserResponseDto user = userService.authenticate(id, password);
@@ -60,13 +60,14 @@ public class UserController {
             return "redirect:/users/login?error=true";
         }
 
-        model.addAttribute("loginUser", user);
+        session.setAttribute("loginUser", user);
+
         return "redirect:/";
     }
 
     @GetMapping("/logout")
-    public String logout(SessionStatus status) {
-        status.setComplete();
+    public String logout(HttpSession session) {
+        session.invalidate();
         return "redirect:/";
     }
 }
