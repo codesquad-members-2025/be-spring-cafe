@@ -4,17 +4,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequestMapping("/users")
 @Controller
 public class UserController {
 
-    private final List<User> users;
+    private final UserRepository userRepository;
 
-    public UserController() {
-        this.users = new ArrayList<>();
+    public UserController(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @PostMapping("")
@@ -23,23 +22,22 @@ public class UserController {
                          @RequestParam String name,
                          @RequestParam String email) {
         User user = new User(id, password, name, email);
-        users.add(user);
+        userRepository.save(user);
 
         return "redirect:/users";
     }
 
     @GetMapping("")
     public String index(Model model) {
+        List<User> users = userRepository.findAll();
         model.addAttribute("users", users);
+
         return "/user/list";
     }
 
     @GetMapping("{id}")
     public String showUserProfile(@PathVariable String id, Model model) {
-        User user = users.stream()
-                .filter(u -> u.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+        User user = userRepository.findById(id);
 
         if (user == null) {
             // 사용자를 찾을 수 없을 때 리스트 페이지로 리다이렉트하고
