@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/qna")
 public class ArticleController {
 
-    @Autowired  // @Autowired 애너테이션이 정확히 붙어 있는지 확인
+    @Autowired  //
     private ArticleService service;
 
     @GetMapping()

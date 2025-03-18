@@ -6,8 +6,18 @@
 <body>
 <h2>회원 가입</h2>
 <form action="/users" method="post">
-    이름: <input type="text" name="name" required /><br>
-    이메일: <input type="email" name="email" required /><br>
+    <label for="name">이름:</label>
+    <input type="text" name="name" id="name" required /><br>
+
+    <label for="email">이메일:</label>
+    <input type="email" name="email" id="email" required /><br>
+
+    <label for="loginId">로그인 ID:</label>
+    <input type="text" name="loginId" id="loginId" required /><br>
+
+    <label for="password">비밀번호:</label>
+    <input type="password" name="password" id="password" required /><br>
+
     <button type="submit">가입하기</button>
 </form>
 <a href="/users">회원 목록 보기</a>
