@@ -24,7 +24,7 @@ public class UserServiceTest {
     @Test
     @DisplayName("join해서 repository에 추가할 수 있다.")
     void add_user() {
-        User user = new User("jdragon","dino","1234");
+        User user = new User("jdragon","dino","1234","aa@aa");
         userService.join(user);
         List<User> allUsers = userService.findAllUsers();
         assertThat(allUsers.size()).isEqualTo(1);
@@ -34,9 +34,9 @@ public class UserServiceTest {
     @Test
     @DisplayName("만약 동일한 아이디가 이미 존재하면, 에러를 던진다.")
     void add_same_id_user() {
-        User user = new User("jdragon","dino","1234");
+        User user = new User("jdragon","dino","1234","aa@aa");
         userService.join(user);
-        User user2 = new User("jdragon","dino1","12341");
+        User user2 = new User("jdragon","dino1","12341","aa@aa");
         assertThatThrownBy(()->userService.join(user2)).isInstanceOf(IllegalStateException.class).hasMessage("이미 존재하는 아이디입니다.");
     }
 }
