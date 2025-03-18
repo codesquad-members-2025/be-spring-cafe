@@ -63,7 +63,7 @@ public class UserController {
         return "/user/edit";
     }
 
-    @PostMapping("{id}/update")
+    @PutMapping("{id}")
     public String updateUser(@PathVariable String id,
                              @RequestParam String email,
                              @RequestParam String name,

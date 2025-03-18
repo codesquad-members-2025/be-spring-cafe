@@ -21,7 +21,8 @@
                             <span th:if="${param.error == 'wrong-password'}">현재 비밀번호가 일치하지 않습니다.</span>
                         </div>
                         
-                        <form th:action="@{/users/{id}/update(id=${user.id})}" method="post" th:object="${user}">
+                        <form th:action="@{/users/{id}(id=${user.id})}" method="post" th:object="${user}">
+                            <input type="hidden" name="_method" value="PUT" />
                             <div class="mb-3">
                                 <label for="email" class="form-label">이메일</label>
                                 <input type="email" class="form-control" id="email" th:field="*{email}" readonly>
