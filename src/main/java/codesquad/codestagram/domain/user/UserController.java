@@ -50,4 +50,17 @@ public class UserController {
         return "/user/profile";
     }
 
+    @GetMapping("{id}/form")
+    public String showUpdateForm(@PathVariable String id, Model model) {
+        User user = userRepository.findById(id);
+
+        if (user == null) {
+            return "redirect:/users?error=user-not-found";
+        }
+
+        model.addAttribute("user", user);
+
+        return "/user/edit";
+    }
+
 }
