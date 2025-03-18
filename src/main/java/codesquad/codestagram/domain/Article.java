@@ -1,4 +1,4 @@
-package codesquad.codestagram;
+package codesquad.codestagram.domain;
 
 public class Article {
     private String title;
