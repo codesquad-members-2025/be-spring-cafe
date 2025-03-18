@@ -85,7 +85,9 @@
               <tbody>
                 <tr th:each="user, stat : ${users}">
                     <th scope="row" th:text="${stat.count}">1</th>
-                    <td th:text="${user.userId}"></td>
+                    <td>
+                        <a th:href="@{/users/{userid}(userid=${user.userId})}" th:text="${user.userId}"></a>
+                    </td>
                     <td th:text="${user.name}"></td>
                     <td th:text="${user.email}"></td>
                     <td>
