@@ -63,4 +63,30 @@ public class UserController {
         return "/user/edit";
     }
 
+    @PostMapping("{id}/update")
+    public String updateUser(@PathVariable String id,
+                             @RequestParam String email,
+                             @RequestParam String name,
+                             @RequestParam String currentPassword,
+                             @RequestParam String newPassword) {
+        User user = userRepository.findById(id);
+
+        if (user == null) {
+            return "redirect:/users?error=user-not-found";
+        }
+
+        if (!user.isMatchPassword(currentPassword)) {
+            return "redirect:/users/" + id + "/form?error=wrong-password";
+        }
+
+        user.setEmail(email);
+        user.setName(name);
+        user.setPassword(newPassword);
+
+        userRepository.delete(user);
+        userRepository.save(user);
+
+        return "redirect:/users/" + id;
+    }
+
 }

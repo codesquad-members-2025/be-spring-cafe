@@ -16,7 +16,12 @@
                         <h2 class="text-center mb-0">회원정보 수정</h2>
                     </div>
                     <div class="card-body">
-                        <form th:action="@{/users/{id}(id=${user.id})}" method="post" th:object="${user}">
+                        <!-- 에러 메시지 표시 -->
+                        <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                            <span th:if="${param.error == 'wrong-password'}">현재 비밀번호가 일치하지 않습니다.</span>
+                        </div>
+                        
+                        <form th:action="@{/users/{id}/update(id=${user.id})}" method="post" th:object="${user}">
                             <div class="mb-3">
                                 <label for="email" class="form-label">이메일</label>
                                 <input type="email" class="form-control" id="email" th:field="*{email}" readonly>
