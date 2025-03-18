@@ -26,7 +26,7 @@ public class UserController {
     public String create(UserForm userForm) {
         User user = new User(userForm.getUserId(), userForm.getName(), userForm.getPassword(),userForm.getEmail());
         userService.join(user);
-        return "redirect:/";
+        return "redirect:/user/list";
     }
 
     @GetMapping("/user/list")
