@@ -14,7 +14,14 @@
 </head>
 <body>
     <div th:replace="~{header.html}"></div>
-
+    <div class="article-container">
+        <div class="article-list">
+            <div th:each="article : ${articles}" class="article">
+                <h2 th:text="${article != null ? article.title : '게시글이 없습니다.'}"></h2>
+                <p th:text="${article != null ? article.content : ''}"></p>
+            </div>
+        </div>
+    </div>
     <div th:replace="~{footer.html}"></div>
 
 </body>
