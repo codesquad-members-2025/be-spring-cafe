@@ -45,6 +45,8 @@
             <label for="email">이메일</label>
             <input type="email" id="email" name="email" required placeholder="이메일" th:value="${user.email}">
         </div>
+        <input type="hidden" name="id" th:value="${user.id}">
+        <input type="hidden" name="_method" value="PUT" />
         <div>
             <button type="submit" id="submitButton">정보 수정</button>
         </div>
