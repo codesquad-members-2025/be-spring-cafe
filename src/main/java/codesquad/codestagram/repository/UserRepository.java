@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface UserRepository {
     User save(User user);
-    Optional<User> fineByLoginId(String loginId);
+    Optional<User> fineByUserId(String userId);
     Optional<User> fineByName(String name);
     Optional<User> fineByEmail(String email);
     List<User> fineAll();

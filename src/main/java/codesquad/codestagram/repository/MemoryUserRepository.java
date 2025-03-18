@@ -18,9 +18,9 @@ public class MemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> fineByLoginId(String loginId) {
+    public Optional<User> fineByUserId(String userId) {
         for(User user : store) {
-            if(user.getUserId().equals(loginId)) {
+            if(user.getUserId().equals(userId)) {
                 return Optional.of(user);
             }
         }
