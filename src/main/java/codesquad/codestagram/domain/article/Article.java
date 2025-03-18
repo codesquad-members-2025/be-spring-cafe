@@ -2,17 +2,17 @@ package codesquad.codestagram.domain.article;
 
 public class Article {
 
-    private String id;
+    private final int id;
     private String title;
     private String content;
 
-    public Article(String id, String title, String content) {
+    public Article(int id, String title, String content) {
         this.id = id;
         this.title = title;
         this.content = content;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -22,10 +22,6 @@ public class Article {
 
     public String getContent() {
         return content;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public void setTitle(String title) {
