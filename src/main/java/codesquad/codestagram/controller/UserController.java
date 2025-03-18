@@ -52,16 +52,12 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(@RequestParam String id, @RequestParam String password, HttpSession session) {
-        System.out.println("[DEBUG] 로그인 시도: ID=" + id + ", Password=" + password);
-
         UserResponseDto user = userService.authenticate(id, password);
         if (user == null) {
-            System.out.println("[DEBUG] 로그인 실패: 잘못된 ID 또는 비밀번호");
             return "redirect:/users/login?error=true";
         }
 
         session.setAttribute("loginUser", user);
-
         return "redirect:/";
     }
 
@@ -69,5 +65,21 @@ public class UserController {
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/";
+    }
+
+    @GetMapping("/{id}/revise")
+    public String showEditUserForm(@PathVariable String id, Model model) {
+        UserResponseDto user = userService.getUserById(id);
+        if (user == null) {
+            return "redirect:/users"; // 사용자가 없으면 리스트 페이지로 리디렉션
+        }
+        model.addAttribute("user", user);
+        return "user/change"; // user/edit.html로 이동
+    }
+
+    @PutMapping("/{id}/revise")
+    public String updateUser(@PathVariable String id, @RequestParam String name, @RequestParam String email) {
+        userService.updateUser(id, name, email);
+        return "redirect:/users";
     }
 }
