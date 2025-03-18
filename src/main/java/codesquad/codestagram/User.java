@@ -29,7 +29,4 @@ public class User {
         return email;
     }
 
-    public boolean equalUserId(String userId) {
-        return this.userId.equals(userId);
-    }
 }
