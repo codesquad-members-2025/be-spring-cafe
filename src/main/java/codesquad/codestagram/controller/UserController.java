@@ -1,6 +1,6 @@
 package codesquad.codestagram.controller;
 
-import codesquad.codestagram.User;
+import codesquad.codestagram.domain.User;
 import java.util.ArrayList;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,7 +34,7 @@ public class UserController {
 
     @GetMapping("/users/{userId}")
     public String showUserProfile(@PathVariable int userId, Model model) {
-        User user = users.get(userId-1);
+        User user = getUserById(userId);
         model.addAttribute("user", user);
         model.addAttribute("id", userId);
         return "user/profile";
@@ -42,14 +42,14 @@ public class UserController {
 
     @GetMapping("/users/{userId}/update")
     public String editUser(Model model, @PathVariable int userId) {
-        User user = users.get(userId - 1);
+        User user = getUserById(userId);
         model.addAttribute("user", user);
         return "user/updateForm";  // 정보 수정 페이지로 이동
     }
 
     @PostMapping("/users/verify_password")
     public String verifyPassword(@RequestParam String password, @RequestParam int id, Model model) {
-        User user = users.get(id-1);
+        User user = getUserById(id);
         model.addAttribute("user", user);
 
         if (user.getPassword().equals(password)) {
@@ -64,11 +64,15 @@ public class UserController {
 
     @PutMapping("users/update")
     public String updateProfile(@RequestParam String name, @RequestParam String email, @RequestParam int id, Model model) {
-        User user = users.get(id-1);
+        User user = getUserById(id);
         user.updateUser(name, email);
 
         model.addAttribute("user", user);
         return "redirect:/users";
+    }
+
+    private User getUserById(int id) {
+        return users.get(id -1);
     }
 
 }
