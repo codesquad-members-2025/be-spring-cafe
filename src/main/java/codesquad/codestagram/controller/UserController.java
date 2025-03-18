@@ -1,12 +1,10 @@
 package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.User;
+import jakarta.websocket.server.PathParam;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,5 +25,15 @@ public class UserController {
     public String viewUserList(Model model) {
         model.addAttribute("users", users);
         return "user/list";
+    }
+
+    @GetMapping("/{id}")
+    public String viewUserProfile(@PathVariable("id") String id, Model model) {
+        for (User user : users) {
+            if (user.getUserId().equals(id)) {
+                model.addAttribute("user", user);
+            }
+        }
+        return "user/profile";
     }
 }
