@@ -5,25 +5,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RequestMapping("/articles")
 @Controller
 public class ArticleController {
 
-    private final List<Article> articles;
+    private final ArticleRepository articleRepository;
 
-    public ArticleController() {
-        this.articles = new ArrayList<>();
+    public ArticleController(ArticleRepository articleRepository) {
+        this.articleRepository = articleRepository;
     }
 
     @PostMapping("")
     public String addArticle(@RequestParam String title,
                              @RequestParam String content) {
-        int id = articles.size() + 1;
+
+        int id = articleRepository.size() + 1;
         Article article = new Article(id, title, content);
-        articles.add(article);
+        articleRepository.save(article);
 
         return "redirect:/";
     }
