@@ -1,7 +1,6 @@
 package codesquad.codestagram.entity;
 
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
 public class User {
@@ -13,7 +12,7 @@ public class User {
     private String loginId;
     @NotEmpty
     private String name;
-    @Email
+    @NotEmpty
     private String email;
     @NotEmpty
     private String password;
@@ -31,10 +30,12 @@ public class User {
         this.password = password;
     }
 
+    // Getter
     public Long getId() {
         return id;
     }
 
+    // Setter
     public void setId(Long id) {
         this.id = id;
     }

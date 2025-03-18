@@ -22,26 +22,17 @@ public class UserRepository {
     }
 
     // 특정 회원 조회 (id 기준)
-    public Optional<User> findById(Long id) {
-        return users.stream()
+    public User findById(Long id) {
+        Optional<User> user = users.stream()
                 .filter(u -> u.getId().equals(id))
                 .findFirst();
+        return user.orElse(null);
     }
 
     public Optional<User> findByLoginId(String loginId){
         return getAllUsers().stream()
                 .filter(m -> m.getLoginId().equals(loginId))
                 .findFirst();
-    }
-
-    public void updateUserProfile(Long id,String password,String name,String email){
-        Optional<User> byLoginId = findById(id);
-        if(byLoginId.isPresent()){
-            User user = byLoginId.get();
-            user.setPassword(password);
-            user.setName(name);
-            user.setEmail(email);
-        }
     }
 
     public void clearStore(){
