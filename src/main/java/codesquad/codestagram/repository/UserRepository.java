@@ -9,6 +9,7 @@ public interface UserRepository {
     User save(User user);
     Optional<User> fineByLoginId(String loginId);
     Optional<User> fineByName(String name);
+    Optional<User> fineByEmail(String email);
     List<User> fineAll();
     void clearStore();
 }

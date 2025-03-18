@@ -22,7 +22,7 @@ public class UserController {
 
     @PostMapping("/user/create")
     public String create(UserForm userForm) {
-        User user = new User(userForm.getUserId(), userForm.getName(), userForm.getPassword());
+        User user = new User(userForm.getUserId(), userForm.getName(), userForm.getPassword(),userForm.getEmail());
         userService.join(user);
         return "redirect:/";
     }
@@ -33,6 +33,4 @@ public class UserController {
         model.addAttribute("userList", userList);
         return "user/list";
     }
-
-
 }
