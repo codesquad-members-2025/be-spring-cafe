@@ -8,7 +8,7 @@ import java.util.List;
 @Repository
 public class UserRepository {
 
-    List<User> users;
+    private final List<User> users;
 
     public UserRepository(List<User> users) {
         this.users = users;
