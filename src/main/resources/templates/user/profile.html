@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <title>회원 프로필</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        /* 버튼 간 간격을 띄우기 위한 CSS */
+        .btn-group a {
+            margin-right: 10px; /* 버튼들 간에 오른쪽 간격을 10px 띄움 */
+        }
+    </style>
 </head>
 <body>
 <div th:replace="~{header.html}"></div>
@@ -12,13 +18,15 @@
 
     <!-- 사용자 정보 -->
     <div class="profile-info">
+        <p><strong>번호:</strong> <span th:text="${userId}"></span></p>
         <p><strong>아이디:</strong> <span th:text="${user.userId}"></span></p>
         <p><strong>이름:</strong> <span th:text="${user.name}"></span></p>
         <p><strong>이메일:</strong> <span th:text="${user.email}"></span></p>
     </div>
-
-    <!-- 뒤로 가기 버튼 -->
-    <a href="/users" class="btn-return">목록으로 돌아가기</a>
+    <div class="btn-group">
+        <a th:href="@{/users/{userId}/update(userId = ${userId})}" class="btn-edit">회원 정보 수정</a>
+        <a th:href="@{/users}" class="btn-return">목록으로 돌아가기</a>
+    </div>
 </main>
 <div th:replace="~{footer.html}"></div>
 </body>
