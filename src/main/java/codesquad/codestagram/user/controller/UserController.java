@@ -1,4 +1,4 @@
-package codesquad.codestagram.user;
+package codesquad.codestagram.user.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class UserController {
         );
 
         userService.join(user);
-        
-        return "redirect:/users";
+
+        return "redirect:/list";
     }
 }
