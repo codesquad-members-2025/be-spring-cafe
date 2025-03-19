@@ -33,7 +33,7 @@ public class UserController {
         List<User> users = userRepository.findAll();
         model.addAttribute("users", users);
 
-        return "/user/list";
+        return "user/list";
     }
 
     @GetMapping("{id}")
@@ -48,7 +48,7 @@ public class UserController {
 
         model.addAttribute("user", user);
 
-        return "/user/profile";
+        return "user/profile";
     }
 
     @GetMapping("{id}/form")
@@ -61,7 +61,7 @@ public class UserController {
 
         model.addAttribute("user", user);
 
-        return "/user/edit";
+        return "user/edit";
     }
 
     @PutMapping("{id}")

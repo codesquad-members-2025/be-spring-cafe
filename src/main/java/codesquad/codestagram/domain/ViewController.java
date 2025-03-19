@@ -17,7 +17,7 @@ public class ViewController {
         this.articleRepository = articleRepository;
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public String index(Model model) {
         List<Article> articles = articleRepository.findAll();
         model.addAttribute("articles", articles);
