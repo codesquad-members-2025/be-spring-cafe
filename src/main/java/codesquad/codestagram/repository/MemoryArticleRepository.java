@@ -2,10 +2,12 @@ package codesquad.codestagram.repository;
 
 import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.User;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class MemoryArticleRepository implements ArticleRepository {
     private final List<Article> store = new ArrayList<>();
 
