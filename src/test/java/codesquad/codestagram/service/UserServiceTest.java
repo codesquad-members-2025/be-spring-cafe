@@ -14,7 +14,7 @@ import java.util.List;
 
 public class UserServiceTest {
     UserRepository memoryUserRepository = new MemoryUserRepository();
-    UserService userService = new UserService();
+    UserService userService = new UserService(memoryUserRepository);
 
     @AfterEach
     void tearDown() {

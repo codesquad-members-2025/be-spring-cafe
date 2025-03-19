@@ -10,7 +10,11 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    private final UserRepository userRepository = new MemoryUserRepository();
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public User join(User user){
         Optional<User> result = userRepository.fineByUserId(user.getUserId());
