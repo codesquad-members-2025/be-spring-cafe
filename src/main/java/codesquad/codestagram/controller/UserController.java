@@ -39,17 +39,17 @@ public class UserController {
         return "user/list";
     }
 
-    @GetMapping("/users/{userId}")
-    public String showUserProfile(@PathVariable int userId, Model model) {
-        User user = getUserById(userId);
+    @GetMapping("/users/{id}")
+    public String showUserProfile(@PathVariable Long id, Model model) {
+        User user = userRepository.findById(id).get();
         model.addAttribute("user", user);
-        model.addAttribute("id", userId);
+        model.addAttribute("id", id);
         return "user/profile";
     }
 
-    @GetMapping("/users/{userId}/update")
-    public String editUser(Model model, @PathVariable int userId) {
-        User user = getUserById(userId);
+    @GetMapping("/users/{id}/update")
+    public String editUser(Model model, @PathVariable int id) {
+        User user = getUserById(id);
         model.addAttribute("user", user);
         return "user/updateForm";  // 정보 수정 페이지로 이동
     }

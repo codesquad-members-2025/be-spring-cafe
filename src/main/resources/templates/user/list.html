@@ -21,22 +21,22 @@
         <tbody>
         <tr th:each="user, iterStat : ${users}">
             <td>
-                <a th:href="@{/users/{userId}(userId=${iterStat.index + 1})}" style="display: block; width: 100%; text-decoration: none; color: inherit;">
-                    <span th:text="${iterStat.index + 1}"></span>
+                <a th:href="@{/users/{id}(id=${iterStat.index + 1})}" style="display: block; width: 100%; text-decoration: none; color: inherit;">
+                    <span th:text="${user.id}"></span>
                 </a>
             </td>
             <td>
-                <a th:href="@{/users/{userId}(userId=${iterStat.index + 1})}" style="display: block; width: 100%; text-decoration: none; color: inherit;">
+                <a th:href="@{/users/{id}(id=${iterStat.index + 1})}" style="display: block; width: 100%; text-decoration: none; color: inherit;">
                     <span th:text="${user.userId}"></span>
                 </a>
             </td>
             <td>
-                <a th:href="@{/users/{userId}(userId=${iterStat.index + 1})}" style="display: block; width: 100%; text-decoration: none; color: inherit;">
+                <a th:href="@{/users/{id}(id=${iterStat.index + 1})}" style="display: block; width: 100%; text-decoration: none; color: inherit;">
                     <span th:text="${user.name}"></span>
                 </a>
             </td>
             <td>
-                <a th:href="@{/users/{userId}(userId=${iterStat.index + 1})}" style="display: block; width: 100%; text-decoration: none; color: inherit;">
+                <a th:href="@{/users/{id}(id=${iterStat.index + 1})}" style="display: block; width: 100%; text-decoration: none; color: inherit;">
                     <span th:text="${user.email}"></span>
                 </a>
             </td>
