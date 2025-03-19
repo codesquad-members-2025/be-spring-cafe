@@ -7,7 +7,7 @@ spring:
     suffix: .html
 
   mvc:
-    hidden method:
+    hidden-method:
       filter:
         enabled: true
 

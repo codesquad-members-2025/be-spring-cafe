@@ -3,7 +3,6 @@ package codesquad.codestagram.controller;
 import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.dto.ArticleDto;
 import codesquad.codestagram.repository.ArticleRepository;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,7 +30,7 @@ public class ArticleController {
     public String showArticles(Model model) {
         List<Article> articles = articleRepository.findAll();
         model.addAttribute("articles", articles);
-        return "/home";
+        return "home";
     }
 
     @GetMapping("articles/{articleId}")
