@@ -1,6 +1,7 @@
 package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.User;
+import codesquad.codestagram.dto.UserForm;
 import codesquad.codestagram.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
