@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="kr">
+{{> partials/head}}
+<body>
+{{> partials/nav}}
+{{> partials/subnav}}
+
+<div class="container" id="main">
+   <div class="col-md-10 col-md-offset-1">
+      <div class="panel panel-default">
+          <table class="table table-hover">
+              <thead>
+                <tr>
+                    <th>#</th> <th>사용자 아이디</th> <th>이름</th> <th>이메일</th><th></th>
+                </tr>
+              </thead>
+              <tbody>
+                  {{#userList}}
+                  <tr>
+                      <!-- index가 필요한 경우, 컨트롤러에서 미리 계산해 전달하거나, 각 User 객체에 index 필드를 추가해야 합니다. -->
+                      <th scope="row">1</th>
+                      <td><a href="/users/{{userId}}">{{userId}}</a></td>
+                      <td>{{name}}</td>
+                      <td>{{email}}</td>
+                      <td><a href="#" class="btn btn-success" role="button">수정</a></td>
+                  </tr>
+                  {{/userList}}
+
+                  {{^userList}}
+                  <tr>
+                      <td colspan="5" class="text-center">등록된 사용자가 없습니다.</td>
+                  </tr>
+                  {{/userList}}
+              </tbody>
+          </table>
+        </div>
+    </div>
+</div>
+
+<!-- script references -->
+{{> partials/footer}}
+	</body>
+</html>
