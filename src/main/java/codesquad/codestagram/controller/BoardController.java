@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class BoardController {
@@ -24,14 +24,14 @@ public class BoardController {
 
     @GetMapping("/")
     public String home(Model model) {
-        ArrayList<BoardResponseDto> boards = boardService.getAllPosts();
+        List<BoardResponseDto> boards = boardService.getAllPosts();
         model.addAttribute("boards", boards);
         return "user/index";
     }
 
     @GetMapping("/boards/{id}")
     public String getBoard(@PathVariable Long id, Model model) {
-        BoardResponseDto board = boardService.getUserById(id);
+        BoardResponseDto board = boardService.getBoardById(id);
         model.addAttribute("board", board);
         return "qna/show";
     }

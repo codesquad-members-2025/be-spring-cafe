@@ -1,14 +1,12 @@
 package codesquad.codestagram.dto;
 
 public class BoardRequestDto {
-    private String writer;
     private String title;
     private String content;
 
     public BoardRequestDto() {}
 
-    public BoardRequestDto(String writer, String title, String content) {
-        this.writer = writer;
+    public BoardRequestDto(String title, String content) {
         this.title = title;
         this.content = content;
     }

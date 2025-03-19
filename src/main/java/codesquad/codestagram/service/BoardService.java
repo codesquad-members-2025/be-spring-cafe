@@ -1,41 +1,46 @@
 package codesquad.codestagram.service;
 
-import codesquad.codestagram.domain.Board;
+import codesquad.codestagram.Entity.Board;
 import codesquad.codestagram.dto.BoardRequestDto;
 import codesquad.codestagram.dto.BoardResponseDto;
+import codesquad.codestagram.repository.BoardMapRepository;
+import codesquad.codestagram.repository.BoardRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @Service
 public class BoardService {
-    private Map<Long, Board> boardMap = new HashMap<>();
-    private Long boardSeq = 1L;
+    private BoardRepository boardRepository;
+    private BoardMapRepository boardMapRepository;
 
+    BoardService(@Qualifier("boardJpaRepository") BoardRepository boardRepository,
+                 @Qualifier("boardMapRepository") BoardMapRepository boardMapRepository) {
+        this.boardRepository = boardRepository;
+        this.boardMapRepository = boardMapRepository;
+    }
+
+    @Transactional
     public BoardResponseDto createBoard(BoardRequestDto dto, String writer) {
-        Board board = new Board(boardSeq, dto.getTitle(), dto.getContent(), writer);
-        boardMap.put(boardSeq, board);
-        boardSeq++;
+        Board board = new Board(dto.getTitle(), dto.getContent(), writer);
+        board = boardRepository.save(board);
         return new BoardResponseDto(board.getId(), board.getTitle(), board.getContent(), board.getWriter(), board.getUploadDate());
     }
 
     public ArrayList<BoardResponseDto> getAllPosts() {
-        ArrayList<BoardResponseDto> boards = new ArrayList<>();
-        for (Board board : boardMap.values()) {
-            BoardResponseDto dto = new BoardResponseDto(board.getId(), board.getTitle(), board.getContent(), board.getWriter(), board.getUploadDate());
-            boards.add(dto);
+        List<Board> boards = boardRepository.findAll();
+        ArrayList<BoardResponseDto> boardResponseDtos = new ArrayList<>();
+        for (Board board : boards) {
+            boardResponseDtos.add(new BoardResponseDto(board.getId(), board.getTitle(), board.getContent(), board.getWriter(), board.getUploadDate()));
         }
-        return boards;
+        return boardResponseDtos;
     }
 
-    public BoardResponseDto getUserById(Long id) {
-        for (Board board : boardMap.values()) {
-            if (board.getId() == id) {
-                return new BoardResponseDto(board.getId(), board.getTitle(), board.getContent(), board.getWriter(), board.getUploadDate());
-            }
-        }
-        return null;
+    public BoardResponseDto getBoardById(Long id) {
+        Board board = boardRepository.findById(id).orElse(null);
+        return (board != null) ? new BoardResponseDto(board.getId(), board.getTitle(), board.getContent(), board.getWriter(), board.getUploadDate()) : null;
     }
 }
