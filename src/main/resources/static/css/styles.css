@@ -741,4 +741,8 @@ table caption {
     color: #4285f4;
     margin-bottom: 10px;
 }
-
+.error-message {
+    color: red; /* 빨간색으로 메시지 색상 변경 */
+    font-weight: bold; /* 굵은 글씨 */
+    margin-bottom: 15px; /* 메시지와 폼 사이에 여백 추가 */
+}

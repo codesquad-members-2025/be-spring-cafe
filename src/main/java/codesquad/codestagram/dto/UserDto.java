@@ -18,5 +18,9 @@ public class UserDto {
         public User toUser(){
             return new User(userId, password, name, email);
         }
+
+        public String getUserId() {
+            return userId;
+        }
     }
 }

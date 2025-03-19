@@ -5,6 +5,7 @@ import codesquad.codestagram.dto.UserDto;
 import codesquad.codestagram.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,9 +25,20 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public String signUp(@ModelAttribute UserDto.UserRequestDto requestDto) {
+    public String signUp(@ModelAttribute UserDto.UserRequestDto requestDto, Model model) {
+        // user_id 중복 검사
+        Optional<User> existingUser = userRepository.findByUserId(requestDto.getUserId());
+
+        if (existingUser.isPresent()) {
+            // 이미 존재하는 user_id일 경우
+            model.addAttribute("errorMessage", "이미 존재하는 사용자 ID입니다.");
+            return "register";  // 회원가입 페이지로 다시 돌아감
+        }
+
+        // 중복되지 않으면 사용자 저장
         User user = requestDto.toUser();
         userRepository.save(user);
+
         return "redirect:/users";
     }
 
