@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
@@ -25,6 +26,13 @@ public class ArticleController {
     public String showArticles(Model model){
         model.addAttribute("articles", articleList);
         return "article/index";
+    }
+
+    @GetMapping("/articles/{index}")
+    public String showArticle(@PathVariable int index, Model model){
+        Article article = articleList.get(index - 1);
+        model.addAttribute("article", article);
+        return "article/show";
     }
 
 

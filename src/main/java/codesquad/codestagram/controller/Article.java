@@ -2,12 +2,26 @@ package codesquad.codestagram.controller;
 
 public class Article {
 
+    private static int count = 0;
+
+    private int index;
+
     private String writer;
 
     private String title;
 
     private String contents;
 
+    public Article(String writer, String title, String contents) {
+        this.index = ++count;
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+    }
+
+    public int getIndex() {
+        return index;
+    }
 
     public String getWriter() {
         return writer;
