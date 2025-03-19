@@ -1,22 +1,36 @@
 package codesquad.codestagram.domain;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "users")
 public class User {
-    private static int idCounter = 1;
-    private int id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(nullable = false, unique = true)
     private String userId;
+    @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String email;
 
     public User(String userId, String password, String name, String email) {
-        id = idCounter++;
         this.userId = userId;
         this.password = password;
         this.name = name;
         this.email = email;
     }
 
-    public int getId() {
+    protected User() {}
+
+    public Long getId() {
         return id;
     }
 
