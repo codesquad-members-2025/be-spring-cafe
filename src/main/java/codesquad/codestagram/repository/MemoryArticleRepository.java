@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class MemoryArticleRepository implements ArticleRepository {
@@ -37,6 +38,16 @@ public class MemoryArticleRepository implements ArticleRepository {
             }
         }
         return foundArticles;
+    }
+
+    @Override
+    public Optional<Article> findById(int id) {
+        for(Article article : store) {
+            if(article.getId() == id) {
+                return Optional.of(article);
+            }
+        }
+        return Optional.empty();
     }
 
     @Override

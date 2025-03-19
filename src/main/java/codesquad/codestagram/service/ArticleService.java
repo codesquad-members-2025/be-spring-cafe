@@ -6,6 +6,7 @@ import codesquad.codestagram.repository.ArticleRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ArticleService {
@@ -29,6 +30,10 @@ public class ArticleService {
 
     public List<Article> findArticlesByUser(User user) {
         return articleRepository.findByUser(user);
+    }
+
+    public Optional<Article> findArticleById(int id) {
+        return articleRepository.findById(id);
     }
 
     public int getArticleCount() {
