@@ -48,4 +48,9 @@ public class MemoryArticleRepository implements ArticleRepository {
     public void clearStore() {
         store.clear();
     }
+
+    @Override
+    public int getStoreSize(){
+        return store.size();
+    }
 }

@@ -11,4 +11,5 @@ public interface ArticleRepository {
     List<Article> findByTitle(String title);
     List<Article> findAll();
     void clearStore();
+    int getStoreSize();
 }

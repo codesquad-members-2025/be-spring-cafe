@@ -30,4 +30,8 @@ public class ArticleService {
     public List<Article> findArticlesByUser(User user) {
         return articleRepository.findByUser(user);
     }
+
+    public int getArticleCount() {
+        return articleRepository.getStoreSize();
+    }
 }
