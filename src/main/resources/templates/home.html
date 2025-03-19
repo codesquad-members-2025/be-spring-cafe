@@ -14,7 +14,21 @@
 </head>
 <body>
     <div th:replace="~{header.html}"></div>
-
+    <div class="article-container">
+        <div class="article-list">
+            <div th:each="article, iterStat : ${articles}" class="article">
+                <!-- 게시글 전체를 클릭할 수 있도록 <a> 태그로 감쌈 -->
+                <a th:href="@{/articles/{id}(id=${iterStat.index + 1})}" class="article-link">
+                    <!-- 글 번호 -->
+                    <div class="article-content">
+                        <span class="article-number" th:text="${iterStat.index + 1}">1</span>
+                        <span class="article-separator"> | </span>
+                        <h2 th:text="${article != null ? article.title : '게시글이 없습니다.'}"></h2> <!-- 제목 -->
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
     <div th:replace="~{footer.html}"></div>
 
 </body>

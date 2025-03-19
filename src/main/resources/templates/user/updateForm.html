@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 정보 수정</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        /* 첫 번째 form 아래에 간격 추가 */
+        form:first-of-type {
+            margin-bottom: 20px; /* 비밀번호 확인 폼 아래에 간격 추가 */
+        }
+
+        /* 두 번째 form 위에 간격 추가 */
+        form:nth-of-type(2) {
+            margin-top: 20px; /* 회원 정보 수정 폼 위에 간격 추가 */
+        }
+    </style>
+</head>
+<body>
+<main>
+    <h1>회원 정보 수정</h1>
+
+    <!-- 비밀번호 검증 폼 -->
+    <form action="/users/verify_password" method="POST" style="display: block;">
+        <div>
+            <label for="password">현재 비밀번호</label>
+            <input type="password" id="password" name="password" required placeholder="현재 비밀번호">
+        </div>
+        <input type="hidden" name="id" th:value="${user.id}"> <!-- hidden으로 userId 전송 -->
+        <button type="submit">비밀번호 확인</button>
+    </form>
+
+    <!-- 비밀번호 검증 실패 메시지 -->
+    <div id="passwordError" style="color: red; display: none;">
+        <p>비밀번호가 틀렸습니다. 다시 시도해 주세요.</p>
+    </div>
+
+    <!-- 회원 정보 수정 폼 -->
+    <form action="/users/update" method="POST" id="updateForm" style="display: none;">
+        <div>
+            <label for="name">이름</label>
+            <input type="text" id="name" name="name" required placeholder="이름" th:value="${user.name}">
+        </div>
+        <div>
+            <label for="email">이메일</label>
+            <input type="email" id="email" name="email" required placeholder="이메일" th:value="${user.email}">
+        </div>
+        <input type="hidden" name="id" th:value="${user.id}">
+        <input type="hidden" name="_method" value="PUT" />
+        <div>
+            <button type="submit" id="submitButton">정보 수정</button>
+        </div>
+    </form>
+
+</main>
+
+<script>
+    // 페이지 로드 시 비밀번호 검증 결과에 따라 폼을 표시
+    document.addEventListener("DOMContentLoaded", function() {
+        const passwordValid = [[${passwordValid}]];  // Thymeleaf로 전달된 값
+        const updateForm = document.getElementById("updateForm");
+        const passwordError = document.getElementById("passwordError");
+
+        if (passwordValid) {
+            // 비밀번호 검증 성공 시
+            updateForm.style.display = "block";   // 정보 수정 폼 보이기
+            passwordError.style.display = "none";  // 오류 메시지 숨기기
+        } else {
+            // 비밀번호 검증 실패 시
+            updateForm.style.display = "none";     // 정보 수정 폼 숨기기
+            passwordError.style.display = "block"; // 오류 메시지 보이기
+        }
+    });
+</script>
+
+</body>
+</html>
