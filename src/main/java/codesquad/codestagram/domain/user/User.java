@@ -1,7 +1,14 @@
 package codesquad.codestagram.domain.user;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "users")
 public class User {
 
+    @Id
     private String id;
     private String password;
     private String name;
@@ -12,6 +19,9 @@ public class User {
         this.password = password;
         this.name = name;
         this.email = email;
+    }
+
+    public User() {
     }
 
     public String getId() {
