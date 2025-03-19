@@ -1,7 +1,6 @@
-package codesquad.codestagram;
+package codesquad.codestagram.repository;
 
 import codesquad.codestagram.domain.User;
-import codesquad.codestagram.repository.MemoryUserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
