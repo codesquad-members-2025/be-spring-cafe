@@ -1,6 +1,7 @@
 package codesquad.codestagram.user.controller;
 
 
+import codesquad.codestagram.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,12 +17,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/signUp")
+    @GetMapping("/users/signUp")
     public String signUpForm() {
         return "user/form";
     }
 
-    @PostMapping("/signUp")
+    @PostMapping("/users/signUp")
     public String signUp(SignUpRequest request) {
         User user = new User(
                 request.getId(),
