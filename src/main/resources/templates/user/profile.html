@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<head>
+    <title>프로필</title>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="card mb-3" style="max-width: 540px;">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img class="img-fluid rounded-start" src="../images/80-text.png">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h4 class="card-title" th:text="${user.name}"></h4>
+                    <p class="card-text" th:text="${user.userId}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
