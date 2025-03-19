@@ -22,10 +22,10 @@ public class UserService {
     }
 
     private void validateDuplicateUser(User user) {
-        //같은 이름이 있는 중복 회원 x
-        userRepository.findByName(user.getName())
+        //같은 아이디 중복 회원 x
+        userRepository.findByUserId(user.getUserId())
                 .ifPresent(u -> {
-                    throw new IllegalStateException("User already exists");
+                    throw new IllegalStateException("user already exists");
                 });
     }
 
@@ -37,5 +37,8 @@ public class UserService {
     }
     public Optional<User> findOne(Long userId) {
         return userRepository.findById(userId);
+    }
+    public Optional<User> findByUserId(String userId) {
+        return userRepository.findByUserId(userId);
     }
 }
