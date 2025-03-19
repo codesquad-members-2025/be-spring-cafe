@@ -48,15 +48,15 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}/update")
-    public String editUser(Model model, @PathVariable int id) {
-        User user = getUserById(id);
+    public String editUser(Model model, @PathVariable Long id) {
+        User user = userRepository.findById(id).get();
         model.addAttribute("user", user);
         return "user/updateForm";  // 정보 수정 페이지로 이동
     }
 
-    @PostMapping("/users/verify_password")
-    public String verifyPassword(@RequestParam String password, @RequestParam int id, Model model) {
-        User user = getUserById(id);
+    @GetMapping("/users/verify_password")
+    public String verifyPassword(@RequestParam String password, @RequestParam Long id, Model model) {
+        User user = userRepository.findById(id).get();
         model.addAttribute("user", user);
 
         if (user.getPassword().equals(password)) {
@@ -70,16 +70,13 @@ public class UserController {
     }
 
     @PutMapping("users/update")
-    public String updateProfile(@RequestParam String name, @RequestParam String email, @RequestParam int id, Model model) {
-        User user = getUserById(id);
+    public String updateProfile(@RequestParam String name, @RequestParam String email, @RequestParam Long id, Model model) {
+        User user = userRepository.findById(id).get();
         user.updateUser(name, email);
+        userRepository.save(user);
 
         model.addAttribute("user", user);
         return "redirect:/users";
-    }
-
-    private User getUserById(int id) {
-        return users.get(id -1);
     }
 
 }
