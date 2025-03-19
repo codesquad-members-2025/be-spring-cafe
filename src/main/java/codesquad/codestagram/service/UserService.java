@@ -1,61 +1,79 @@
 package codesquad.codestagram.service;
 
-import codesquad.codestagram.domain.User;
+import codesquad.codestagram.Entity.User;
 import codesquad.codestagram.dto.UserRequestDto;
 import codesquad.codestagram.dto.UserResponseDto;
+import codesquad.codestagram.repository.UserMapRepository;
+import codesquad.codestagram.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @Service
 public class UserService {
-    private final Map<Long, User> userMap = new HashMap<>();
-    private Long userSeq = 1L;
+    private final UserRepository userRepository;
+    private final UserMapRepository userMapRepository;
+
+    public UserService(@Qualifier("userJpaRepository") UserRepository userRepository,
+                       @Qualifier("userMapRepository") UserMapRepository userMapRepository) {
+        this.userRepository = userRepository;
+        this.userMapRepository = userMapRepository;
+    }
 
     public UserResponseDto registerUser(UserRequestDto dto) {
-        User user = new User(userSeq, dto.getId(), dto.getName(), dto.getPassword(), dto.getEmail());
-        userMap.put(userSeq, user);
-        userSeq++;
-        UserResponseDto responseDto = new UserResponseDto(user.getUserSeq(), user.getId(), user.getName(), user.getEmail());
-        return responseDto;
+        User user = new User(dto.getId(), dto.getName(), dto.getPassword(), dto.getEmail());
+
+        User saveUser = userRepository.save(user);
+        userMapRepository.save(saveUser);
+
+        return new UserResponseDto(saveUser.getUserSeq(), saveUser.getId(), saveUser.getName(), saveUser.getEmail());
     }
 
     public ArrayList<UserResponseDto> getAllUsers() {
+        List<User> userList = userRepository.findAll();
         ArrayList<UserResponseDto> users = new ArrayList<>();
-        for (User user : userMap.values()) {
-            UserResponseDto dto = new UserResponseDto(user.getUserSeq(), user.getId(), user.getName(), user.getEmail());
-            users.add(dto);
+        for (User user : userList) {
+            users.add(new UserResponseDto(user.getUserSeq(), user.getId(), user.getName(), user.getEmail()));
         }
         return users;
     }
 
     public UserResponseDto getUserById(String id) {
-        for (User user : userMap.values()) {
-            if (user.getId().equals(id)) {
-                return new UserResponseDto(user.getUserSeq(), user.getId(), user.getName(), user.getEmail());
-            }
+        User user = userMapRepository.findByUserId(id);
+        if (user != null) {
+            return new UserResponseDto(user.getUserSeq(), user.getId(), user.getName(), user.getEmail());
         }
         return null;
     }
 
     public UserResponseDto authenticate(String id, String password) {
-        for (User user : userMap.values()) {
-            if (user.getId().equals(id) && user.getPassword().equals(password)) {
-                return new UserResponseDto(user.getUserSeq(), user.getId(), user.getName(), user.getEmail());
-            }
+        User user = userRepository.findById(id);
+
+        if (user == null) {
+            user = userMapRepository.findByUserId(id);
+        }
+
+        if (user != null && user.getPassword().equals(password)) {
+            return new UserResponseDto(user.getUserSeq(), user.getId(), user.getName(), user.getEmail());
         }
         return null;
     }
 
     public void updateUser(String id, String name, String email) {
-        for (User user : userMap.values()) {
-            if (user.getId().equals(id)) {
-                user.setName(name);
-                user.setEmail(email);
-                return;
-            }
+        User user = userRepository.findById(id);
+
+        if (user != null) {
+            user.setName(name);
+            user.setEmail(email);
+            userRepository.save(user);
+        }
+
+        User mapUser = userMapRepository.findByUserId(id);
+        if (mapUser != null) {
+            mapUser.setName(name);
+            mapUser.setEmail(email);
         }
     }
 
