@@ -1,9 +1,11 @@
 package codesquad.codestagram.repository;
 
 import codesquad.codestagram.domain.User;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
+@Repository
 public class MemoryUserRepository implements UserRepository {
 
     private static Map<String, User> memory = new HashMap<>();
