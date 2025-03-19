@@ -20,8 +20,7 @@ public class ArticleController {
     public String addArticle(@RequestParam String title,
                              @RequestParam String content) {
 
-        long id = articleRepository.count() + 1;
-        Article article = new Article(id, title, content);
+        Article article = new Article(title, content);
         articleRepository.save(article);
 
         return "redirect:/";
