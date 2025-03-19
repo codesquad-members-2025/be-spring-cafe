@@ -1,14 +1,12 @@
 package codesquad.codestagram.user.controller;
 
-
 import codesquad.codestagram.user.domain.User;
 import codesquad.codestagram.user.dto.SignUpRequest;
 import codesquad.codestagram.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping("/users/signUp")
-    public String signUp(SignUpRequest request) {
+    public String signUp(@ModelAttribute SignUpRequest request) { // @ModelAttribute 공부
         User user = new User(
                 request.userId(),
                 request.password(),
@@ -46,5 +44,12 @@ public class UserController {
         List<User> users = userService.findUsers();
         model.addAttribute("users", users);
         return "user/list";
+    }
+
+    @GetMapping("/users/{userSeq}")
+    public String userProfile(@PathVariable Long userSeq, Model model) {
+        User user = userService.findUser(userSeq);
+        model.addAttribute("user", user);
+        return "user/profile";
     }
 }
