@@ -14,8 +14,11 @@ import java.util.List;
 @RequestMapping("/qna")
 public class ArticleController {
 
-    @Autowired  //
-    private ArticleService service;
+    private final ArticleService service;
+
+    public ArticleController(ArticleService service) {
+        this.service = service;
+    }
 
     @GetMapping()
     public String viewQuestions(Model model) {

@@ -57,9 +57,8 @@ public class UserController {
         return "user/profile";
     }
 
-    @PostMapping("/{userId}/form")
-    public String updateUserProfile(@PathVariable("userId") Long userId, @RequestParam("password") String password,
-                                    @RequestParam("name") String name, @RequestParam("email") String email, HttpSession session) {
+    @GetMapping("/{userId}/edit")
+    public String editUserProfile(@PathVariable("userId") Long userId, Model model, HttpSession session) {
 
         // 세션에서 로그인한 사용자 정보 가져오기
         User loginUser = (User) session.getAttribute("loginUser");
@@ -74,8 +73,25 @@ public class UserController {
             return "redirect:/users"; // 본인 외의 사용자는 수정할 수 없도록 처리
         }
 
+        // 사용자 정보 조회 후 모델에 추가
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            model.addAttribute("user", user.get());
+            return "user/profile-edit"; // profile-edit.html 반환
+        } else {
+            return "redirect:/users"; // 유저가 없으면 목록으로 이동
+        }
+    }
+
+    @PutMapping("/{userId}/form")
+    public String updateUserProfile(@PathVariable("userId") Long userId,
+                                    @RequestParam("password") String password,
+                                    @RequestParam("name") String name,
+                                    @RequestParam("email") String email,
+                                    HttpSession session) {
         // 프로필 업데이트
         userRepository.updateUserProfile(userId, password, name, email);
+
         return "redirect:/users/" + userId; // 수정된 프로필로 리다이렉트
     }
 }
