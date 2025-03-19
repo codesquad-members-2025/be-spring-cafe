@@ -27,6 +27,7 @@ public class BoardService {
     public BoardResponseDto createBoard(BoardRequestDto dto, String writer) {
         Board board = new Board(dto.getTitle(), dto.getContent(), writer);
         board = boardRepository.save(board);
+        boardMapRepository.save(board);
         return new BoardResponseDto(board.getId(), board.getTitle(), board.getContent(), board.getWriter(), board.getUploadDate());
     }
 
