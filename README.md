@@ -122,3 +122,7 @@
 
 - `UserRepository`를 사용하여 사용자 데이터를 저장
   - `save()` 메소드 사용
+
+### 배포
+
+https://port-0-be-spring-cafe-m8famrv1da7fb95d.sel4.cloudtype.app/
