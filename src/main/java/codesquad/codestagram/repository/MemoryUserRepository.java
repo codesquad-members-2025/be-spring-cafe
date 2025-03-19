@@ -6,18 +6,16 @@ import java.util.*;
 
 public class MemoryUserRepository implements UserRepository {
 
-    private static Map<Long, User> memory = new HashMap<>();
-    private static long sequence = 0L;
+    private static Map<String, User> memory = new HashMap<>();
 
     @Override
     public User save(User user) {
-        user.setId(++sequence);
         memory.put(user.getId(), user);
         return user;
     }
 
     @Override
-    public Optional<User> findById(long id) {
+    public Optional<User> findById(String id) {
         return Optional.of(memory.get(id));
     }
 
