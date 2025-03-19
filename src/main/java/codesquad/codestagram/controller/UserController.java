@@ -1,7 +1,10 @@
 package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.User;
+import codesquad.codestagram.dto.UserDto;
+import codesquad.codestagram.repository.UserRepository;
 import java.util.ArrayList;
+import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,20 +18,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class UserController {
     public static final String WRONG_PASSWORD = "비밀번호가 틀렸습니다.";
     private final ArrayList<User> users;
+    private final UserRepository userRepository;
 
-    public UserController(ArrayList<User> users) {
+    public UserController(ArrayList<User> users, UserRepository userRepository) {
         this.users = users;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/users")
-    public String signUp(@ModelAttribute User user) {
-        users.add(user);
+    public String signUp(@ModelAttribute UserDto.UserRequestDto requestDto) {
+        User user = requestDto.toUser();
+        userRepository.save(user);
         return "redirect:/users";
     }
 
     @GetMapping("/users")
     public String showUsers(Model model) {
-        model.addAttribute("users", users);
+        List<User> all = userRepository.findAll();
+        model.addAttribute("users", all);
         return "user/list";
     }
 
