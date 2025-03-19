@@ -30,4 +30,8 @@ public class User {
     public String getEmail() {
         return email;
     }
+
+    public void setSeq(Long seq) {
+        this.seq = seq;
+    }
 }
