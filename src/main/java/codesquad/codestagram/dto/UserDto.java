@@ -1,7 +1,6 @@
 package codesquad.codestagram.dto;
 
 import codesquad.codestagram.domain.User;
-import jakarta.persistence.Column;
 
 public class UserDto {
     public static class UserRequestDto{

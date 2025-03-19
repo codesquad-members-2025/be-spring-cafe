@@ -17,11 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class UserController {
     public static final String WRONG_PASSWORD = "비밀번호가 틀렸습니다.";
-    private final ArrayList<User> users;
     private final UserRepository userRepository;
 
-    public UserController(ArrayList<User> users, UserRepository userRepository) {
-        this.users = users;
+    public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -34,8 +32,8 @@ public class UserController {
 
     @GetMapping("/users")
     public String showUsers(Model model) {
-        List<User> all = userRepository.findAll();
-        model.addAttribute("users", all);
+        List<User> users = userRepository.findAll();
+        model.addAttribute("users", users);
         return "user/list";
     }
 
