@@ -43,28 +43,20 @@
 
 <div th:fragment="content">
     <div class="container">
+        <!-- 글쓰기 버튼 추가 -->
+        <div class="d-flex justify-content-end mb-4">
+            <a href="/write" class="btn btn-primary">
+                <i class="bi bi-pencil-square"></i> 게시글 작성
+            </a>
+        </div>
+        
         <div class="post-container">
             <!-- 게시물 반복 시작 -->
-            <div th:each="post : ${posts}" class="card mb-4">
-                <div class="post-header">
-                    <img class="profile-img" th:src="${post.userProfileImage}" alt="프로필 이미지">
-                    <span th:text="${post.username}">사용자명</span>
-                </div>
-
-                <img th:src="${post.imageUrl}" class="card-img-top" alt="게시물 이미지">
-
-                <div class="post-actions">
-                    <i class="bi bi-heart"></i>
-                    <i class="bi bi-chat"></i>
-                    <i class="bi bi-bookmark"></i>
-                </div>
-
+            <div th:each="article : ${articles}" class="card mb-4">
                 <div class="card-body">
-                    <p class="card-text">
-                        <span class="fw-bold" th:text="${post.username}">사용자명</span>
-                        <span th:text="${post.caption}">게시물 내용</span>
-                    </p>
-                    <p class="text-muted" th:text="${post.timestamp}">작성 시간</p>
+                    <h5 class="card-title" th:text="${article.title}">제목</h5>
+                    <p class="card-text" th:text="${article.content}">내용</p>
+                    <a th:href="@{/articles/{id}(id=${article.id})}" class="btn btn-outline-primary">자세히 보기</a>
                 </div>
             </div>
             <!-- 게시물 반복 끝 -->
