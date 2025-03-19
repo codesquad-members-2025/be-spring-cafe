@@ -1,6 +1,8 @@
 package codesquad.codestagram.user.controller;
 
 
+import codesquad.codestagram.user.domain.User;
+import codesquad.codestagram.user.dto.SignUpRequest;
 import codesquad.codestagram.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,10 +27,10 @@ public class UserController {
     @PostMapping("/users/signUp")
     public String signUp(SignUpRequest request) {
         User user = new User(
-                request.getId(),
-                request.getPassword(),
-                request.getName(),
-                request.getEmail()
+                request.id(),
+                request.password(),
+                request.name(),
+                request.email()
         );
 
         userService.join(user);
