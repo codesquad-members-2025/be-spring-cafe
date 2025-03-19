@@ -48,4 +48,15 @@ public class UserService {
         }
         return null;
     }
+
+    public void updateUser(String id, String name, String email) {
+        for (User user : userMap.values()) {
+            if (user.getId().equals(id)) {
+                user.setName(name);
+                user.setEmail(email);
+                return;
+            }
+        }
+    }
+
 }

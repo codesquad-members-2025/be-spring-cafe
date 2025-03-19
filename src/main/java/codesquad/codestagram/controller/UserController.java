@@ -6,7 +6,7 @@ import codesquad.codestagram.dto.UserResponseDto;
 import codesquad.codestagram.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.SessionStatus;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
 
@@ -51,22 +51,35 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public String login(@RequestParam String id, @RequestParam String password, Model model) {
-        System.out.println("[DEBUG] 로그인 시도: ID=" + id + ", Password=" + password);
-
+    public String login(@RequestParam String id, @RequestParam String password, HttpSession session) {
         UserResponseDto user = userService.authenticate(id, password);
         if (user == null) {
-            System.out.println("[DEBUG] 로그인 실패: 잘못된 ID 또는 비밀번호");
             return "redirect:/users/login?error=true";
         }
 
-        model.addAttribute("loginUser", user);
+        session.setAttribute("loginUser", user);
         return "redirect:/";
     }
 
     @GetMapping("/logout")
-    public String logout(SessionStatus status) {
-        status.setComplete();
+    public String logout(HttpSession session) {
+        session.invalidate();
         return "redirect:/";
+    }
+
+    @GetMapping("/{id}/revise")
+    public String showEditUserForm(@PathVariable String id, Model model) {
+        UserResponseDto user = userService.getUserById(id);
+        if (user == null) {
+            return "redirect:/users"; // 사용자가 없으면 리스트 페이지로 리디렉션
+        }
+        model.addAttribute("user", user);
+        return "user/change"; // user/edit.html로 이동
+    }
+
+    @PutMapping("/{id}/revise")
+    public String updateUser(@PathVariable String id, @RequestParam String name, @RequestParam String email) {
+        userService.updateUser(id, name, email);
+        return "redirect:/users";
     }
 }
