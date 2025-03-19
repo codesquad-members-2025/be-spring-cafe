@@ -1,6 +1,7 @@
 package codesquad.codestagram.domain.user;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,6 +65,7 @@ public class UserController {
     }
 
     @PutMapping("{id}")
+    @Transactional
     public String updateUser(@PathVariable String id,
                              @RequestParam String email,
                              @RequestParam String name,
