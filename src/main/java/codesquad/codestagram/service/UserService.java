@@ -54,7 +54,7 @@ public class UserService {
     }
 
     public UserResponseDto authenticate(String id, String password) {
-        User user = userRepository.findById(id);
+        User user = userRepository.findById(id).orElse(null);
 
         if (user == null) {
             user = userMapRepository.findByUserId(id);
@@ -67,7 +67,7 @@ public class UserService {
     }
 
     public void updateUser(String id, String name, String email) {
-        User user = userRepository.findById(id);
+        User user = userRepository.findById(id).orElse(null);
 
         if (user != null) {
             user.setName(name);
