@@ -4,15 +4,17 @@ import codesquad.codestagram.user.domain.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class MemoryUserRepository implements UserRepository {
 
-    private static final Map<Long, User> store = new HashMap<>();
-    private static Long sequence = 0L;
+    private static final Map<Long, User> store = new ConcurrentHashMap<>();
+    private static final AtomicLong sequence = new AtomicLong(0L);
 
     @Override
     public void save(User user) {
-        user.setSeq(++sequence);
+        user.setSeq(sequence.incrementAndGet());
         store.put(user.getSeq(), user);
     }
 
