@@ -46,12 +46,13 @@ public class UserController {
     }
 
     @GetMapping("/users/{userId}")
-    public String userProfile(@PathVariable String userId, Model model) {
+    public String userProfile(@PathVariable("userId") String userId, Model model) {
         Optional<User> user = userService.findByUserId(userId);
         if (user.isPresent()) {
             model.addAttribute("user", user.get());
             return "user/profile"; //사용자 있으면 프로필로 이동
         } else {
+            System.out.println("사용자 없음: " + userId); // 로그 추가
             return "redirect:/user/list"; //사용자가 없으면 목록으로 리디렉션
         }
     }
