@@ -10,7 +10,7 @@
       ![Pasted Graphic 2.png](..%2F..%2F..%2FLibrary%2FGroup%20Containers%2Fgroup.com.apple.notes%2FAccounts%2F61377784-B108-44D4-82A4-DEA4443C1EE1%2FMedia%2F1333BA21-17E1-4854-9712-53E477E37BD5%2F1_9B99BC3F-F9B3-423E-9978-6B0F14F82654%2FPasted%20Graphic%202.png)
     - request dto의 필드명을 맞춰주지 않아서 null이 할당되고 결국 `User` 객체의 userId 필드에 null 값이 들어감
   
-    ![img.png](img.png)
+![img_1.png](img_1.png)
   - 해결
     - request dto의 필드명을 `userId`로 변경
     - `User` 객체의 userId 필드에 값이 잘 들어가서 출력되어짐
