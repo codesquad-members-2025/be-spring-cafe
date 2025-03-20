@@ -3,25 +3,28 @@ package codesquad.codestagram.controller;
 import codesquad.codestagram.Entity.User;
 import codesquad.codestagram.dto.BoardRequestDto;
 import codesquad.codestagram.dto.BoardResponseDto;
+import codesquad.codestagram.dto.CommentResponseDto;
 import codesquad.codestagram.dto.UserResponseDto;
 import codesquad.codestagram.service.BoardService;
+import codesquad.codestagram.service.CommentService;
 import codesquad.codestagram.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.util.List;
 
 @Controller
 public class BoardController {
     private final BoardService boardService;
     private final UserService userService;
+    private final CommentService commentService;
 
-    BoardController(BoardService boardService, UserService userService) {
+    BoardController(BoardService boardService, UserService userService, CommentService commentService) {
         this.boardService = boardService;
         this.userService = userService;
+        this.commentService = commentService;
     }
 
     @GetMapping("/")
@@ -44,8 +47,10 @@ public class BoardController {
             return "redirect:/";
         }
 
+        List<CommentResponseDto> comments = commentService.getCommentsByBoardId(id);
         BoardResponseDto board = boardService.getBoardById(id);
         model.addAttribute("board", board);
+        model.addAttribute("comments", comments);
         model.addAttribute("loginUser", loginUser);
         return "qna/show";
     }
@@ -113,5 +118,11 @@ public class BoardController {
         }
 
         return "redirect:/";
+    }
+
+    @PostMapping("/comments/{id}")
+    public String deleteComment(@PathVariable Long id, @RequestParam Long boardId) {
+        commentService.deleteComment(id);
+        return "redirect:/boards/" + boardId;
     }
 }
