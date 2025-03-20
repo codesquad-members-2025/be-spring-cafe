@@ -1,20 +1,30 @@
 package codesquad.codestagram.domain;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Entity
 public class Article {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private String title;
     private String content;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)  // ✅ 외래 키 설정
     private User user;
-    private int id;
     private String createdAt;
 
-    public Article(User user, String title, String content, int id) {
+    public Article() {}
+
+    public Article(User user, String title, String content) {
         this.user = user;
         this.title = title;
         this.content = content;
-        this.id = id;
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
