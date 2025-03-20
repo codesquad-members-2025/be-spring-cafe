@@ -3,7 +3,7 @@ package codesquad.codestagram.controller;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.UserDto;
 import codesquad.codestagram.repository.UserRepository;
-import java.util.ArrayList;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Controller;
@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class UserController {
     public static final String WRONG_PASSWORD = "비밀번호가 틀렸습니다.";
+    public static final String FAIL_SING_IN = "아이디와 비밀번호가 일치하지 않습니다.";
+    public static final String USER_ALREADY_EXIST = "이미 존재하는 사용자 ID입니다.";
     private final UserRepository userRepository;
 
     public UserController(UserRepository userRepository) {
@@ -31,7 +33,7 @@ public class UserController {
 
         if (existingUser.isPresent()) {
             // 이미 존재하는 user_id일 경우
-            model.addAttribute("errorMessage", "이미 존재하는 사용자 ID입니다.");
+            model.addAttribute("errorMessage", USER_ALREADY_EXIST);
             return "register";  // 회원가입 페이지로 다시 돌아감
         }
 
@@ -87,6 +89,22 @@ public class UserController {
 
         model.addAttribute("user", user);
         return "redirect:/users";
+    }
+
+    @PostMapping("users/sign-in")
+    public String signInUser(@RequestParam String userId, @RequestParam String password,
+                             HttpSession httpSession, Model model) {
+        //아이디와 비밀번호가 일치하는 User가 없으면 에러 출력
+        Optional<User> userOptional = userRepository.findByUserIdAndPassword(userId, password);
+        if (userOptional.isEmpty()){
+            model.addAttribute("errorMessage", FAIL_SING_IN);
+            return "user/signIn";
+        }
+
+        //세션에 user데이터 등록
+        httpSession.setAttribute("sessionedUser", userOptional);
+
+        return "redirect:/";  // 로그인 성공시 홈페이지로 리다이렉트
     }
 
 }
