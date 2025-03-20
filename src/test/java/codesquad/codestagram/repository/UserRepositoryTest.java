@@ -67,4 +67,21 @@ public class UserRepositoryTest {
         //Then
         softly.assertThat(users.size()).isEqualTo(2);
     }
+
+    @Test
+    @DisplayName("닉네임이 머드로 변경된다.")
+    void update() {
+        //Given
+        User user = new User();
+        user.setName("tester");
+        user.setPassword("1234");
+        userRepository.save(user);
+
+        //When
+        user.setName("머드");
+        User actualUser = userRepository.save(user);
+
+        //Then
+        softly.assertThat(actualUser.getName()).isEqualTo("머드");
+    }
 }
