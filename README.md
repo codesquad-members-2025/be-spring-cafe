@@ -49,15 +49,20 @@ Method parameter 'userSeq': Failed to convert value of type 'java.lang.String' t
         store.put(user.getSeq(), user);
     }
 ```
-
 "정상적으로 동작하지 않을 가능성이 있다" - 이 피드백을 "동시성 문제가 일어날 가능성이 있다"라고 이해했다.
 - 문제 부분  
-`private static Long sequence`, `private static final Map<Long, User> store = new HashMap<>();` 
+  `private static Long sequence`, `private static final Map<Long, User> store = new HashMap<>();`
 - 시도 방법  
-`Long` 에서 `AtomicLong`, `HashMap`에서 `ConcurrentHashMap`으로 수정 
+  `Long` 에서 `AtomicLong`, `HashMap`에서 `ConcurrentHashMap`으로 수정
+
+## 고민
+- 문제 해결 2번에서 말했던 것처럼 `WebMvcConfigurer`의 `addViewController(/users/join)`와 `@Controller`의 `@PostMapping("/users/signUp")`의 URL을 맞추고 싶었지만 `WebMvcConfigurer`에 `registry.setOrder(Ordered.HIGHEST_PRECEDENCE);`로 우선순위를 높게 설정해두어서 충돌이 발생하여 POST 요청이 거부되었다.
+  - 호눅스께 여쭤보니 URL을 맞추는 것은 REST API 스타일이고 지금 하는 것은 템플릿 엔진이니 URL을 맞추지 않아도 된다는 답변을 받아 그냥 분리된 상태로 진행하려고 한다.
+
 
 # 2단계
 ## 구현 내용
 ## 문제 해결
 ## 피드백
+## 고민
 
