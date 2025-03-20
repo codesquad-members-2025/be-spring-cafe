@@ -24,4 +24,8 @@ public class ArticleRepository {
             .filter(article -> article.getId().equals(id))
             .findAny();
     }
+
+    public List<Article> findAll() {
+        return articles;
+    }
 }
