@@ -1,9 +1,7 @@
 package codesquad.codestagram.dto;
 
 import codesquad.codestagram.Entity.Board;
-import codesquad.codestagram.domain.Comment;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 
 public class BoardResponseDto {
     private Long id;
@@ -12,7 +10,6 @@ public class BoardResponseDto {
     private String writerId;
     private String writerName;
     private String uploadDate;
-    private ArrayList<Comment> comments;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public BoardResponseDto(Board board) {
