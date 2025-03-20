@@ -5,11 +5,11 @@ import codesquad.codestagram.dto.UserDto.UserRequestDto;
 import codesquad.codestagram.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
+    public static final String USER_ALREADY_EXIST = "이미 존재하는 사용자 ID입니다.";
     private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
@@ -24,7 +24,8 @@ public class UserService {
 
     public void joinUser(UserRequestDto requestDto) {
         //같은 아이디를 가지는 유저가 있는지 확인
-        userRepository.findByUserId(requestDto.getUserId()).orElseThrow(IllegalArgumentException::new);
+        if(userRepository.findByUserId(requestDto.getUserId()).isPresent())
+                throw new IllegalArgumentException(USER_ALREADY_EXIST);
 
         // 중복되지 않으면 사용자 저장
         User user = requestDto.toUser();

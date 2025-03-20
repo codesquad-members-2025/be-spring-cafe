@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class UserController {
     public static final String FAIL_SING_IN = "아이디와 비밀번호가 일치하지 않습니다.";
-    public static final String USER_ALREADY_EXIST = "이미 존재하는 사용자 ID입니다.";
     public static final String USER = "user";
     public static final String SESSIONED_USER = "sessionedUser";
     public static final String PASSWORD_VALID = "passwordValid";
@@ -40,7 +39,7 @@ public class UserController {
             userService.joinUser(requestDto);
         }catch (IllegalArgumentException e){
             // 이미 존재하는 user_id일 경우
-            model.addAttribute(ERROR_MESSAGE, USER_ALREADY_EXIST);
+            model.addAttribute(ERROR_MESSAGE, e.getMessage());
             return "register";  // 회원가입 페이지로 다시 돌아감
         }
         return "redirect:/users";
