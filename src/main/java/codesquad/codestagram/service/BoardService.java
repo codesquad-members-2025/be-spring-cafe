@@ -29,20 +29,20 @@ public class BoardService {
         Board board = new Board(dto.getTitle(), dto.getContent(), user);
         board = boardRepository.save(board);
         boardMapRepository.save(board);
-        return new BoardResponseDto(board.getId(), board.getTitle(), board.getContent(), board.getWriter(), board.getUploadDate());
+        return new BoardResponseDto(board);
     }
 
     public ArrayList<BoardResponseDto> getAllPosts() {
         List<Board> boards = boardRepository.findAll();
         ArrayList<BoardResponseDto> boardResponseDtos = new ArrayList<>();
         for (Board board : boards) {
-            boardResponseDtos.add(new BoardResponseDto(board.getId(), board.getTitle(), board.getContent(), board.getWriter(), board.getUploadDate()));
+            boardResponseDtos.add(new BoardResponseDto(board));
         }
         return boardResponseDtos;
     }
 
     public BoardResponseDto getBoardById(Long id) {
         Board board = boardRepository.findById(id).orElse(null);
-        return (board != null) ? new BoardResponseDto(board.getId(), board.getTitle(), board.getContent(), board.getWriter(), board.getUploadDate()) : null;
+        return (board != null) ? new BoardResponseDto(board) : null;
     }
 }
