@@ -60,18 +60,10 @@ public class UserController {
 
     @PutMapping("/users/{userId}/update")
     public String updateForm(UserForm userForm, Model model) {
-        String userId = userForm.getUserId();
-        Optional<User> foundUser = userService.findByUserId(userId);
-        if(foundUser.isPresent()) {
-            User user = foundUser.get();
-            if(userForm.getPassword().equals(user.getPassword())) {
-                user.setName(userForm.getName());
-                user.setPassword(userForm.getChangedPassword());
-                user.setEmail(userForm.getEmail());
-                return "redirect:/users/" + userId;
-            }
-            return "redirect:/users/" + userId + "/form";
+        boolean isUpdated =userService.updateUser(userForm);
+        if(isUpdated) {
+            return "redirect:/users/" + userForm.getUserId();
         }
-        return "redirect:/user/list";
+        return "redirect:/users/"+userForm.getUserId()+"/form";
     }
 }
