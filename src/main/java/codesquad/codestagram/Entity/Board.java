@@ -17,16 +17,17 @@ public class Board {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @Column(nullable = false)
-    private String writer;
+    @ManyToOne
+    @JoinColumn(name = "user_seq", referencedColumnName = "userSeq", nullable = false)
+    private User user;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime uploadDate;
 
-    public Board(String title, String content, String writer) {
+    public Board(String title, String content, User user) {
         this.title = title;
         this.content = content;
-        this.writer = writer;
+        this.user = user;
         this.uploadDate = LocalDateTime.now();
     }
 
@@ -37,6 +38,9 @@ public class Board {
     public void setTitle(String title) { this.title = title; }
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
-    public String getWriter() { return writer; }
+    public User getUser() { return user; }
     public LocalDateTime getUploadDate() { return uploadDate; }
+    public String getWriter() {
+        return user.getName();
+    }
 }
