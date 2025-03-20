@@ -50,6 +50,7 @@
 
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
+        <div class="alert alert-danger" role="alert" th:if="${loginError}" th:text="${loginError}"></div>
         <div class="panel panel-default qna-list">
             <ul class="list">
                 <li th:each="board, stat : ${boards}">
@@ -61,7 +62,7 @@
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
                                 <span class="time" th:text="${board.uploadDate}"></span>
-                                <a th:href="${board.writer == '익명' ? '/' : '/users/' + board.writer}" class="author" th:text="${board.writer}"></a>
+                                <a th:href="@{/users/{id}(id=${board.writerId})}" class="author" th:text="${board.writerName}"></a>
                             </div>
                             <div class="reply" title="댓글">
                                 <i class="icon-reply"></i>

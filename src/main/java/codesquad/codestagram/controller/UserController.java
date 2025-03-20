@@ -7,6 +7,7 @@ import codesquad.codestagram.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -51,10 +52,11 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public String login(@RequestParam String id, @RequestParam String password, HttpSession session) {
+    public String login(@RequestParam String id, @RequestParam String password, HttpSession session, RedirectAttributes redirectAttributes) {
         UserResponseDto user = userService.authenticate(id, password);
         if (user == null) {
-            return "redirect:/users/login?error=true";
+            redirectAttributes.addFlashAttribute("loginError", "아이디 또는 비밀번호가 틀립니다.");
+            return "redirect:/users/login";
         }
 
         session.setAttribute("loginUser", user);

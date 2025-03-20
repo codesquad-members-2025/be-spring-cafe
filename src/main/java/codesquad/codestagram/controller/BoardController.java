@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -41,10 +42,13 @@ public class BoardController {
     }
 
     @GetMapping("/questions")
-    public String questions(Model model, HttpSession session) {
+    public String questions(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         UserResponseDto loginUser = (UserResponseDto) session.getAttribute("loginUser");
-        String writerName = (loginUser != null) ? loginUser.getName() : "익명";
-        model.addAttribute("writerName", writerName);
+        if (loginUser == null) {
+            redirectAttributes.addFlashAttribute("loginError", "로그인 하세용");
+            return "redirect:/";
+        }
+        model.addAttribute("writerName", loginUser.getName());
         return "qna/form";
     }
 
