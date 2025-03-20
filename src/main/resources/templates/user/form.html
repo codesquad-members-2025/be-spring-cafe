@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SLiPP Java Web Programming</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+    <!-- 헤더 포함 -->
+    <th:block th:replace="~{layout/header :: header}"></th:block>
+
+    <!-- 서브 네비게이션 포함 -->
+    <th:block th:replace="~{layout/subnav :: subnav}"></th:block>
+
+    <div class="container" id="main">
+       <div class="col-md-6 col-md-offset-3">
+          <div class="panel panel-default content-main">
+              <form name="question" method="post" th:action="@{/users/create}" th:object="${userForm}">
+              <div class="form-group">
+                      <label for="userId">사용자 아이디</label>
+                      <input type="text" class="form-control" id="UserId" th:field="*{userId}" placeholder="User ID" required>
+                  </div>
+                  <div class="form-group">
+                      <label for="password">비밀번호</label>
+                      <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="Password" required>
+                  </div>
+                  <div class="form-group">
+                      <label for="name">이름</label>
+                      <input class="form-control" id="name" th:field="*{name}" placeholder="Name" required>
+                  </div>
+                  <div class="form-group">
+                      <label for="email">이메일</label>
+                      <input type="text" class="form-control" id="email" th:field="*{email}" placeholder="Email" required>
+                  </div>
+                  <button type="submit" class="btn btn-success clearfix pull-right">회원가입</button>
+                  <div class="clearfix" />
+              </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- script references -->
+    <th:block th:replace="~{layout/footer :: footer}"></th:block>
+</body>
+</html>

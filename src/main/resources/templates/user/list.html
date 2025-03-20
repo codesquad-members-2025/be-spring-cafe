@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SLiPP Java Web Programming</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+    <!-- 헤더 포함 -->
+    <th:block th:replace="~{layout/header :: header}"></th:block>
+
+    <!-- 서브 네비게이션 포함 -->
+    <th:block th:replace="~{layout/subnav :: subnav}"></th:block>
+
+
+    <div class="container" id="main">
+       <div class="col-md-10 col-md-offset-1">
+          <div class="panel panel-default">
+              <table class="table table-hover">
+                  <thead>
+                    <tr>
+                        <th>#</th> <th>사용자 아이디</th> <th>이름</th> <th>이메일</th><th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      <tr th:each="user, iterStat : ${users}">
+                          <th scope="row" th:text="${iterStat.count}"></th> <!-- 자동 증가 번호(id 값) -->
+                          <td>
+                              <a th:href="@{/users/{userId}(userId=${user.userId})}" th:text="${user.userId}"></a>
+                          </td> <!-- 사용자 이름 (클릭하면 프로필 페이지로 이동) -->
+    <!--                      <td th:text="${user.userId}"></td> &lt;!&ndash; 사용자 아이디 (Userid 값) &ndash;&gt;-->
+                          <td th:text="${user.name}"></td> <!-- 사용자 이름 -->
+                          <td th:text="${user.email}"></td> <!-- 사용자 이메일 -->
+                          <td><a th:href="@{/user/edit/{id}(id=${user.id})}" class="btn btn-success" role="button">수정</a></td>
+                      </tr>
+                  </tbody>
+              </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- script references -->
+    <th:block th:replace="~{layout/footer :: footer}"></th:block>
+</body>
+</html>

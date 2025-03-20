@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SLiPP Java Web Programming</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+    <!-- 헤더 포함 -->
+    <th:block th:replace="~{layout/header :: header}"></th:block>
+
+    <!-- 서브 네비게이션 포함 -->
+    <th:block th:replace="~{layout/subnav :: subnav}"></th:block>
+
+
+    <div class="container" id="main">
+        <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
+            <div class="panel panel-default qna-list">
+                <ul class="list">
+                    <li th:each="question : ${questions}">
+                        <div class="wrap">
+                            <div class="main">
+                                <strong class="subject">
+                                    <a th:href="@{/qna/{id}(id=${question.id})}" th:text="${question.title}"></a>
+                                </strong>
+                                <div class="auth-info">
+                                    <i class="icon-add-comment"></i>
+                                    <span class="time" th:text="${question.createdDate}"></span>
+                                    <a th:href="@{/users/{id}(id=${question.author.id})}" th:text="${question.author.name}" class="author"></a>
+                                </div>
+                                <div class="reply" title="댓글">
+                                    <i class="icon-reply"></i>
+                                    <span class="point" th:text="${question.commentCount}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6 text-center">
+                        <ul class="pagination center-block" style="display:inline-block;">
+                            <li><a href="#">«</a></li>
+                            <li><a href="#">1</a></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li><a href="#">4</a></li>
+                            <li><a href="#">5</a></li>
+                            <li><a href="#">»</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 qna-write text-right">
+                        <a th:href="@{/qna/form}" class="btn btn-primary" role="button">질문하기</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- script references -->
+    <th:block th:replace="~{layout/footer :: footer}"></th:block>
+</body>
+</html>
