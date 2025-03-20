@@ -14,15 +14,15 @@
             <h2 class="text-center mb-0 fw-bold">글 작성</h2>
           </div>
           <div class="card-body p-4">
-            <form>
+            <form method="post" action="/article">
               <div class="mb-4">
                 <label for="postTitle" class="form-label fw-bold">제목</label>
-                <input type="text" class="form-control form-control-lg" id="postTitle" placeholder="제목을 입력하세요">
+                <input type="text" class="form-control form-control-lg" id="postTitle" name="title" placeholder="제목을 입력하세요">
               </div>
 
               <div class="mb-4">
                 <label for="postContent" class="form-label fw-bold">내용</label>
-                <textarea class="form-control" id="postContent" rows="10" placeholder="내용을 입력하세요"></textarea>
+                <textarea class="form-control" id="postContent" rows="10" name="content" placeholder="내용을 입력하세요"></textarea>
               </div>
 
               <div class="d-grid gap-2 d-flex justify-content-center mt-4">
