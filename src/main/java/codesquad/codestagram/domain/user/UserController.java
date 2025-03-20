@@ -76,7 +76,7 @@ public class UserController {
         Object value = session.getAttribute("user");
 
         if (value == null) {
-            return "redirect:/users?error=unauthorized";
+            return "redirect:/error";
         }
 
         User user = userRepository.findById(id).orElse(null);
@@ -86,7 +86,7 @@ public class UserController {
         }
 
         if (!value.equals(user)) {
-            return "redirect:/users?error=unauthorized";
+            return "redirect:/error";
         }
 
         if (!user.isMatchPassword(currentPassword)) {
