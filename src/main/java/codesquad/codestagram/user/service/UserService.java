@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class UserService {
@@ -24,7 +25,7 @@ public class UserService {
 
     public User findUser(Long seq) {
         return userRepository.findBySeq(seq).orElseThrow(
-                () -> new IllegalStateException("존재하지 않는 회원입니다.")
+                () -> new NoSuchElementException("존재하지 않는 회원입니다.")
         );
     }
     public List<User> findUsers() {
