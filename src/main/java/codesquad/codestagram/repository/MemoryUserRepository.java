@@ -19,13 +19,13 @@ public class MemoryUserRepository implements UserRepository{
     }
 
     @Override
-    public Optional<User> findByUserId(String userId) {  // 매개변수 타입 수정
+    public Optional<User> findByUserId(String userId) {
         for (User user : store) {
             if (user.getUserId().equals(userId)) {
                 return Optional.of(user);
             }
         }
-        return Optional.empty();  //null 대신 Optional.empty() 반환
+        return Optional.empty();
     }
 
     @Override
