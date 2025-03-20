@@ -34,10 +34,10 @@ class MemoryUserRepositoryTest {
 
         // then: 저장된 객체와 조회된 객체가 동일해야 함.
         User findUser = repository.findBySeq(user.getSeq()).orElseThrow(
-                () -> new IllegalStateException(user.getUserId() + "회원은 존재하지 않습니다.")
+                () -> new IllegalStateException("존재하지 않는 회원입니다.")
         );
 
-        assertThat(user).isEqualTo(findUser);
+        assertThat(findUser).isEqualTo(user);
     }
 
     @Test

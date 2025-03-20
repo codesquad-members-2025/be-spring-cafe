@@ -47,7 +47,7 @@ class UserServiceTest {
         User findUser = userService.findUser(user.getSeq());
 
         // then: 테스트용 User 객체와 조회된 객체는 같아야 한다.
-        assertThat(user).isEqualTo(findUser);
+        assertThat(findUser).isEqualTo(user);
     }
 
 
