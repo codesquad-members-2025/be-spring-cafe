@@ -41,6 +41,7 @@ class UserServiceTest {
                 "name",
                 "email"
         );
+        user.setSeq(10000L);
 
         // when: User 객체 등록, 조회
         userService.join(user);
