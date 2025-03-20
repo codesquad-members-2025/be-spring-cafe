@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- 공통 헤더 사용 -->
+<head th:replace="~{fragments :: head('사용자 목록')}"></head>
+
+<body>
+<!-- 공통 상단 내비게이션 바 사용 -->
+<nav th:replace="~{fragments :: navbar}"></nav>
+
+<!-- 공통 서브 내비게이션 바 사용 -->
+<div th:replace="~{fragments :: subnav}"></div>
+
+<div class="container" id="main">
+    <div class="col-md-10 col-md-offset-1">
+        <div class="panel panel-default">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>#</th> <th>사용자 아이디</th> <th>이름</th> <th>이메일</th><th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users}">
+                    <th scope="row" th:text="${user.seq}">1</th>
+                    <td>
+                        <a th:href="@{/users/{seq}(seq=${user.seq})}" th:text="${user.userId}"></a>
+                    </td>
+                    <td th:text="${user.name}">자바지기</td>
+                    <td th:text="${user.email}">javajigi@sample.net</td>
+                    <td>
+                        <a href="#" class="btn btn-success" role="button">수정</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- 공통 스크립트 사용 -->
+<div th:replace="~{fragments :: scripts}"></div>
+</body>
+</html>
