@@ -83,6 +83,8 @@ public class UserController {
         return "user/change";
     }
 
+
+
     @PostMapping("/comments/{id}")
     public String deleteComment(@PathVariable Long id, @RequestParam(required = false) Long boardId) {
         commentService.deleteComment(id);

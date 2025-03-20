@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/comments")
 public class CommentController {
     private final CommentService commentService;
 
@@ -14,7 +13,7 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @PostMapping
+    @PostMapping("/comments")
     public String createComment(@ModelAttribute CommentRequestDto dto){
         commentService.createComment(dto);
         return "redirect:/boards/"+dto.getBoardId();
