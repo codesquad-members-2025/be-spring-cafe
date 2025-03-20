@@ -18,4 +18,10 @@ public class ArticleRepository {
         articles.add(article);
         return article;
     }
+
+    public Optional<Article> findById(Long id) {
+        return articles.stream()
+            .filter(article -> article.getId().equals(id))
+            .findAny();
+    }
 }
