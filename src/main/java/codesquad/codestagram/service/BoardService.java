@@ -4,6 +4,7 @@ package codesquad.codestagram.service;
 import codesquad.codestagram.domain.Board;
 import codesquad.codestagram.repository.BoardRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public class BoardService {
@@ -27,5 +28,11 @@ public class BoardService {
     public Optional<Board> getBoardId(Long boardId){
         return boardRepository.findByBoardId(boardId);
     }
+
+    public List<Board> getAllBoards() {
+        return boardRepository.findAll();
+    }
+
+
 }
 
