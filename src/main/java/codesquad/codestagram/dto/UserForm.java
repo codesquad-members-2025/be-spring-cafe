@@ -4,16 +4,18 @@ public class UserForm {
     private String userId;
     private String name;
     private String password;
+    private String changedPassword;
     private String email;
 
     public UserForm() {
     }
 
-    public UserForm(String userId, String name, String password, String email) {
+    public UserForm(String userId, String name, String password, String email, String changedPassword) {
         this.userId = userId;
         this.name = name;
         this.password = password;
         this.email = email;
+        this.changedPassword = changedPassword;
     }
 
     public String getUserId() {
@@ -43,7 +45,15 @@ public class UserForm {
     public String getEmail() {
         return email;
     }
+
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getChangedPassword() {
+        return changedPassword;
+    }
+    public void setChangedPassword(String changedPassword) {
+        this.changedPassword = changedPassword;
     }
 }
