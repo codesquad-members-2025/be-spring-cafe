@@ -22,15 +22,13 @@ public class BoardService {
         return boardRepository.save(board);
     }
 
-    /**
-     * 전체 게시글 조회, 이게 필요한지는 모르겠음.
-     */
-    public Optional<Board> getBoardId(Long boardId){
-        return boardRepository.findByBoardId(boardId);
-    }
-
     public List<Board> getAllBoards() {
         return boardRepository.findAll();
+    }
+
+   //이게 필요할까..
+    public Optional<Board> getBoardId(Long boardId){
+        return boardRepository.findByBoardId(boardId);
     }
 
 
