@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+//@Repository
 public class MemoryUserRepository implements UserRepository {
     private static final List<User> store = new ArrayList<>();
 
@@ -18,7 +18,7 @@ public class MemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> fineByUserId(String userId) {
+    public Optional<User> findByUserId(String userId) {
         for(User user : store) {
             if(user.getUserId().equals(userId)) {
                 return Optional.of(user);
@@ -28,7 +28,7 @@ public class MemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> fineByName(String name) {
+    public Optional<User> findByName(String name) {
         for(User user : store) {
             if(user.getName().equals(name)) {
                 return Optional.of(user);
@@ -38,7 +38,7 @@ public class MemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> fineByEmail(String email) {
+    public Optional<User> findByEmail(String email) {
         for(User user : store) {
             if(user.getEmail().equals(email)) {
                 return Optional.of(user);
@@ -48,11 +48,11 @@ public class MemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public List<User> fineAll() {
+    public List<User> findAll() {
         return new ArrayList<>(store);
     }
 
-    public void clearStore() {
-        store.clear();
-    }
+//    public void clearStore() {
+//        store.clear();
+//    }
 }

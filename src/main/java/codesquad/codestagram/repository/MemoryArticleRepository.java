@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+//@Repository
 public class MemoryArticleRepository implements ArticleRepository {
     private final List<Article> store = new ArrayList<>();
 
@@ -55,13 +55,13 @@ public class MemoryArticleRepository implements ArticleRepository {
         return new ArrayList<>(store);
     }
 
-    @Override
-    public void clearStore() {
-        store.clear();
-    }
-
-    @Override
-    public int getStoreSize(){
-        return store.size();
-    }
+//    @Override
+//    public void clearStore() {
+//        store.clear();
+//    }
+//
+//    @Override
+//    public int getStoreSize(){
+//        return store.size();
+//    }
 }
