@@ -7,12 +7,10 @@ import codesquad.codestagram.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 //UserController를 추가하고 @Controller 애노테이션 추가
 @Controller
@@ -47,6 +45,18 @@ public class UserController { //url을 읽어서 처리
         List<User> users = memoryUserRepository.findAll();
         model.addAttribute("users", users);
         return "user/list";  // user/list.html 렌더링
+    }
+
+    //회원 프로필 정보보기
+    @GetMapping("/{userId}")
+    public String showUserProfile(@PathVariable String userId, Model model){
+    Optional<User> user = memoryUserRepository.findByUserId(userId);
+        if (user.isPresent()) {
+            model.addAttribute("user", user.get());
+            return "user/profile";  // profile.html 렌더링
+        } else {
+            return "error/404";  // 유저가 없을 경우 404 페이지로 이동
+        }
     }
 
 }
