@@ -26,7 +26,7 @@ public class MemoryBoardRepository implements BoardRepository {
         return new ArrayList<>(store.values());
     }
 
-    public void clearStore() {
+    public void clearStore() { // 테스트용
         store.clear();
     }
 }
