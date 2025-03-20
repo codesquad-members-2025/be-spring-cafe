@@ -4,14 +4,16 @@ import codesquad.codestagram.domain.Article;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class ArticleRepository {
 
-    private static List<Article> articles = new ArrayList<>();
-    private static long sequence = 0L;
+    private static List<Article> articles = Collections.synchronizedList(new ArrayList<>());
+    private static Long sequence = 0L;
 
     public Article save(Article article) {
         article.setId(++sequence);
