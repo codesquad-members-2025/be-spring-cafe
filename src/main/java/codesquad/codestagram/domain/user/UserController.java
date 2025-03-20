@@ -73,19 +73,17 @@ public class UserController {
                              @RequestParam String currentPassword,
                              @RequestParam String newPassword,
                              HttpSession session) {
-        Object value = session.getAttribute("user");
-
-        if (value == null) {
+        User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser == null) {
             return "redirect:/error";
         }
 
         User user = userRepository.findById(id).orElse(null);
-
         if (user == null) {
             return "redirect:/users?error=user-not-found";
         }
 
-        if (!value.equals(user)) {
+        if (!sessionUser.equals(user)) {
             return "redirect:/error";
         }
 
@@ -95,8 +93,7 @@ public class UserController {
 
         user.setEmail(email);
         user.setName(name);
-
-        if (!newPassword.isEmpty()) {
+        if (newPassword != null && !newPassword.isEmpty()) {
             user.setPassword(newPassword);
         }
 
