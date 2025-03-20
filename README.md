@@ -7,9 +7,9 @@
 ### 1. 사용자 리스트를 조회할 때 사용자 id가 출력되지 않는 문제
   - 원인
     - 회원가입할 때 form.html의 input 태그의 name 속성의 값 `userId`와
-      ![Pasted Graphic 2.png](..%2F..%2F..%2FLibrary%2FGroup%20Containers%2Fgroup.com.apple.notes%2FAccounts%2F61377784-B108-44D4-82A4-DEA4443C1EE1%2FMedia%2F1333BA21-17E1-4854-9712-53E477E37BD5%2F1_9B99BC3F-F9B3-423E-9978-6B0F14F82654%2FPasted%20Graphic%202.png)
+    - ![img.png](img.png)
     - request dto의 필드명을 맞춰주지 않아서 null이 할당되고 결국 `User` 객체의 userId 필드에 null 값이 들어감
-  
+
 ![img_1.png](img_1.png)
   - 해결
     - request dto의 필드명을 `userId`로 변경
@@ -39,4 +39,3 @@ Method parameter 'userSeq': Failed to convert value of type 'java.lang.String' t
   - `/users/join` 요청(회원가입 폼 표시 요청)이 `/users/{userSeq}` 패턴(프로필 조회 요청)과 매칭되어 문자열을 Long으로 변환 시도
 - 해결
   - `WebMvcConfigurer`에 `registry.setOrder(Ordered.HIGHEST_PRECEDENCE);`를 추가하여 `/users/join`의 우선순위를 높임
- ![img_1.png](img_1.png)
