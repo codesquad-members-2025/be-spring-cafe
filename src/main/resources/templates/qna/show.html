@@ -84,7 +84,7 @@
                 <div class="qna-comment" th:if="${loginUser != null}">
                     <form class="submit-write" th:action="@{/comments}" method="post">
                         <input type="hidden" name="boardId" th:value="${board.id}">
-                        <input type="hidden" name="userId" th:value="${loginUser.id}">
+                        <input type="hidden" name="userId" th:value="${loginUser.userSeq}">
                         <div class="form-group" style="padding:14px;">
                             <textarea class="form-control" name="content" placeholder="댓글을 입력하세요" required></textarea>
                         </div>

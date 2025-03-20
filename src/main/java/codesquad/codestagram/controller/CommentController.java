@@ -14,8 +14,9 @@ public class CommentController {
     }
 
     @PostMapping("/comments")
-    public String createComment(@ModelAttribute CommentRequestDto dto){
+    public String createComment(@RequestParam Long boardId, @RequestParam Long userId, @RequestParam String content) {
+        CommentRequestDto dto = new CommentRequestDto(boardId, userId, content);
         commentService.createComment(dto);
-        return "redirect:/boards/"+dto.getBoardId();
+        return "redirect:/boards/" + boardId;
     }
 }
