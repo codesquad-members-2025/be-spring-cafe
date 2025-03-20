@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.Optional;
 
-public class MemoryUserRepositoryTest {
+public class UserRepositoryTest {
     UserRepository memoryUserRepository = new MemoryUserRepository();
     @AfterEach
     void tearDown() {

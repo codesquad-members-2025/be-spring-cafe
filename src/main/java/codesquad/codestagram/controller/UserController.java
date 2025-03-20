@@ -1,6 +1,7 @@
 package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.User;
+import codesquad.codestagram.dto.UserForm;
 import codesquad.codestagram.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,5 +46,24 @@ public class UserController {
             return "user/profile";
         }
         return "index";
+    }
+
+    @GetMapping("/users/{userId}/form")
+    public String showUpdateForm(@PathVariable String userId, Model model) {
+        Optional<User> foundUser = userService.findByUserId(userId);
+        if(foundUser.isPresent()) {
+            model.addAttribute("user", foundUser.get());
+            return "user/update-form";
+        }
+        return "user/list";
+    }
+
+    @PutMapping("/users/{userId}/update")
+    public String updateForm(UserForm userForm, Model model) {
+        boolean isUpdated =userService.updateUser(userForm);
+        if(isUpdated) {
+            return "redirect:/users/" + userForm.getUserId();
+        }
+        return "redirect:/users/"+userForm.getUserId()+"/form";
     }
 }
