@@ -36,7 +36,7 @@ public class ArticleService {
         return articleRepository.findById(id);
     }
 
-    public int getArticleCount() {
-        return articleRepository.getStoreSize();
-    }
+//    public int getArticleCount() {
+//        return articleRepository.getStoreSize();
+//    }
 }
