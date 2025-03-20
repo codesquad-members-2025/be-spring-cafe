@@ -37,6 +37,7 @@ public class ArticleServiceTest {
                 "제목",
                 "내용"
         );
+        article.setId(100000L);
 
         // when: Article 객체 등록, 조회
         articleService.create(article);
@@ -55,6 +56,7 @@ public class ArticleServiceTest {
                 "제목",
                 "내용"
         );
+        article.setId(100000L);
 
         // when: 저장되지 않은 테스트용 Article의 아이디를 통해 조회할 때
         // then: IllegalStateException이 발생해야 함
@@ -77,8 +79,6 @@ public class ArticleServiceTest {
 
         // when: 저장된 Article 객체 리스트 조회
         List<Article> result = repository.findAll();
-
-
 
         // then: 조회된 Article 객체 리스트가 테스트용 Article 객체 리스트와 사이즈, 참조값이 동일해야 함
         assertThat(result).isEqualTo(new ArrayList<>(List.of(article1, article2, article3, article4)))
