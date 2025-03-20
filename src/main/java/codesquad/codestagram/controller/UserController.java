@@ -46,4 +46,31 @@ public class UserController {
         }
         return "index";
     }
+
+    @GetMapping("/users/{userId}/form")
+    public String showUpdateForm(@PathVariable String userId, Model model) {
+        Optional<User> foundUser = userService.findByUserId(userId);
+        if(foundUser.isPresent()) {
+            model.addAttribute("user", foundUser.get());
+            return "user/update-form";
+        }
+        return "user/list";
+    }
+
+    @PostMapping("/user/updateForm")
+    public String updateForm(UserForm userForm, Model model) {
+        String userId = userForm.getUserId();
+        Optional<User> foundUser = userService.findByUserId(userId);
+        if(foundUser.isPresent()) {
+            User user = foundUser.get();
+            if(userForm.getPassword().equals(user.getPassword())) {
+                user.setName(userForm.getName());
+                user.setPassword(userForm.getPassword());
+                user.setEmail(userForm.getEmail());
+                return "redirect:/users/" + userId;
+            }
+            return "redirect:/users/" + userId + "/form";
+        }
+        return "redirect:/user/list";
+    }
 }
