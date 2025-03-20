@@ -7,12 +7,9 @@ import codesquad.codestagram.dto.UserResponseDto;
 import codesquad.codestagram.service.BoardService;
 import codesquad.codestagram.service.UserService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -28,9 +25,14 @@ public class BoardController {
     }
 
     @GetMapping("/")
-    public String home(Model model) {
+    public String home(HttpSession session, Model model) {
         List<BoardResponseDto> boards = boardService.getAllPosts();
         model.addAttribute("boards", boards);
+
+        UserResponseDto loginUser = (UserResponseDto) session.getAttribute("loginUser");
+        if (loginUser != null) {
+            model.addAttribute("userName", loginUser);
+        }
         return "user/index";
     }
 
@@ -44,6 +46,7 @@ public class BoardController {
 
         BoardResponseDto board = boardService.getBoardById(id);
         model.addAttribute("board", board);
+        model.addAttribute("loginUser", loginUser);
         return "qna/show";
     }
 
@@ -54,7 +57,7 @@ public class BoardController {
             redirectAttributes.addFlashAttribute("loginError", "로그인 하세용");
             return "redirect:/";
         }
-        model.addAttribute("writerName", loginUser.getName());
+        model.addAttribute("writerName", loginUser);
         return "qna/form";
     }
 
@@ -66,6 +69,49 @@ public class BoardController {
         }
         User user = userService.getUserBySeq(loginUser.getUserSeq());
         boardService.createBoard(dto, user);
+        return "redirect:/";
+    }
+
+    @GetMapping("/boards/{id}/revise")
+    public String showEditBoardForm(@PathVariable Long id, Model model, HttpSession session) {
+        UserResponseDto loginUser = (UserResponseDto) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            return "redirect:/";
+        }
+        BoardResponseDto board = boardService.getBoardById(id);
+        if (!board.getWriterId().equals(loginUser.getId())) {
+            return "redirect:/boards/" + id + "?error=unauthorized";
+        }
+        model.addAttribute("writerName", loginUser.getName());
+        model.addAttribute("board", board);
+        return "qna/change";
+    }
+
+    @PutMapping("/boards/{id}/revise")
+    public String updateBoard(
+            @PathVariable Long id,
+            @RequestParam String title,
+            @RequestParam String content
+    ){
+        boardService.updateBoard(id, title, content);
+        return "redirect:/boards/" + id;
+    }
+
+    @DeleteMapping("/boards/{id}")
+    public String deleteBoard(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
+        UserResponseDto loginUser = (UserResponseDto) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            redirectAttributes.addFlashAttribute("loginError", "로그인 하세용");
+            return "redirect:/";
+        }
+
+        boolean isDeleted = boardService.deleteBoard(id, loginUser.getUserSeq());
+
+        if (!isDeleted) {
+            redirectAttributes.addFlashAttribute("deleteError", "삭제 권한이 없습니다.");
+            return "redirect:/boards/" + id;
+        }
+
         return "redirect:/";
     }
 }

@@ -45,4 +45,24 @@ public class BoardService {
         Board board = boardRepository.findById(id).orElse(null);
         return (board != null) ? new BoardResponseDto(board) : null;
     }
+
+    @Transactional
+    public void updateBoard(Long id, String title, String content) {
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + id));
+
+        board.setTitle(title);
+        board.setContent(content);
+    }
+
+    public boolean deleteBoard(Long id, Long userId) {
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + id));
+
+        if (!board.getUser().getUserSeq().equals(userId)) {
+            return false;
+        }
+        boardRepository.delete(board);
+        return true;
+    }
 }
