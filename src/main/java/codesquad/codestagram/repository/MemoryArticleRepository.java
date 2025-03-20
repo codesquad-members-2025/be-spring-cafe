@@ -55,13 +55,11 @@ public class MemoryArticleRepository implements ArticleRepository {
         return new ArrayList<>(store);
     }
 
-//    @Override
-//    public void clearStore() {
-//        store.clear();
-//    }
-//
-//    @Override
-//    public int getStoreSize(){
-//        return store.size();
-//    }
+    public void clearStore() {
+        store.clear();
+    }
+
+    public int getStoreSize(){
+        return store.size();
+    }
 }

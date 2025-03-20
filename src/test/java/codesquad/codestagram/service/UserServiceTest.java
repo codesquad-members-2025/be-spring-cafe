@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.List;
 
 public class UserServiceTest {
-    UserRepository memoryUserRepository = new MemoryUserRepository();
+    MemoryUserRepository memoryUserRepository = new MemoryUserRepository();
     UserService userService = new UserService(memoryUserRepository);
 
     @AfterEach

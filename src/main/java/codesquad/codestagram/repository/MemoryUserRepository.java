@@ -52,7 +52,7 @@ public class MemoryUserRepository implements UserRepository {
         return new ArrayList<>(store);
     }
 
-//    public void clearStore() {
-//        store.clear();
-//    }
+    public void clearStore() {
+        store.clear();
+    }
 }

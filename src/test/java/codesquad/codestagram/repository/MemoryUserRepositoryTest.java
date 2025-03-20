@@ -9,8 +9,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.Optional;
 
-public class UserRepositoryTest {
-    UserRepository memoryUserRepository = new MemoryUserRepository();
+public class MemoryUserRepositoryTest {
+    MemoryUserRepository memoryUserRepository = new MemoryUserRepository();
     @AfterEach
     void tearDown() {
         memoryUserRepository.clearStore();
@@ -23,7 +23,7 @@ public class UserRepositoryTest {
         memoryUserRepository.save(user1);
         User user2 = new User("jdragon2","dino2","12342","je@d");
         memoryUserRepository.save(user2);
-        List<User> allUsers = memoryUserRepository.fineAll();
+        List<User> allUsers = memoryUserRepository.findAll();
         assertThat(allUsers.size()).isEqualTo(2);
         assertThat(allUsers.get(0)).isEqualTo(user1);
         assertThat(allUsers.get(1)).isEqualTo(user2);
@@ -36,8 +36,8 @@ public class UserRepositoryTest {
         memoryUserRepository.save(user1);
         User user2 = new User("jdragon2","dino2","12342","je@d");
         memoryUserRepository.save(user2);
-        Optional<User> findUser = memoryUserRepository.fineByUserId("jdragon");
-        Optional<User> noUser = memoryUserRepository.fineByUserId("jdragon55");
+        Optional<User> findUser = memoryUserRepository.findByUserId("jdragon");
+        Optional<User> noUser = memoryUserRepository.findByUserId("jdragon55");
         assertThat(findUser.isPresent()).isTrue();
         assertThat(findUser.get().getUserId()).isEqualTo("jdragon");
         assertThat(noUser.isPresent()).isFalse();
@@ -50,8 +50,8 @@ public class UserRepositoryTest {
         memoryUserRepository.save(user1);
         User user2 = new User("jdragon2","dino2","12342","je@d");
         memoryUserRepository.save(user2);
-        Optional<User> findUser = memoryUserRepository.fineByName("dino");
-        Optional<User> noUser = memoryUserRepository.fineByName("dino55");
+        Optional<User> findUser = memoryUserRepository.findByName("dino");
+        Optional<User> noUser = memoryUserRepository.findByName("dino55");
         assertThat(findUser.isPresent()).isTrue();
         assertThat(findUser.get().getName()).isEqualTo("dino");
         assertThat(noUser.isPresent()).isFalse();
