@@ -18,19 +18,19 @@ public class UserService {
 
     // 회원가입
     public String join(User user) {
-        validateDuplication(user);
+//        validateDuplication(user);
         userRepository.save(user);
-        return user.getId();
+        return user.getUserId();
     }
 
     private void validateDuplication(User user) {
-        userRepository.findById(user.getId())
+        userRepository.findById(user.getUserId())
                 .ifPresent(u -> {
                     throw new IllegalStateException("사용할 수 없는 아이디입니다.");
                 });
     }
 
-    public List<User> findUsers() {
+    public List<User> findAllUsers() {
         return userRepository.findAll();
     }
 
