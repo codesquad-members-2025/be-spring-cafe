@@ -69,8 +69,7 @@
                                 <div class="article-util">
                                     <ul class="article-util-list">
                                         <li th:if="${loginUser != null and loginUser.id == comment.user.id}">
-                                            <form class="form-delete" th:action="@{/comments/{id}(id=${comment.id})}" method="post" onsubmit="return confirm('댓글을 삭제하시겠습니까?');">
-                                                <input type="hidden" name="boardId" th:value="${board.id}">
+                                            <form class="form-delete" th:action="@{/comments/{id}(id=${comment.id}, boardId=${board.id})}" method="post" onsubmit="return confirm('댓글을 삭제하시겠습니까?');">
                                                 <button class="delete-answer-button" type="submit">삭제</button>
                                             </form>
                                         </li>

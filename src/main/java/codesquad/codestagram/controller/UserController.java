@@ -1,5 +1,6 @@
 package codesquad.codestagram.controller;
 
+import codesquad.codestagram.service.CommentService;
 import org.springframework.ui.Model;
 import codesquad.codestagram.dto.UserRequestDto;
 import codesquad.codestagram.dto.UserResponseDto;
@@ -15,9 +16,12 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
+    private final CommentService commentService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService
+                        , CommentService commentService) {
         this.userService = userService;
+        this.commentService = commentService;
     }
 
     @GetMapping("/create")
@@ -79,9 +83,9 @@ public class UserController {
         return "user/change";
     }
 
-    @PutMapping("/{id}/revise")
-    public String updateUser(@PathVariable String id, @RequestParam String name, @RequestParam String email) {
-        userService.updateUser(id, name, email);
-        return "redirect:/users";
+    @PostMapping("/comments/{id}")
+    public String deleteComment(@PathVariable Long id, @RequestParam(required = false) Long boardId) {
+        commentService.deleteComment(id);
+        return (boardId != null) ? "redirect:/boards/" + boardId : "redirect:/";
     }
 }
