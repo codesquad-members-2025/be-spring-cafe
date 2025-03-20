@@ -31,7 +31,9 @@
                     <td th:text="${user.name}"></td>
                     <td th:text="${user.email}"></td>
                     <td>
-                        <a th:href="@{/users/{id}/revise(id=${user.id})}" class="btn btn-success" role="button">수정</a>
+                        <a th:if="${session.loginUser != null and session.loginUser.id == user.id}"
+                           th:href="@{/users/{id}/revise(id=${user.id})}"
+                           class="btn btn-success" role="button">수정</a>
                     </td>
                 </tr>
                 </tbody>

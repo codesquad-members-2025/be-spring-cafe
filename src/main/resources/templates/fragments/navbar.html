@@ -27,7 +27,11 @@
               <li><a href="https://facebook.com" target="_blank">Facebook</a></li>
             </ul>
           </li>
-          <li><a href="/users"><i class="glyphicon glyphicon-user"></i></a></li>
+          <li th:if="${session.loginUser != null}">
+            <a th:href="@{/users/{id}(id=${session.loginUser.id})}">
+              <i class="glyphicon glyphicon-user"></i>
+            </a>
+          </li>
         </ul>
       </div>
     </div>
@@ -56,11 +60,21 @@
       </div>
       <div class="collapse navbar-collapse" id="navbar-collapse2">
         <ul class="nav navbar-nav navbar-right">
+          <li th:if="${userName != null}" th:text="${userName.name} + '님 환영합니다.'"></li>
           <li><a href="/" role="button">Posts</a></li>
-          <li><a th:href="@{/users/login}" role="button">로그인</a></li>
-          <li><a th:href="@{/users/create}" role="button">회원가입</a></li>
-          <li><a href="/users/logout" role="button">로그아웃</a></li>
-          <li><a href="#" role="button">개인정보수정</a></li>
+          <li th:if="${session.loginUser == null}">
+            <a th:href="@{/users/login}" role="button">로그인</a>
+          </li>
+          <li th:if="${session.loginUser == null}">
+            <a th:href="@{/users/create}" role="button">회원가입</a>
+          </li>
+
+          <li th:if="${session.loginUser != null}">
+            <a th:href="@{/users/logout}" role="button">로그아웃</a>
+          </li>
+          <li th:if="${session.loginUser != null}">
+            <a href="/users" role="button">개인정보수정</a>
+          </li>
         </ul>
       </div>
     </div>

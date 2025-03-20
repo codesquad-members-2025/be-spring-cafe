@@ -73,10 +73,10 @@ public class UserController {
     public String showEditUserForm(@PathVariable String id, Model model) {
         UserResponseDto user = userService.getUserById(id);
         if (user == null) {
-            return "redirect:/users"; // 사용자가 없으면 리스트 페이지로 리디렉션
+            return "redirect:/users";
         }
         model.addAttribute("user", user);
-        return "user/change"; // user/edit.html로 이동
+        return "user/change";
     }
 
     @PutMapping("/{id}/revise")
