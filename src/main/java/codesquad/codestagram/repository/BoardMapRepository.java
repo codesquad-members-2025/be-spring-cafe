@@ -12,7 +12,7 @@ public class BoardMapRepository {
     private Long boardSeq = 1L;
 
     public Board save(Board board){
-        board = new Board(board.getTitle(), board.getContent(), board.getWriter());
+        board = new Board(board.getTitle(), board.getContent(), board.getUser());
         boardMap.put(boardSeq, board);
         boardSeq++;
         return board;

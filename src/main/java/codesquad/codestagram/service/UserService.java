@@ -48,6 +48,11 @@ public class UserService {
         return null;
     }
 
+    public User getUserBySeq(Long seq) {
+        User user = userMapRepository.findByUserSeq(seq);
+        return user;
+    }
+
     public UserResponseDto authenticate(String id, String password) {
         User user = userRepository.findById(id);
 

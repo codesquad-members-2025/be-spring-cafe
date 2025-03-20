@@ -1,6 +1,7 @@
 package codesquad.codestagram.service;
 
 import codesquad.codestagram.Entity.Board;
+import codesquad.codestagram.Entity.User;
 import codesquad.codestagram.dto.BoardRequestDto;
 import codesquad.codestagram.dto.BoardResponseDto;
 import codesquad.codestagram.repository.BoardMapRepository;
@@ -24,8 +25,8 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardResponseDto createBoard(BoardRequestDto dto, String writer) {
-        Board board = new Board(dto.getTitle(), dto.getContent(), writer);
+    public BoardResponseDto createBoard(BoardRequestDto dto, User user) {
+        Board board = new Board(dto.getTitle(), dto.getContent(), user);
         board = boardRepository.save(board);
         boardMapRepository.save(board);
         return new BoardResponseDto(board.getId(), board.getTitle(), board.getContent(), board.getWriter(), board.getUploadDate());

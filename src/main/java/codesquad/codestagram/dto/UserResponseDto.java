@@ -13,6 +13,8 @@ public class UserResponseDto {
         this.email = email;
     }
 
+    public Long getUserSeq() { return userSeq; };
+
     public String getId() {
         return id;
     }

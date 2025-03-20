@@ -25,6 +25,15 @@ public class UserMapRepository {
         return null;
     }
 
+    public User findByUserSeq(Long seq) {
+        for (User user : userMap.values()) {
+            if (user.getUserSeq().equals(seq)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
     public List<User> findAll() {
         List<User> users = new ArrayList<>();
         return new ArrayList<>(userMap.values());
