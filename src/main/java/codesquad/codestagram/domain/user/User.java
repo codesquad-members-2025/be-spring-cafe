@@ -1,21 +1,21 @@
 package codesquad.codestagram.domain.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users")
 public class User {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String userId;
     private String password;
     private String name;
     private String email;
 
-    public User(String id, String password, String name, String email) {
-        this.id = id;
+    public User(String userId, String password, String name, String email) {
+        this.userId = userId;
         this.password = password;
         this.name = name;
         this.email = email;
@@ -24,8 +24,12 @@ public class User {
     public User() {
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public String getPassword() {
@@ -40,8 +44,8 @@ public class User {
         return email;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public void setPassword(String password) {

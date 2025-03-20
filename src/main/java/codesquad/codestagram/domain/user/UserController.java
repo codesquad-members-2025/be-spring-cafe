@@ -18,11 +18,11 @@ public class UserController {
     }
 
     @PostMapping("")
-    public String signUp(@RequestParam String id,
+    public String signUp(@RequestParam String userId,
                          @RequestParam String password,
                          @RequestParam String name,
                          @RequestParam String email) {
-        User user = new User(id, password, name, email);
+        User user = new User(userId, password, name, email);
         userRepository.save(user);
 
         return "redirect:/users";
@@ -37,8 +37,8 @@ public class UserController {
     }
 
     @GetMapping("{id}")
-    public String showUserProfile(@PathVariable String id, Model model) {
-        User user = userRepository.findById(id);
+    public String showUserProfile(@PathVariable Long id, Model model) {
+        User user = userRepository.findById(id).orElse(null);
 
         if (user == null) {
             // 사용자를 찾을 수 없을 때 리스트 페이지로 리다이렉트하고
@@ -52,8 +52,8 @@ public class UserController {
     }
 
     @GetMapping("{id}/form")
-    public String showUpdateForm(@PathVariable String id, Model model) {
-        User user = userRepository.findById(id);
+    public String showUpdateForm(@PathVariable Long id, Model model) {
+        User user = userRepository.findById(id).orElse(null);
 
         if (user == null) {
             return "redirect:/users?error=user-not-found";
@@ -66,12 +66,12 @@ public class UserController {
 
     @PutMapping("{id}")
     @Transactional
-    public String updateUser(@PathVariable String id,
+    public String updateUser(@PathVariable Long id,
                              @RequestParam String email,
                              @RequestParam String name,
                              @RequestParam String currentPassword,
                              @RequestParam String newPassword) {
-        User user = userRepository.findById(id);
+        User user = userRepository.findById(id).orElse(null);
 
         if (user == null) {
             return "redirect:/users?error=user-not-found";
