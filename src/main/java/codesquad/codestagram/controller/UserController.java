@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 import java.util.Optional;
@@ -57,7 +58,7 @@ public class UserController {
         return "user/list";
     }
 
-    @PostMapping("/user/update")
+    @PutMapping("/user/update")
     public String updateForm(UserForm userForm, Model model) {
         String userId = userForm.getUserId();
         Optional<User> foundUser = userService.findByUserId(userId);
@@ -65,7 +66,7 @@ public class UserController {
             User user = foundUser.get();
             if(userForm.getPassword().equals(user.getPassword())) {
                 user.setName(userForm.getName());
-                user.setPassword(userForm.getPassword());
+                user.setPassword(userForm.getChangedPassword());
                 user.setEmail(userForm.getEmail());
                 return "redirect:/users/" + userId;
             }
