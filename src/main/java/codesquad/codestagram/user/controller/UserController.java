@@ -20,11 +20,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/users/signUp")
-    public String signUpForm() {
-        return "user/form";
-    }
-
     @PostMapping("/users/signUp")
     public String signUp(@ModelAttribute SignUpRequest request) { // @ModelAttribute 공부
         User user = new User(
