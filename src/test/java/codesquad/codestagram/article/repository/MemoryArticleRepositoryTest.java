@@ -31,6 +31,8 @@ public class MemoryArticleRepositoryTest {
                 "제목",
                 "내용"
         );
+        article.setId(100000L);
+
         // when: Article 객체 저장
         repository.save(article);
 
@@ -52,11 +54,13 @@ public class MemoryArticleRepositoryTest {
                 "내용"
         );
 
+        article.setId(100000L);
+
         // when: 저장되지 않은 테스트용 Article의 아이디를 통해 조회할 때
         // then: IllegalStateException이 발생해야 함
         assertThatThrownBy(
                 () -> repository.findById(article.getId()).orElseThrow(
-                    () -> new IllegalStateException("존재하지 않는 질문입니다.")
+                    () -> new NoSuchElementException("존재하지 않는 질문입니다.")
                 )
         ).isInstanceOf(NoSuchElementException.class);
     }
