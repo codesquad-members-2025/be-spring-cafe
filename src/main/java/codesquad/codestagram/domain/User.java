@@ -1,14 +1,23 @@
 package codesquad.codestagram.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import java.util.Objects;
 
+@Entity
+@Table(name = "users")
 public class User {
+    @Id
     private String userId;
     private String name;
     private String password;
     private String email;
 
-    public User(final String userId, final String name, final String password, final String email) {
+    public User() {}
+
+    public User(String userId, String name, String password, String email) {
         this.userId = userId;
         this.name = name;
         this.password = password;
