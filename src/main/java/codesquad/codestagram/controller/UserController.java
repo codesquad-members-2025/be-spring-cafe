@@ -58,7 +58,7 @@ public class UserController {
         return "user/list";
     }
 
-    @PutMapping("/user/update")
+    @PutMapping("/users/{userId}/update")
     public String updateForm(UserForm userForm, Model model) {
         String userId = userForm.getUserId();
         Optional<User> foundUser = userService.findByUserId(userId);
