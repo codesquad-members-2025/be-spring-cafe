@@ -21,12 +21,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/users/new")
-    public String createForm(Model model) {
-        model.addAttribute("userForm", new UserForm());
-        return "user/form";
-    }
-
     @PostMapping("/users/create") //이거 강의에서는 new 로 하는데.. 구분해줘야 하나?
     public String create(@ModelAttribute UserForm form) {
         User user = new User();
