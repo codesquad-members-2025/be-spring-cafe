@@ -16,7 +16,11 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-
+    @PostConstruct
+    public void initDB() {
+        userRepository.save(new User("javajigi", "test", "자바지기", "javajigi@slipp.net"));
+        userRepository.save(new User("sanjigi", "test", "산지기", "sanjigi@slipp.net"));
+    }
 
     public void joinUser(UserRequestDto requestDto) {
         //같은 아이디를 가지는 유저가 있는지 확인
