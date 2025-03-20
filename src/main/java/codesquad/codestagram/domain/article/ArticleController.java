@@ -20,15 +20,14 @@ public class ArticleController {
     public String addArticle(@RequestParam String title,
                              @RequestParam String content) {
 
-        int id = articleRepository.size() + 1;
-        Article article = new Article(id, title, content);
+        Article article = new Article(title, content);
         articleRepository.save(article);
 
         return "redirect:/";
     }
 
     @GetMapping("{id}")
-    public String viewArticle(@PathVariable int id, Model model) {
+    public String viewArticle(@PathVariable Long id, Model model) {
         Optional<Article> article = articleRepository.findById(id);
 
         if (article.isEmpty()) {

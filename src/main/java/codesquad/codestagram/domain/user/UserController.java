@@ -1,6 +1,7 @@
 package codesquad.codestagram.domain.user;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +33,7 @@ public class UserController {
         List<User> users = userRepository.findAll();
         model.addAttribute("users", users);
 
-        return "/user/list";
+        return "user/list";
     }
 
     @GetMapping("{id}")
@@ -47,7 +48,7 @@ public class UserController {
 
         model.addAttribute("user", user);
 
-        return "/user/profile";
+        return "user/profile";
     }
 
     @GetMapping("{id}/form")
@@ -60,10 +61,11 @@ public class UserController {
 
         model.addAttribute("user", user);
 
-        return "/user/edit";
+        return "user/edit";
     }
 
     @PutMapping("{id}")
+    @Transactional
     public String updateUser(@PathVariable String id,
                              @RequestParam String email,
                              @RequestParam String name,

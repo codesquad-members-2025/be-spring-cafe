@@ -1,18 +1,26 @@
 package codesquad.codestagram.domain.article;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "article")
 public class Article {
 
-    private final int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String title;
     private String content;
 
-    public Article(int id, String title, String content) {
-        this.id = id;
+    public Article(String title, String content) {
         this.title = title;
         this.content = content;
     }
 
-    public int getId() {
+    public Article() {
+    }
+
+    public Long getId() {
         return id;
     }
 

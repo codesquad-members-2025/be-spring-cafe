@@ -93,3 +93,36 @@
 - `<input type="hidden" name="_method" value="PUT" />`을 사용하여 `PUT` method로 요청
 - Spring에서 `PUT` method를 사용하기 위해 `HiddenHttpMethodFilter`를 추가
   - `spring.mvc.hiddenmethod.filter.enabled=true` 추가
+
+## 3. DB에 저장하기
+
+### H2 DB 설정
+
+- Spring Data JPA를 사용하여 H2 DB를 사용
+- 의존성 추가
+
+### 게시글 데이터 저장
+
+- `ArticleRepository`를 사용하여 게시글 데이터를 저장
+- `Article` Entity에 `@Entity` 어노테이션 추가
+- `Article` Entity에 `@Id` 어노테이션 추가
+  - `PK`로 지정
+
+### 게시글 목록 구현
+
+- `ArticleRepository`를 사용하여 게시글 목록을 조회
+  - `findAll()` 메소드 사용
+
+### 상세보기 구현
+
+- `ArticleRepository`를 사용하여 게시글 상세보기 구현
+  - `findById()` 메소드 사용
+
+### 사용자 데이터 저장
+
+- `UserRepository`를 사용하여 사용자 데이터를 저장
+  - `save()` 메소드 사용
+
+### 배포
+
+https://port-0-be-spring-cafe-m8famrv1da7fb95d.sel4.cloudtype.app/
