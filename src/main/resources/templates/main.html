@@ -18,7 +18,9 @@
           </tr>
           <tr th:each="article, stat : ${articles}">
             <td th:text="${stat.count}"></td>
-            <td th:text="${article.title}"></td>
+            <td>
+              <a th:text="${article.title}" th:href="@{/article/{index}(index=${article.id})}"></a>
+            </td>
             <td th:text="${article.content}"></td>
           </tr>
         </table>
