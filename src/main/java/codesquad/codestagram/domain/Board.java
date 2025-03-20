@@ -7,13 +7,6 @@ public class Board {
     private String writer;
     //아직 로그인 기능 없음 -> writer만 저장
 
-    public Board(Long id, String title, String content, String writer) {
-        this.boardId = id;
-        this.title = title;
-        this.content = content;
-        this.writer = writer;
-    }
-
     public Long getBoardId() {
         return boardId;
     }
