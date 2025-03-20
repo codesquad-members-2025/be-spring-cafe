@@ -1,7 +1,11 @@
 package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.User;
+import codesquad.codestagram.dto.UserDto;
+import codesquad.codestagram.repository.UserRepository;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,42 +18,55 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class UserController {
     public static final String WRONG_PASSWORD = "비밀번호가 틀렸습니다.";
-    private final ArrayList<User> users;
+    private final UserRepository userRepository;
 
-    public UserController(ArrayList<User> users) {
-        this.users = users;
+    public UserController(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/users")
-    public String signUp(@ModelAttribute User user) {
-        users.add(user);
+    public String signUp(@ModelAttribute UserDto.UserRequestDto requestDto, Model model) {
+        // user_id 중복 검사
+        Optional<User> existingUser = userRepository.findByUserId(requestDto.getUserId());
+
+        if (existingUser.isPresent()) {
+            // 이미 존재하는 user_id일 경우
+            model.addAttribute("errorMessage", "이미 존재하는 사용자 ID입니다.");
+            return "register";  // 회원가입 페이지로 다시 돌아감
+        }
+
+        // 중복되지 않으면 사용자 저장
+        User user = requestDto.toUser();
+        userRepository.save(user);
+
         return "redirect:/users";
     }
 
     @GetMapping("/users")
     public String showUsers(Model model) {
+        List<User> users = userRepository.findAll();
         model.addAttribute("users", users);
         return "user/list";
     }
 
-    @GetMapping("/users/{userId}")
-    public String showUserProfile(@PathVariable int userId, Model model) {
-        User user = getUserById(userId);
+    @GetMapping("/users/{id}")
+    public String showUserProfile(@PathVariable Long id, Model model) {
+        User user = userRepository.findById(id).get();
         model.addAttribute("user", user);
-        model.addAttribute("id", userId);
+        model.addAttribute("id", id);
         return "user/profile";
     }
 
-    @GetMapping("/users/{userId}/update")
-    public String editUser(Model model, @PathVariable int userId) {
-        User user = getUserById(userId);
+    @GetMapping("/users/{id}/update")
+    public String editUser(Model model, @PathVariable Long id) {
+        User user = userRepository.findById(id).get();
         model.addAttribute("user", user);
         return "user/updateForm";  // 정보 수정 페이지로 이동
     }
 
-    @PostMapping("/users/verify_password")
-    public String verifyPassword(@RequestParam String password, @RequestParam int id, Model model) {
-        User user = getUserById(id);
+    @GetMapping("/users/verify_password")
+    public String verifyPassword(@RequestParam String password, @RequestParam Long id, Model model) {
+        User user = userRepository.findById(id).get();
         model.addAttribute("user", user);
 
         if (user.getPassword().equals(password)) {
@@ -63,16 +80,13 @@ public class UserController {
     }
 
     @PutMapping("users/update")
-    public String updateProfile(@RequestParam String name, @RequestParam String email, @RequestParam int id, Model model) {
-        User user = getUserById(id);
+    public String updateProfile(@RequestParam String name, @RequestParam String email, @RequestParam Long id, Model model) {
+        User user = userRepository.findById(id).get();
         user.updateUser(name, email);
+        userRepository.save(user);
 
         model.addAttribute("user", user);
         return "redirect:/users";
-    }
-
-    private User getUserById(int id) {
-        return users.get(id -1);
     }
 
 }
