@@ -3,6 +3,8 @@ package codesquad.codestagram.controller;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.UserDto;
 import codesquad.codestagram.repository.UserRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
@@ -102,9 +104,23 @@ public class UserController {
         }
 
         //세션에 user데이터 등록
-        httpSession.setAttribute("sessionedUser", userOptional);
+        httpSession.setAttribute("sessionedUser", userOptional.get());
+        // 세션 설정
+        httpSession.setMaxInactiveInterval(3600); // 1시간
 
         return "redirect:/";  // 로그인 성공시 홈페이지로 리다이렉트
     }
 
+    @GetMapping("users/sign-out")
+    public String logout(HttpSession httpSession, HttpServletResponse response){
+        httpSession.invalidate();
+
+        // 클라이언트 쿠키에서 세션 ID 삭제
+        Cookie cookie = new Cookie("JSESSIONID", null); // 세션 쿠키 삭제
+        cookie.setMaxAge(0);  // 즉시 만료
+        cookie.setPath("/");   // 모든 경로에서 적용
+        response.addCookie(cookie);
+
+        return "redirect:/";
+    }
 }
