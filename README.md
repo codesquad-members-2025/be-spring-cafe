@@ -2,7 +2,7 @@
 
 2025 마스터즈 백엔드 스프링 카페
 
-
+# 1단계
 ## 문제해결
 ### 1. 사용자 리스트를 조회할 때 사용자 id가 출력되지 않는 문제
   - 원인
@@ -39,3 +39,25 @@ Method parameter 'userSeq': Failed to convert value of type 'java.lang.String' t
   - `/users/join` 요청(회원가입 폼 표시 요청)이 `/users/{userSeq}` 패턴(프로필 조회 요청)과 매칭되어 문자열을 Long으로 변환 시도
 - 해결
   - `WebMvcConfigurer`에 `registry.setOrder(Ordered.HIGHEST_PRECEDENCE);`를 추가하여 `/users/join`의 우선순위를 높임
+
+## 피드백
+- 아래의 코드는 정상적으로 동작하지 않을 가능성이 있다.
+```java
+@Override
+    public void save(User user) {
+        user.setSeq(++sequence);
+        store.put(user.getSeq(), user);
+    }
+```
+
+"정상적으로 동작하지 않을 가능성이 있다" - 이 피드백을 "동시성 문제가 일어날 가능성이 있다"라고 이해했다.
+- 문제 부분  
+`private static Long sequence`, `private static final Map<Long, User> store = new HashMap<>();` 
+- 시도 방법  
+`Long` 에서 `AtomicLong`, `HashMap`에서 `ConcurrentHashMap`으로 수정 
+
+# 2단계
+## 구현 내용
+## 문제 해결
+## 피드백
+
