@@ -14,8 +14,12 @@ import java.util.List;
 @RequestMapping("/")
 public class MainController {
 
+    private final ArticleRepository articleRepository;
+
     @Autowired
-    private ArticleRepository articleRepository;
+    public MainController(ArticleRepository articleRepository) {
+        this.articleRepository = articleRepository;
+    }
 
     @GetMapping
     public String getMain(Model model) {

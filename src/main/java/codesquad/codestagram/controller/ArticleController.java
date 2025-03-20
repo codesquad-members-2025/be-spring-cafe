@@ -11,8 +11,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/article")
 public class ArticleController {
 
+    private final ArticleRepository articleRepository;
+
     @Autowired
-    ArticleRepository articleRepository;
+    public ArticleController(ArticleRepository articleRepository) {
+        this.articleRepository = articleRepository;
+    }
 
     @PostMapping
     public String writeArticle(@ModelAttribute Article article) {
