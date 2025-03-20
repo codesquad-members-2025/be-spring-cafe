@@ -6,13 +6,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
 
-    List<User> users = new ArrayList<>();
+    private final List<User> users = Collections.synchronizedList(new ArrayList<>());
 
     @PostMapping
     public String signup(@ModelAttribute User user) {
