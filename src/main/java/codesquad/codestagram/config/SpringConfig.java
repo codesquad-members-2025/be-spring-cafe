@@ -1,4 +1,4 @@
-package codesquad.codestagram;
+package codesquad.codestagram.config;
 
 import codesquad.codestagram.repository.MemoryUserRepository;
 import codesquad.codestagram.service.UserService;
