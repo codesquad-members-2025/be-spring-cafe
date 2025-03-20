@@ -36,9 +36,9 @@ public class UserController {
 
     @PostMapping("/users")
     public String signUp(@ModelAttribute UserDto.UserRequestDto requestDto, Model model) {
-        boolean isSuccess = userService.joinUser(requestDto);
-
-        if (!isSuccess) {
+        try{
+            userService.joinUser(requestDto);
+        }catch (IllegalArgumentException e){
             // 이미 존재하는 user_id일 경우
             model.addAttribute(ERROR_MESSAGE, USER_ALREADY_EXIST);
             return "register";  // 회원가입 페이지로 다시 돌아감

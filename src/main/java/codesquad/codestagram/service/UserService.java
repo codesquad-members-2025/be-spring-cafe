@@ -1,13 +1,12 @@
 package codesquad.codestagram.service;
 
 import codesquad.codestagram.domain.User;
-import codesquad.codestagram.dto.UserDto;
 import codesquad.codestagram.dto.UserDto.UserRequestDto;
 import codesquad.codestagram.repository.UserRepository;
+import jakarta.annotation.PostConstruct;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 
 @Service
 public class UserService {
@@ -18,19 +17,14 @@ public class UserService {
     }
 
 
-    public boolean joinUser(UserRequestDto requestDto) {
-        Optional<User> existingUser = userRepository.findByUserId(requestDto.getUserId());
 
-        if (existingUser.isPresent()) {
-            // 이미 존재하는 user_id일 경우
-            return false;
-        }
+    public void joinUser(UserRequestDto requestDto) {
+        //같은 아이디를 가지는 유저가 있는지 확인
+        userRepository.findByUserId(requestDto.getUserId()).orElseThrow(IllegalArgumentException::new);
 
         // 중복되지 않으면 사용자 저장
         User user = requestDto.toUser();
         userRepository.save(user);
-
-        return true;
     }
 
     public List<User> getUserList() {
@@ -50,7 +44,6 @@ public class UserService {
     }
 
     public User getUserForLogin(String userId, String password) {
-        Optional<User> optionalUser = userRepository.findByUserIdAndPassword(userId, password);
-        return optionalUser.orElseThrow(IllegalArgumentException::new);
+       return userRepository.findByUserIdAndPassword(userId, password).orElseThrow(IllegalArgumentException::new);
     }
 }
