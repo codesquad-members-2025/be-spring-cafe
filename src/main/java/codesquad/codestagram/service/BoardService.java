@@ -9,7 +9,6 @@ import codesquad.codestagram.repository.BoardRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,8 +41,9 @@ public class BoardService {
     }
 
     public BoardResponseDto getBoardById(Long id) {
-        Board board = boardRepository.findById(id).orElse(null);
-        return (board != null) ? new BoardResponseDto(board) : null;
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
+        return new BoardResponseDto(board);
     }
 
     @Transactional
