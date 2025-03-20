@@ -74,23 +74,38 @@
 </div>
 
 <div class="container" id="main">
-   <div class="col-md-10 col-md-offset-1">
-      <div class="panel panel-default">
-          <table class="table table-hover">
-              <thead>
+    <div class="col-md-10 col-md-offset-1">
+        <div class="panel panel-default">
+            <table class="table table-hover">
+                <thead>
                 <tr>
-                    <th>#</th> <th>사용자 아이디</th> <th>이름</th> <th>이메일</th><th></th>
+                    <th>#</th>
+                    <th>사용자 아이디</th>
+                    <th>이름</th>
+                    <th>이메일</th>
+                    <th></th>
                 </tr>
-              </thead>
-              <tbody>
-                <tr>
-                    <th scope="row">1</th> <td>javajigi</td> <td>자바지기</td> <td>javajigi@sample.net</td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
+                </thead>
+                <tbody>
+                <!-- 사용자가 없을 경우 메시지 표시 -->
+                <tr th:if="${#lists.isEmpty(users)}">
+                    <td colspan="5" class="text-center">등록된 사용자가 없습니다.</td>
                 </tr>
-                <tr>
-                    <th scope="row">2</th> <td>slipp</td> <td>슬립</td> <td>slipp@sample.net</td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
+
+                <!-- 사용자가 있을 경우 목록 출력 -->
+                <tr th:each="user, stat : ${users}">
+                    <th scope="row" th:text="${stat.count}"></th>
+                    <td>
+                        <a th:href="@{/user/{userId}(userId=${user.userId})}" th:text="${user.userId}"></a>
+                    </td>
+                    <td th:text="${user.name}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td>
+                        <a th:href="@{/user/edit/{userId}(userId=${user.userId})}" class="btn btn-success">수정</a>
+                    </td>
                 </tr>
-              </tbody>
-          </table>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
