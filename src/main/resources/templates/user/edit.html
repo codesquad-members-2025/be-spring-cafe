@@ -20,6 +20,10 @@
                         <div th:if="${param.error}" class="alert alert-danger" role="alert">
                             <span th:if="${param.error == 'wrong-password'}">현재 비밀번호가 일치하지 않습니다.</span>
                         </div>
+
+                        <div th:if="${param.error == 'unauthorized'}">
+                            권한이 없습니다.
+                        </div>
                         
                         <form th:action="@{/users/{id}(id=${user.id})}" method="post" th:object="${user}">
                             <input type="hidden" name="_method" value="PUT" />

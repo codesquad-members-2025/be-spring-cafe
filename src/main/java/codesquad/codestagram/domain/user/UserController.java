@@ -1,5 +1,6 @@
 package codesquad.codestagram.domain.user;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -70,11 +71,22 @@ public class UserController {
                              @RequestParam String email,
                              @RequestParam String name,
                              @RequestParam String currentPassword,
-                             @RequestParam String newPassword) {
+                             @RequestParam String newPassword,
+                             HttpSession session) {
+        Object value = session.getAttribute("user");
+
+        if (value == null) {
+            return "redirect:/users?error=unauthorized";
+        }
+
         User user = userRepository.findById(id).orElse(null);
 
         if (user == null) {
             return "redirect:/users?error=user-not-found";
+        }
+
+        if (!value.equals(user)) {
+            return "redirect:/users?error=unauthorized";
         }
 
         if (!user.isMatchPassword(currentPassword)) {
