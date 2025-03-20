@@ -35,7 +35,13 @@ public class BoardController {
     }
 
     @GetMapping("/boards/{id}")
-    public String getBoard(@PathVariable Long id, Model model) {
+    public String getBoard(@PathVariable Long id, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        UserResponseDto loginUser = (UserResponseDto) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            redirectAttributes.addFlashAttribute("loginError", "로그인 하세용");
+            return "redirect:/";
+        }
+
         BoardResponseDto board = boardService.getBoardById(id);
         model.addAttribute("board", board);
         return "qna/show";
