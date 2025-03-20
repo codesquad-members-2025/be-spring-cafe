@@ -36,8 +36,8 @@ public class UserRepositoryTest {
         user.setPassword("1234");
 
         //When
-        userRepository.save(user);
-        User expectedUser = userRepository.findById("testId");
+        User actualUser = userRepository.save(user);
+        User expectedUser = userRepository.findById(actualUser.getId());
 
         //Then
         softly.assertThat(user.getUserId()).isNotNull();
