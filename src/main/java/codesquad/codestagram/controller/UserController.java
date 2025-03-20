@@ -60,7 +60,7 @@ public class UserController {
 
     @PutMapping("/users/{userId}/update")
     public String updateForm(UserForm userForm, Model model) {
-        boolean isUpdated =userService.updateUser(userForm);
+        boolean isUpdated = userService.updateUser(userForm);
         if(isUpdated) {
             return "redirect:/users/" + userForm.getUserId();
         }

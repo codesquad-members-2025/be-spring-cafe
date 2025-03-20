@@ -35,11 +35,9 @@ public class ArticleController {
     @PostMapping("/qna/create")
     public String create(ArticleForm articleForm) {
         Optional<User> user = userService.findByUserId(articleForm.getUserId());
-
-
         if(user.isPresent()) {
             String contentWithBreaks = articleForm.getContent().replace("\n", "<br>");
-            Article article = new Article(user.get(),articleForm.getTitle(),contentWithBreaks, articleService.getArticleCount() + 1);
+            Article article = new Article(user.get(),articleForm.getTitle(),contentWithBreaks);
             articleService.saveArticle(article);
         }
         return "redirect:/";

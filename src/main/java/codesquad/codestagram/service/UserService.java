@@ -17,7 +17,7 @@ public class UserService {
     }
 
     public User join(User user){
-        Optional<User> result = userRepository.fineByUserId(user.getUserId());
+        Optional<User> result = userRepository.findByUserId(user.getUserId());
         result.ifPresent(u-> {
             throw new IllegalStateException("이미 존재하는 아이디입니다.");
         });
@@ -25,17 +25,17 @@ public class UserService {
     }
 
     public List<User> findAllUsers(){
-        return userRepository.fineAll();
+        return userRepository.findAll();
     }
 
     public Optional<User> findByUserId(String userId){
-        return userRepository.fineByUserId(userId);
+        return userRepository.findByUserId(userId);
     }
 
     public boolean updateUser(UserForm userForm){
         String userId = userForm.getUserId();
-        if(userRepository.fineByUserId(userId).isPresent()) {
-            User user = userRepository.fineByUserId(userId).get();
+        if(userRepository.findByUserId(userId).isPresent()) {
+            User user = userRepository.findByUserId(userId).get();
             if(isPasswordValid(user,userForm.getPassword())){
                 user.setPassword(userForm.getPassword());
                 user.setName(userForm.getName());
