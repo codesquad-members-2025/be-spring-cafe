@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<head>
+  <title>회원가입</title>
+</head>
+<body>
+<main layout:fragment="content">
+  <div class="container py-5" id="main">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card shadow-sm border-0 rounded-3">
+          <div class="card-header bg-primary text-white py-3">
+            <h2 class="text-center mb-0 fw-bold">글 작성</h2>
+          </div>
+          <div class="card-body p-4">
+            <form>
+              <div class="mb-4">
+                <label for="postTitle" class="form-label fw-bold">제목</label>
+                <input type="text" class="form-control form-control-lg" id="postTitle" placeholder="제목을 입력하세요">
+              </div>
+
+              <div class="mb-4">
+                <label for="postContent" class="form-label fw-bold">내용</label>
+                <textarea class="form-control" id="postContent" rows="10" placeholder="내용을 입력하세요"></textarea>
+              </div>
+
+              <div class="d-grid gap-2 d-flex justify-content-center mt-4">
+                <button type="submit" class="btn btn-lg btn-primary px-5 py-3">등록하기</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>
