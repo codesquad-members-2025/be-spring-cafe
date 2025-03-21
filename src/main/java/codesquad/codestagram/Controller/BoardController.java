@@ -30,6 +30,7 @@ public class BoardController {
 
     @PostMapping("/boards/create")
     public String createBoard(@ModelAttribute BoardForm form) {
+
         Board board = new Board();
         board.setTitle(form.getTitle());
         board.setContent(form.getContent());
@@ -42,9 +43,17 @@ public class BoardController {
 
     @GetMapping("/")
     public String listBoards(Model model) {
+//        System.out.println("/ 요청 도착!");
         List<Board> boards = boardService.getAllBoards();
+//        // 로그 찍기
+//        System.out.println("현재 저장된 게시글 개수: " + boards.size());
+//        for (Board b : boards) {
+//            System.out.println("게시글 제목: " + b.getTitle() + ", 작성자: " + b.getWriter());
+//        }
+
         model.addAttribute("boards", boards);
-        return "qna/list"; // 게시글 목록 화면
+
+        return "index"; // 게시글 목록 화면
     }
 
     /**
@@ -53,7 +62,7 @@ public class BoardController {
      */
     @GetMapping("/boards/{boardId}")
     public String showBoard(@PathVariable Long boardId, Model model) {
-        boardService.getBoardBydId(boardId)
+        boardService.getBoardById(boardId)
                 .ifPresent(board -> model.addAttribute("board", board));
         return "qna/show"; // 게시글 상세 화면 (qna/show.html)
     }
