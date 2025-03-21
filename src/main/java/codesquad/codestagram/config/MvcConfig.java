@@ -11,7 +11,7 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        registry.addViewController("/").setViewName("index"); // index.html로 매핑
+//        registry.addViewController("/").setViewName("index"); // index.html로 매핑
         registry.addViewController("/users/new").setViewName("user/form");
     }
 }
