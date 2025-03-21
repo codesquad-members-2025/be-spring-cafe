@@ -14,10 +14,10 @@ public class Article {
     private String title;
     private String content;
 
-     @ManyToOne
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)  // ✅ 외래 키 설정
     private User user;
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     public Article() {}
 
@@ -25,10 +25,7 @@ public class Article {
         this.user = user;
         this.title = title;
         this.content = content;
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        this.createdAt = now.format(dateFormatter)+" "+now.format(timeFormatter);
+        this.createdAt = LocalDateTime.now();
     }
 
     public User getUser() {
@@ -64,6 +61,8 @@ public class Article {
     }
 
     public String getCreatedAt() {
-        return createdAt;
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        return createdAt.format(dateFormatter)+" "+createdAt.format(timeFormatter);
     }
 }
