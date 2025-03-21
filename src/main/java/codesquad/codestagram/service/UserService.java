@@ -3,6 +3,7 @@ package codesquad.codestagram.service;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.UserForm;
 import codesquad.codestagram.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementException("해당하는 아이디의 유저가 없습니다."));
     }
 
+    @Transactional
     public boolean updateUser(UserForm userForm){
         String userId = userForm.getUserId();
         User user = findByUserId(userId);
