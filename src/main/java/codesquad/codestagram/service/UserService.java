@@ -21,7 +21,7 @@ public class UserService {
     public User join(UserForm userform){
         Optional<User> result = userRepository.findByUserId(userform.getUserId());
         result.ifPresent(u-> {
-            throw new NoSuchElementException("이미 존재하는 아이디입니다.");
+            throw new IllegalStateException("이미 존재하는 아이디입니다.");
         });
         return userRepository.save(userform.makeUser());
     }

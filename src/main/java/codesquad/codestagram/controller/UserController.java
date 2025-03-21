@@ -30,7 +30,7 @@ public class UserController {
         try{
             userService.join(userForm);
             return "redirect:/user/list";
-        } catch(NoSuchElementException e) {
+        } catch(IllegalStateException e) {
             redirectAttributes.addFlashAttribute("alertMessage", e.getMessage());
             return "redirect:/user/form";
         }
