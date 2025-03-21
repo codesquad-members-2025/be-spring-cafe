@@ -2,6 +2,7 @@ package codesquad.codestagram.user.controller;
 
 import codesquad.codestagram.user.domain.User;
 import codesquad.codestagram.user.dto.SignUpRequest;
+import codesquad.codestagram.user.dto.UserUpdateRequest;
 import codesquad.codestagram.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -58,6 +59,6 @@ public class UserController {
     @PutMapping("/users/{userSeq}")
     public String updateUserProfile(@PathVariable Long userSeq, @ModelAttribute UserUpdateRequest request) {
         userService.updateUser(userSeq, request);
-        return "redirect/:users";
+        return "redirect:/users";
     }
 }
