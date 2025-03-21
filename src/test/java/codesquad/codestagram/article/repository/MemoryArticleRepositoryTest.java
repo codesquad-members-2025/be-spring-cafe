@@ -1,5 +1,7 @@
 package codesquad.codestagram.article.repository;
 
+import codesquad.codestagram.article.domain.Article;
+import codesquad.codestagram.article.repository.impl.MemoryArticleRepository;
 import codesquad.codestagram.user.domain.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,13 +33,13 @@ public class MemoryArticleRepositoryTest {
                 "제목",
                 "내용"
         );
-        article.setId(100000L);
+        article.setArticleId(100000L);
 
         // when: Article 객체 저장
         repository.save(article);
 
         // then: 저장된 객체와 조회된 객체가 동일해야 함.
-        Article findArticle = repository.findById(article.getId()).orElseThrow(
+        Article findArticle = repository.findById(article.getArticleId()).orElseThrow(
                 () -> new IllegalStateException("존재하지 않는 질문입니다.")
         );
 
@@ -54,12 +56,12 @@ public class MemoryArticleRepositoryTest {
                 "내용"
         );
 
-        article.setId(100000L);
+        article.setArticleId(100000L);
 
         // when: 저장되지 않은 테스트용 Article의 아이디를 통해 조회할 때
         // then: IllegalStateException이 발생해야 함
         assertThatThrownBy(
-                () -> repository.findById(article.getId()).orElseThrow(
+                () -> repository.findById(article.getArticleId()).orElseThrow(
                     () -> new NoSuchElementException("존재하지 않는 질문입니다.")
                 )
         ).isInstanceOf(NoSuchElementException.class);

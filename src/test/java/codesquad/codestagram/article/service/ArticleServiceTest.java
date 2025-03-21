@@ -1,5 +1,7 @@
 package codesquad.codestagram.article.service;
 
+import codesquad.codestagram.article.domain.Article;
+import codesquad.codestagram.article.repository.impl.MemoryArticleRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,11 +39,11 @@ public class ArticleServiceTest {
                 "제목",
                 "내용"
         );
-        article.setId(100000L);
+        article.setArticleId(100000L);
 
         // when: Article 객체 등록, 조회
         articleService.create(article);
-        Article findArticle = articleService.findArticle(user.getId());
+        Article findArticle = articleService.findArticle(article.getArticleId());
 
         // then: 테스트용 Article 객체와 조회된 객체는 같아야 한다.
         assertThat(article).isEqualTo(findArticle);
@@ -56,12 +58,12 @@ public class ArticleServiceTest {
                 "제목",
                 "내용"
         );
-        article.setId(100000L);
+        article.setArticleId(100000L);
 
         // when: 저장되지 않은 테스트용 Article의 아이디를 통해 조회할 때
         // then: IllegalStateException이 발생해야 함
         assertThatThrownBy(
-                () -> articleService.findArticle(article)
+                () -> articleService.findArticle(article.getArticleId())
         ).isInstanceOf(NoSuchElementException.class);
     }
     @Test
