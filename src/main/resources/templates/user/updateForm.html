@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<head>
+    <title>회원가입</title>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="container py-5" id="main">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 rounded-3">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h2 class="text-center mb-0 fw-bold">회원가입</h2>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="post" th:action="@{/users/{id}/form(id=${user.userId})}">
+                            <div class="mb-4">
+                                <label for="userId" class="form-label fw-bold">아이디</label>
+                                <input type="text" class="form-control form-control-lg" id="userId" name="userId" th:value="${user.userId}" readonly>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="name" class="form-label fw-bold">닉네임</label>
+                                <input type="text" class="form-control form-control-lg" id="name" name="name" th:value="${user.name}">
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="password" class="form-label fw-bold">비밀번호</label>
+                                <input type="password" class="form-control form-control-lg" id="password" name="password" th:value="${user.password}">
+                            </div>
+
+                            <div class="d-grid gap-2 d-flex justify-content-center mt-4">
+                                <button type="submit" class="btn btn-lg btn-primary px-5 py-3">등록하기</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
