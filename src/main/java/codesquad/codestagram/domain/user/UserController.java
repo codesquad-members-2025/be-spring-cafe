@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequestMapping("/users")
 @Controller
@@ -39,24 +40,24 @@ public class UserController {
 
     @GetMapping("{id}")
     public String showUserProfile(@PathVariable Long id, Model model) {
-        User user = userRepository.findById(id).orElse(null);
+        Optional<User> user = userRepository.findById(id);
 
-        if (user == null) {
+        if (user.isEmpty()) {
             // 사용자를 찾을 수 없을 때 리스트 페이지로 리다이렉트하고
             // 에러 메시지를 던달
             return "redirect:/users?error=user-not-found";
         }
 
-        model.addAttribute("user", user);
+        model.addAttribute("user", user.get());
 
         return "user/profile";
     }
 
     @GetMapping("{id}/form")
     public String showUpdateForm(@PathVariable Long id, Model model) {
-        User user = userRepository.findById(id).orElse(null);
+        Optional<User> user = userRepository.findById(id);
 
-        if (user == null) {
+        if (user.isEmpty()) {
             return "redirect:/users?error=user-not-found";
         }
 
@@ -78,23 +79,24 @@ public class UserController {
             return "redirect:/error";
         }
 
-        User user = userRepository.findById(id).orElse(null);
-        if (user == null) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
             return "redirect:/users?error=user-not-found";
         }
 
-        if (!sessionUser.equals(user)) {
+        User userEntity = user.get();
+        if (!sessionUser.equals(userEntity)) {
             return "redirect:/error";
         }
 
-        if (!user.isMatchPassword(currentPassword)) {
+        if (!userEntity.isMatchPassword(currentPassword)) {
             return "redirect:/users/" + id + "/form?error=wrong-password";
         }
 
-        user.setEmail(email);
-        user.setName(name);
+        userEntity.setEmail(email);
+        userEntity.setName(name);
         if (newPassword != null && !newPassword.isEmpty()) {
-            user.setPassword(newPassword);
+            userEntity.setPassword(newPassword);
         }
 
         return "redirect:/users/" + id;
