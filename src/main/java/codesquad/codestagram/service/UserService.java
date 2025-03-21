@@ -34,7 +34,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> findOne(String userId) {
+    public Optional<User> findOneUser(String userId) {
         return userRepository.findById(userId);
     }
 }

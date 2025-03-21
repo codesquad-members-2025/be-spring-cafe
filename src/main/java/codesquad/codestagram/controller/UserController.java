@@ -48,7 +48,7 @@ public class UserController {
 
     @GetMapping("/user/{userId}")
     public String profile(@PathVariable("userId") String userId, Model model) {
-        User user = userService.findOne(userId)
+        User user = userService.findOneUser(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
         model.addAttribute("user", user);
         return "/user/profile";
