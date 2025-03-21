@@ -68,5 +68,25 @@ public class BoardServiceTest {
     }
 
 
+    @Test
+    void 특정_게시글_조회_테스트() {
+        // Given (게시글 저장)
+        Board board = new Board();
+        board.setTitle("조회할 게시글");
+        board.setContent("조회할 내용");
+        board.setWriter("작성자");
+        Board savedBoard = boardService.writeBoard(board);
+
+        // When (ID로 게시글 조회)
+        Board foundBoard = boardService.getBoardById(savedBoard.getBoardId()).orElse(null);
+
+        // Then (조회 결과 확인)
+        assertThat(foundBoard).isNotNull();
+        assertThat(foundBoard.getTitle()).isEqualTo("조회할 게시글");
+        assertThat(foundBoard.getContent()).isEqualTo("조회할 내용");
+        assertThat(foundBoard.getWriter()).isEqualTo("작성자");
+    }
+
+
 
 }
