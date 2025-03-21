@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class ArticleController {
 
+
     private final ArticleService articleService;
 
     public ArticleController(ArticleService articleService) {
@@ -20,14 +21,11 @@ public class ArticleController {
             @RequestParam("writer") String writer,
             @RequestParam("title") String title,
             @RequestParam("contents") String contents) {
-        Article article = new Article();
-        article.setWriter(writer);
-        article.setTitle(title);
-        article.setContents(contents);
+        Article article = new Article(writer, title, contents);
 
         articleService.ask(article);
 
         return "redirect:/";
     }
-
 }
+
