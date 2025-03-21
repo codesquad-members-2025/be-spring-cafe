@@ -31,6 +31,10 @@ public class User {
         return email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public void setSeq(Long seq) {
         this.seq = seq;
     }
