@@ -5,6 +5,7 @@ import codesquad.codestagram.repository.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -43,5 +44,17 @@ public class UserController {
         User user = userRepository.findById(id).orElseThrow();
         model.addAttribute("user", user);
         return "user/updateForm";
+    }
+
+    @PostMapping("/{id}/update")
+    public String updateUser(@PathVariable("id") Long id, @ModelAttribute User user, @RequestParam String confirmPassword, RedirectAttributes redirectAttributes) {
+        User existingUser = userRepository.findById(id).orElseThrow();
+
+        if (existingUser.getPassword().equals(confirmPassword)) {
+            userRepository.save(user);
+            return "redirect:/users";
+        }
+        redirectAttributes.addFlashAttribute("message", "비밀번호가 일치하지 않습니다.");
+        return "redirect:/users/" + id + "/form";
     }
 }
