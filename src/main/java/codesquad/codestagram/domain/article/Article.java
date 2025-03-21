@@ -42,4 +42,8 @@ public class Article {
         this.content = content;
     }
 
+    public boolean isSameWriter(Long userId) {
+        return this.userId.equals(userId);
+    }
+
 }
