@@ -27,4 +27,11 @@ public class UserRepository {
         users.add(user);
         return user;
     }
+
+    public Optional<User> findById(Long id) {
+        if (id == null || id <= 0 || id > users.size()) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(users.get(id.intValue() - 1));
+    }
 }
