@@ -1,11 +1,14 @@
 package codesquad.codestagram.article.repository;
 
+import codesquad.codestagram.article.domain.Article;
+
+import java.util.List;
 import java.util.Optional;
 
 public interface ArticleRepository {
-    void save(Atricle atricle);
+    void save(Article article);
 
-    Optional<Article> findById();
+    Optional<Article> findById(Long articleId);
 
     List<Article> findAll();
 }
