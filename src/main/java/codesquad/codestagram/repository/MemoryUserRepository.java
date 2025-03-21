@@ -10,8 +10,12 @@ public class MemoryUserRepository implements UserRepository {
 
     @Override
     public User save(User user) {
-        user.setId(++sequence);
-        store.put(user.getId(), user);
+        //이미 ID가 있는 사용자면 → 그 ID 그대로 덮어쓰기
+        //없는 사용자면 → 새로 등록 (ID 생성)
+        if (user.getId() == null) {
+            user.setId(++sequence);
+        }
+        store.put(user.getId(), user); // ID 기준으로 덮어쓰기 (업데이트 포함)
         return user;
     }
 
