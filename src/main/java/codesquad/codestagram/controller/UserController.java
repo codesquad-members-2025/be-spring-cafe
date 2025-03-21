@@ -46,7 +46,7 @@ public class UserController {
         return "user/updateForm";
     }
 
-    @PostMapping("/{id}/update")
+    @PutMapping("/{id}/update")
     public String updateUser(@PathVariable("id") Long id, @ModelAttribute User user, @RequestParam String confirmPassword, RedirectAttributes redirectAttributes) {
         User existingUser = userRepository.findById(id).orElseThrow();
 

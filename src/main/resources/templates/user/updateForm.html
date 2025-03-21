@@ -16,6 +16,7 @@
 
                     <div class="card-body p-4">
                         <form method="post" th:action="@{/users/{id}/update(id=${user.id})}">
+                            <input type="hidden" name="_method" value="PUT"/>
 
                             <div class="mb-4">
                                 <label for="confirmPassword" class="form-label fw-bold">비밀번호 확인</label>
