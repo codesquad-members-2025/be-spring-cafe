@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
     public static final String USER_ALREADY_EXIST = "이미 존재하는 사용자 ID입니다.";
+    public static final String FAIL_SING_IN = "아이디와 비밀번호가 일치하지 않습니다.";
     private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
@@ -49,6 +50,6 @@ public class UserService {
     }
 
     public User getUserForLogin(String userId, String password) {
-       return userRepository.findByUserIdAndPassword(userId, password).orElseThrow(IllegalArgumentException::new);
+       return userRepository.findByUserIdAndPassword(userId, password).orElseThrow(() -> new IllegalArgumentException(FAIL_SING_IN));
     }
 }

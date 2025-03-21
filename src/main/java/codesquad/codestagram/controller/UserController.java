@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class UserController {
-    public static final String FAIL_SING_IN = "아이디와 비밀번호가 일치하지 않습니다.";
     public static final String USER = "user";
     public static final String SESSIONED_USER = "sessionedUser";
     public static final String PASSWORD_VALID = "passwordValid";
@@ -99,7 +98,7 @@ public class UserController {
             // 세션 설정
             httpSession.setMaxInactiveInterval(ONE_HOUR); // 1시간
         }catch (IllegalArgumentException e){
-            model.addAttribute(ERROR_MESSAGE, FAIL_SING_IN);
+            model.addAttribute(ERROR_MESSAGE, e.getMessage());
             return "user/signIn";
         }
 
