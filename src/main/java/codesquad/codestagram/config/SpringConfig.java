@@ -13,6 +13,15 @@ public class SpringConfig {
         return memoryUserRepository();
     }
 
+    @Bean
+    public ArticleRepository articleRepository() {
+        return memoryArticleRepository();
+    }
+
+    private MemoryArticleRepository memoryArticleRepository() {
+        return new MemoryArticleRepository();
+    }
+
     private MemoryUserRepository memoryUserRepository() {
         return new MemoryUserRepository();
     }
