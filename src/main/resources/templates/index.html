@@ -18,20 +18,20 @@
         <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
             <div class="panel panel-default qna-list">
                 <ul class="list">
-                    <li th:each="question : ${questions}">
+                    <li th:each="board : ${boards}">
                         <div class="wrap">
                             <div class="main">
                                 <strong class="subject">
-                                    <a th:href="@{/qna/{id}(id=${question.id})}" th:text="${question.title}"></a>
+                                    <a th:href="@{/boards/{id}(id=${board.boardId})}" th:text="${board.title}"></a>
                                 </strong>
                                 <div class="auth-info">
-                                    <i class="icon-add-comment"></i>
-                                    <span class="time" th:text="${question.createdDate}"></span>
-                                    <a th:href="@{/users/{id}(id=${question.author.id})}" th:text="${question.author.name}" class="author"></a>
-                                </div>
-                                <div class="reply" title="댓글">
-                                    <i class="icon-reply"></i>
-                                    <span class="point" th:text="${question.commentCount}"></span>
+<!--                                    <i class="icon-add-comment"></i>-->
+<!--                                    <span class="time" th:text="${board.createdDate}"></span>-->
+                                    <span class="author" th:text="${board.writer}"></span>
+<!--                                </div>-->
+<!--                                <div class="reply" title="댓글">-->
+<!--                                    <i class="icon-reply"></i>-->
+<!--                                    <span class="point" th:text="${board.commentCount}"></span>-->
                                 </div>
                             </div>
                         </div>
@@ -51,7 +51,7 @@
                         </ul>
                     </div>
                     <div class="col-md-3 qna-write text-right">
-                        <a th:href="@{/qna/form}" class="btn btn-primary" role="button">질문하기</a>
+                        <a th:href="@{/boards/new}" class="btn btn-primary" role="button">질문하기</a>
                     </div>
                 </div>
             </div>
