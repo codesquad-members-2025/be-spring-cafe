@@ -40,7 +40,7 @@ public class AuthController {
             session.setAttribute(SessionConstants.USER_SESSION_KEY, user.get());
             return "redirect:/";
         } else {
-            return "redirect:/login?error=login-failed";
+            return "redirect:/auth/login?error=login-failed";
         }
     }
 
