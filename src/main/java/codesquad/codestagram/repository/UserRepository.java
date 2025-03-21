@@ -34,4 +34,8 @@ public class UserRepository {
         }
         return Optional.ofNullable(users.get(id.intValue() - 1));
     }
+
+    public List<User> findAll() {
+        return users;
+    }
 }
