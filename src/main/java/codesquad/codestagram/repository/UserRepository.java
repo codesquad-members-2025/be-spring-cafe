@@ -16,11 +16,8 @@ public class UserRepository {
 
     public User save(User user) {
         if (user.getId() != null) { // id 값이 존재하면 수정
-            User existingUser = findById(user.getId()).orElseThrow();
-            existingUser.setName(user.getName());
-            existingUser.setPassword(user.getPassword());
-            users.set(user.getId().intValue() - 1, existingUser);
-            return existingUser;
+            users.set(user.getId().intValue() - 1, user);
+            return user;
         }
 
         user.setId(++sequence);
