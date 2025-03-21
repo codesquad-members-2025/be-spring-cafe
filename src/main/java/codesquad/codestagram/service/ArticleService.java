@@ -32,8 +32,10 @@ public class ArticleService {
         return articleRepository.findByUser(user);
     }
 
-    public Optional<Article> findArticleById(int id) {
-        return articleRepository.findById(id);
+    public Article findArticleById(int id) {
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당하는 게시물이 없습니다."));
+        return article;
     }
 
     public Article createArticleAndSave(ArticleForm articleForm) {

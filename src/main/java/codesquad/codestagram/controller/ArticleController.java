@@ -42,11 +42,12 @@ public class ArticleController {
 
     @GetMapping("/articles/{index}")
     public String viewArticle(@PathVariable int index, Model model) {
-        Optional<Article> article = articleService.findArticleById(index);
-        if(article.isPresent()){
-            model.addAttribute("article", article.get());
+        try{
+            Article article = articleService.findArticleById(index);
+            model.addAttribute("article", article);
             return "qna/show";
-        } else {
+        } catch(NoSuchElementException e){
+            String message = "오류가 발생했습니다. " + e.getMessage();
             return "redirect:/";
         }
     }
