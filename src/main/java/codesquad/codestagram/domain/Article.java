@@ -4,13 +4,14 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Entity
 public class Article {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private String title;
     private String content;
 
@@ -52,11 +53,11 @@ public class Article {
         this.content = content;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -64,5 +65,18 @@ public class Article {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         return createdAt.format(dateFormatter)+" "+createdAt.format(timeFormatter);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Article)) return false;
+        Article article = (Article) o;
+        return id != null && id.equals(article.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id); // 또는 Objects.hash(id)
     }
 }
