@@ -6,6 +6,7 @@ import codesquad.codestagram.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -16,12 +17,12 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User join(User user){
-        Optional<User> result = userRepository.findByUserId(user.getUserId());
+    public User join(UserForm userform){
+        Optional<User> result = userRepository.findByUserId(userform.getUserId());
         result.ifPresent(u-> {
             throw new IllegalStateException("이미 존재하는 아이디입니다.");
         });
-        return userRepository.save(user);
+        return userRepository.save(userform.makeUser());
     }
 
     public List<User> findAllUsers(){
@@ -34,14 +35,13 @@ public class UserService {
 
     public boolean updateUser(UserForm userForm){
         String userId = userForm.getUserId();
-        if(userRepository.findByUserId(userId).isPresent()) {
-            User user = userRepository.findByUserId(userId).get();
-            if(isPasswordValid(user,userForm.getPassword())){
-                user.setPassword(userForm.getPassword());
-                user.setName(userForm.getName());
-                user.setEmail(userForm.getEmail());
-                return true;
-            }
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new NoSuchElementException("해당하는 아이디의 유저가 없습니다."));
+        if(isPasswordValid(user,userForm.getPassword())){
+            user.setPassword(userForm.getChangedPassword());
+            user.setName(userForm.getName());
+            user.setEmail(userForm.getEmail());
+            return true;
         }
         return false;
     }

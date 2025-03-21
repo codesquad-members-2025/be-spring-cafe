@@ -1,5 +1,7 @@
 package codesquad.codestagram.dto;
 
+import codesquad.codestagram.domain.User;
+
 public class UserForm {
     private String userId;
     private String name;
@@ -55,5 +57,9 @@ public class UserForm {
     }
     public void setChangedPassword(String changedPassword) {
         this.changedPassword = changedPassword;
+    }
+
+    public User makeUser(){
+        return new User(userId, name, password, email);
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Controller
@@ -26,8 +27,11 @@ public class UserController {
 
     @PostMapping("/user/create")
     public String create(UserForm userForm) {
-        User user = new User(userForm.getUserId(), userForm.getName(), userForm.getPassword(),userForm.getEmail());
-        userService.join(user);
+        try{
+            userService.join(userForm);
+        } catch(NoSuchElementException e){
+            String message = e.getMessage();
+        }
         return "redirect:/user/list";
     }
 
