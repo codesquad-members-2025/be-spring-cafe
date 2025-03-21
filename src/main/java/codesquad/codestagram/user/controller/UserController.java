@@ -49,10 +49,15 @@ public class UserController {
     }
 
     @GetMapping("/users/{userSeq}/form")
-    public String updateUserProfile(@PathVariable Long userSeq, Model model) {
+    public String updateUserProfileForm(@PathVariable Long userSeq, Model model) {
         User user = userService.findUser(userSeq);
         model.addAttribute("user", user);
         return "user/updateForm";
     }
 
+    @PutMapping("/users/{userSeq}")
+    public String updateUserProfile(@PathVariable Long userSeq, @ModelAttribute UserUpdateRequest request) {
+        userService.updateUser(userSeq, request);
+        return "redirect/:users";
+    }
 }
