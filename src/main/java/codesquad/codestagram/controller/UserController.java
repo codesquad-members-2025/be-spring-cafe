@@ -28,11 +28,7 @@ public class UserController {
             @RequestParam("password") String password,
             @RequestParam("name") String name,
             @RequestParam("email") String email) {
-        User user = new User();
-        user.setUserId(userId);
-        user.setName(name);
-        user.setPassword(password);
-        user.setEmail(email);
+        User user = new User(userId, name, password, email);
 
         userService.join(user);
 
