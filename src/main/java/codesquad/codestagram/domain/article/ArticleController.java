@@ -1,5 +1,7 @@
 package codesquad.codestagram.domain.article;
 
+import codesquad.codestagram.common.constants.SessionConstants;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +39,15 @@ public class ArticleController {
         model.addAttribute("article", article.get());
 
         return "article/view";
+    }
+
+    @GetMapping("write")
+    public String writeArticle(HttpSession session, Model model) {
+        if (session.getAttribute(SessionConstants.USER_SESSION_KEY) == null) {
+            return "redirect:/auth/login";
+        }
+
+        return "article/form";
     }
 
 }
