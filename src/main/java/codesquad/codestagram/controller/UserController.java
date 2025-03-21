@@ -40,7 +40,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/form")
-    public String updateForm(@PathVariable("id") Long id, Model model) {
+    public String viewUpdateForm(@PathVariable("id") Long id, Model model) {
         User user = userRepository.findById(id).orElseThrow();
         model.addAttribute("user", user);
         return "user/updateForm";
