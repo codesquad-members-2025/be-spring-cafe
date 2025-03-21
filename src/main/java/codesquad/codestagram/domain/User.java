@@ -55,4 +55,8 @@ public class User {
         this.email = email;
     }
 
+    public boolean checkEqualTo(String password) {
+        return this.password.equals(password);
+    }
+
 }

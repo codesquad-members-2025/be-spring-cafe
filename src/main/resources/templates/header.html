@@ -4,9 +4,17 @@
             <a href="/">Codestagram</a>
         </div>
         <div class="menu">
-            <a href="/login" class="btn">로그인</a>
-            <a href="/register" class="btn">회원가입</a>
-            <a href="/articles/form" class="btn write-btn">글쓰기</a>
+            <!-- 로그인하지 않은 경우 -->
+            <div th:if="${session.sessionedUser == null}">
+                <a href="/login" class="btn">로그인</a>
+                <a href="/register" class="btn">회원가입</a>
+            </div>
+            <!-- 로그인한 경우 -->
+            <div th:if="${session.sessionedUser != null}">
+                <a href="/users/sign-out" class="btn">로그아웃</a>
+                <a th:href="@{/users/{id}/update(id=${session.sessionedUser.id})}" class="btn">개인정보 수정</a>
+                <a href="/articles/form" class="btn write-btn">글쓰기</a>
+            </div>
         </div>
     </nav>
 </header>

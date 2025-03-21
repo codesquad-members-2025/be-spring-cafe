@@ -23,5 +23,10 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: create  # 자동으로 테이블 생성 및 업데이트
+      ddl-auto: update  # 자동으로 테이블 생성 및 업데이트
     show-sql: true  # 실행되는 SQL을 콘솔에 출력
+
+server:
+  servlet:
+    session:
+      tracking-modes: cookie
