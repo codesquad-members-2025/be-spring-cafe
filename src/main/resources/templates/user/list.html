@@ -18,9 +18,12 @@
                 </tr>
                 <tr th:each="user, stat : ${users}">
                     <td th:text="${stat.count}"></td>
-                    <td th:text="${user.name}"></td>
                     <td>
-                        <a th:href="@{/users/{id}(id=${user.userId})}" th:text="${user.userId}"></a>
+                        <a th:href="@{/users/{id}(id=${user.id})}" th:text="${user.name}"></a>
+                    </td>
+                    <td th:text="${user.userId}"></td>
+                    <td>
+                        <a class="btn btn-success" th:href="@{/users/{id}/form(id=${user.id})}">수정</a>
                     </td>
                 </tr>
               </table>
