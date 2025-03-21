@@ -3,16 +3,15 @@ package codesquad.codestagram.controller;
 import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.dto.ArticleForm;
 import codesquad.codestagram.service.ArticleService;
-import codesquad.codestagram.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Controller
 public class ArticleController {
@@ -31,11 +30,11 @@ public class ArticleController {
     }
 
     @PostMapping("/qna/create")
-    public String create(ArticleForm articleForm) {
+    public String create(ArticleForm articleForm, RedirectAttributes redirectAttributes) {
         try{
             articleService.createArticleAndSave(articleForm);
         } catch (NoSuchElementException e){
-            String message = "오류가 발생했습니다. " + e.getMessage();
+            redirectAttributes.addFlashAttribute("alertMessage", e.getMessage());
         }
         return "redirect:/";
     }
@@ -47,8 +46,8 @@ public class ArticleController {
             model.addAttribute("article", article);
             return "qna/show";
         } catch(NoSuchElementException e){
-            String message = "오류가 발생했습니다. " + e.getMessage();
-            return "redirect:/";
+            model.addAttribute("alertMessage", e.getMessage());
+            return "index";
         }
     }
 }

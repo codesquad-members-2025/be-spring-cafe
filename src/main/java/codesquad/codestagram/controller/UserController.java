@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Controller
 public class UserController {
@@ -26,13 +26,14 @@ public class UserController {
     }
 
     @PostMapping("/user/create")
-    public String create(UserForm userForm) {
+    public String create(UserForm userForm, RedirectAttributes redirectAttributes) {
         try{
             userService.join(userForm);
+            return "redirect:/user/list";
         } catch(NoSuchElementException e) {
-            String message = e.getMessage();
+            redirectAttributes.addFlashAttribute("alertMessage", e.getMessage());
+            return "redirect:/user/form";
         }
-        return "redirect:/user/list";
     }
 
     @GetMapping("/user/list")
@@ -49,7 +50,7 @@ public class UserController {
             model.addAttribute("user", user);
             return "user/profile";
         } catch (NoSuchElementException e){
-            String message = e.getMessage();
+            model.addAttribute("alertMessage", e.getMessage());
             return "index";
         }
     }
@@ -61,17 +62,18 @@ public class UserController {
             model.addAttribute("user", user);
             return "user/update-form";
         } catch (NoSuchElementException e){
-            String message = e.getMessage();
+            model.addAttribute("alertMessage", e.getMessage());
             return "user/list";
         }
     }
 
     @PutMapping("/users/{userId}/update")
-    public String updateForm(UserForm userForm, Model model) {
+    public String updateForm(UserForm userForm, Model model, RedirectAttributes redirectAttributes) {
         boolean isUpdated = userService.updateUser(userForm);
         if(isUpdated) {
             return "redirect:/users/" + userForm.getUserId();
         }
+        redirectAttributes.addFlashAttribute("alertMessage", "잘못된 입력입니다.");
         return "redirect:/users/"+userForm.getUserId()+"/form";
     }
 }
