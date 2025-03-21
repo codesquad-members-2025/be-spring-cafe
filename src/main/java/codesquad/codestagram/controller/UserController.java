@@ -1,5 +1,6 @@
 package codesquad.codestagram.controller;
 
+import codesquad.codestagram.service.CommentService;
 import org.springframework.ui.Model;
 import codesquad.codestagram.dto.UserRequestDto;
 import codesquad.codestagram.dto.UserResponseDto;
@@ -7,6 +8,7 @@ import codesquad.codestagram.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -14,9 +16,12 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
+    private final CommentService commentService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService
+                        , CommentService commentService) {
         this.userService = userService;
+        this.commentService = commentService;
     }
 
     @GetMapping("/create")
@@ -51,10 +56,11 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public String login(@RequestParam String id, @RequestParam String password, HttpSession session) {
+    public String login(@RequestParam String id, @RequestParam String password, HttpSession session, RedirectAttributes redirectAttributes) {
         UserResponseDto user = userService.authenticate(id, password);
         if (user == null) {
-            return "redirect:/users/login?error=true";
+            redirectAttributes.addFlashAttribute("loginError", "아이디 또는 비밀번호가 틀립니다.");
+            return "redirect:/users/login";
         }
 
         session.setAttribute("loginUser", user);
@@ -71,15 +77,17 @@ public class UserController {
     public String showEditUserForm(@PathVariable String id, Model model) {
         UserResponseDto user = userService.getUserById(id);
         if (user == null) {
-            return "redirect:/users"; // 사용자가 없으면 리스트 페이지로 리디렉션
+            return "redirect:/users";
         }
         model.addAttribute("user", user);
-        return "user/change"; // user/edit.html로 이동
+        return "user/change";
     }
 
-    @PutMapping("/{id}/revise")
-    public String updateUser(@PathVariable String id, @RequestParam String name, @RequestParam String email) {
-        userService.updateUser(id, name, email);
-        return "redirect:/users";
+
+
+    @PostMapping("/comments/{id}")
+    public String deleteComment(@PathVariable Long id, @RequestParam(required = false) Long boardId) {
+        commentService.deleteComment(id);
+        return (boardId != null) ? "redirect:/boards/" + boardId : "redirect:/";
     }
 }
