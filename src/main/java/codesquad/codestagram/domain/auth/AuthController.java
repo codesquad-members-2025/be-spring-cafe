@@ -37,7 +37,7 @@ public class AuthController {
         }
 
         if (user.get().isMatchPassword(password)) {
-            session.setAttribute(SessionConstants.USER_SESSION_KEY, user);
+            session.setAttribute(SessionConstants.USER_SESSION_KEY, user.get());
             return "redirect:/";
         } else {
             return "redirect:/login?error=login-failed";

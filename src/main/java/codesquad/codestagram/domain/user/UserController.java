@@ -1,6 +1,7 @@
 package codesquad.codestagram.domain.user;
 
 import codesquad.codestagram.common.constants.SessionConstants;
+import codesquad.codestagram.domain.auth.UnauthorizedException;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,7 +63,7 @@ public class UserController {
             return "redirect:/users?error=user-not-found";
         }
 
-        model.addAttribute("user", user);
+        model.addAttribute("user", user.get());
 
         return "user/edit";
     }
@@ -77,7 +78,7 @@ public class UserController {
                              HttpSession session) {
         User sessionUser = (User) session.getAttribute(SessionConstants.USER_SESSION_KEY);
         if (sessionUser == null) {
-            return "redirect:/error";
+            throw new UnauthorizedException("로그인이 필요합니다.");
         }
 
         Optional<User> user = userRepository.findById(id);
@@ -87,7 +88,7 @@ public class UserController {
 
         User userEntity = user.get();
         if (!sessionUser.equals(userEntity)) {
-            return "redirect:/error";
+            throw new UnauthorizedException("본인의 정보만 수정할 수 있습니다.");
         }
 
         if (!userEntity.isMatchPassword(currentPassword)) {
