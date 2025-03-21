@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @Controller
 //@RequestMapping("/articles")
 public class ArticleController {
@@ -26,7 +28,7 @@ public class ArticleController {
     //글쓰기 폼 렌더링
     @GetMapping("/qna/form")
     public String showArticleForm(Model model){
-        model.addAttribute("article", new Article(null, "", "", ""));
+        model.addAttribute("article", new Article("", "", ""));
         return "/qna/form";
     }
 
@@ -36,5 +38,11 @@ public class ArticleController {
         return "redirect:/";
     }
 
+    @GetMapping("/")
+    public String getArticleList(Model model){
+        List<Article> articles = articleRepository.getAllArticles();
+        model.addAttribute("articles", articles);
+        return "index";
+    }
 
 }

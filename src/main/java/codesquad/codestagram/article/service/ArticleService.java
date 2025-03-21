@@ -4,6 +4,8 @@ import codesquad.codestagram.article.domain.Article;
 import codesquad.codestagram.article.repository.ArticleRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ArticleService {
 
@@ -17,4 +19,5 @@ public class ArticleService {
     public void write(Article article){
         articleRepository.save(article);
     }
+
 }

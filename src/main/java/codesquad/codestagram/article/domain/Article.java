@@ -2,7 +2,7 @@ package codesquad.codestagram.article.domain;
 
 public class Article {
 
-    Long id;
+    int id;
 
     String writer;
 
@@ -11,19 +11,19 @@ public class Article {
     String contents;
 
     //기본 생성자
-    public Article(Long id, String writer, String title, String contents){
-        this.id=id;
+    public Article (String writer, String title, String contents){
+        //this.id=id;
         this.writer=writer;
         this.title=title;
         this.contents = contents;
     }
 
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
