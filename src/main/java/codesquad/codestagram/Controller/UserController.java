@@ -6,10 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -55,4 +52,23 @@ public class UserController {
             return "redirect:/user/list"; //사용자가 없으면 리다이렉션 하는 것보다 사용자에게 에러 메시지를 보여 주는게 더 좋은 방법일까?
         }
     }
+
+    @GetMapping("/user/{id}/update")
+    public String updateUser(@PathVariable("id") Long id,
+                             @RequestParam String currentPassword,
+                             @RequestParam String newPassword,
+                             @RequestParam String name,
+                             @RequestParam String email) {
+        boolean result = userService.updateUser(id,currentPassword, newPassword, name,email);
+
+        if (!result) {
+            //비밀번호 틀린 경우 or 유저 없는 경우
+            log.info("redirecting to /user/edit/{}?error=invalidPassword", id);
+            return "redirect:/user/edit/" + id + "?error=invalidPassword"; //에러 메시지 전달
+        }
+
+        return "redirect:/user/list";
+
+    }
+
 }
