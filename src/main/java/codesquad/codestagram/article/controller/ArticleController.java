@@ -28,19 +28,18 @@ public class ArticleController {
         Article article = new Article(
                 request.writer(),
                 request.title(),
-                request.content()
+                request.contents()
         );
-
         articleService.create(article);
 
         return "redirect:/";
     }
 
-    @GetMapping("/articles")
+    @GetMapping("/")
     public String articleList(Model model) {
         List<Article> articles = articleService.findArticles();
         model.addAttribute("articles", articles);
-        return "/";
+        return "index";
     }
 
     @GetMapping("/articles/{articleId}")
