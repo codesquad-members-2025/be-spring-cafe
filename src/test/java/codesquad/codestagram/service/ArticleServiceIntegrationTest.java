@@ -62,6 +62,6 @@ public class ArticleServiceIntegrationTest {
         ArticleForm articleForm2 = new ArticleForm("dino","art2","hello");
         Article article1 = articleService.createArticleAndSave(articleForm1);
         Article article2 = articleService.createArticleAndSave(articleForm2);
-        assertThat(articleService.findArticlesByTitle("art1")).isEqualTo(article1);
+        assertThat(articleService.findArticlesByTitle("art1").get(0)).isEqualTo(article1);
     }
 }
