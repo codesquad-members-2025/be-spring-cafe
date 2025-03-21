@@ -61,7 +61,7 @@ public class BoardController {
      * GET 요청: /boards/{boardId}
      */
     @GetMapping("/boards/{boardId}")
-    public String showBoard(@PathVariable Long boardId, Model model) {
+    public String showBoard(@PathVariable("boardId") Long boardId, Model model) {
         boardService.getBoardById(boardId)
                 .ifPresent(board -> model.addAttribute("board", board));
         return "qna/show"; // 게시글 상세 화면 (qna/show.html)
