@@ -2,6 +2,8 @@ package codesquad.codestagram.Controller;
 
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,13 +17,14 @@ import java.util.Optional;
 @Controller
 public class UserController {
     private UserService userService;
+    private static final Logger log  = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    @PostMapping("/users/create") //이거 강의에서는 new 로 하는데.. 구분해줘야 하나?
+    @PostMapping("/users/create")
     public String create(@ModelAttribute UserForm form) {
         User user = new User();
         user.setUserId(form.getUserId());
@@ -46,7 +49,7 @@ public class UserController {
             model.addAttribute("user", user.get());
             return "user/profile"; //사용자 있으면 프로필로 이동
         } else {
-            System.out.println("사용자 없음: " + userId); // 로그 추가
+            log.warn("사용자 없음: {}", userId); // 로그 추가
             return "redirect:/user/list"; //사용자가 없으면 목록으로 리디렉션
         }
     }
