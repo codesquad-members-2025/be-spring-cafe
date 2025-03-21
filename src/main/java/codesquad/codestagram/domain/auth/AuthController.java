@@ -1,5 +1,6 @@
 package codesquad.codestagram.domain.auth;
 
+import codesquad.codestagram.common.constants.SessionConstants;
 import codesquad.codestagram.domain.user.User;
 import codesquad.codestagram.domain.user.UserRepository;
 import jakarta.servlet.http.HttpSession;
@@ -36,7 +37,7 @@ public class AuthController {
         }
 
         if (user.get().isMatchPassword(password)) {
-            session.setAttribute("user", user);
+            session.setAttribute(SessionConstants.USER_SESSION_KEY, user);
             return "redirect:/";
         } else {
             return "redirect:/login?error=login-failed";
@@ -45,7 +46,7 @@ public class AuthController {
 
     @PostMapping("logout")
     public String logout(HttpSession session) {
-        session.removeAttribute("user");
+        session.removeAttribute(SessionConstants.USER_SESSION_KEY);
         return "redirect:/";
     }
 

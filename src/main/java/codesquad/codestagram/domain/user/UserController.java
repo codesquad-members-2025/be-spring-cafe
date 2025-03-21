@@ -1,5 +1,6 @@
 package codesquad.codestagram.domain.user;
 
+import codesquad.codestagram.common.constants.SessionConstants;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,7 +75,7 @@ public class UserController {
                              @RequestParam String currentPassword,
                              @RequestParam String newPassword,
                              HttpSession session) {
-        User sessionUser = (User) session.getAttribute("user");
+        User sessionUser = (User) session.getAttribute(SessionConstants.USER_SESSION_KEY);
         if (sessionUser == null) {
             return "redirect:/error";
         }
