@@ -11,3 +11,5 @@ public class CodestagramApplication {
 	}
 
 }
+//로그인 시 세션을 사용해야한다!
+//setAttribute
