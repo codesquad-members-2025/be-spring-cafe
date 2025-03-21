@@ -1,12 +1,19 @@
 package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.Article;
+import codesquad.codestagram.service.ArticleService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ArticleController {
+
+    private final ArticleService articleService;
+
+    public ArticleController(ArticleService articleService) {
+        this.articleService = articleService;
+    }
 
     @PostMapping("/questions")
     public String ask(
@@ -18,7 +25,9 @@ public class ArticleController {
         article.setTitle(title);
         article.setContents(contents);
 
-        
+        articleService.ask(article);
+
+        return "redirect:/";
     }
 
 }
