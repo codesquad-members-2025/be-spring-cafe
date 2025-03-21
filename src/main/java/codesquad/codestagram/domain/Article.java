@@ -14,7 +14,7 @@ public class Article {
     private String title;
     private String content;
 
-    @ManyToOne
+     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)  // ✅ 외래 키 설정
     private User user;
     private String createdAt;

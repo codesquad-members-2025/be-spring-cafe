@@ -1,7 +1,6 @@
 package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.Article;
-import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.ArticleForm;
 import codesquad.codestagram.service.ArticleService;
 import codesquad.codestagram.service.UserService;
@@ -12,17 +11,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Controller
 public class ArticleController {
 
     private final ArticleService articleService;
-    private final UserService userService;
 
-    public ArticleController(ArticleService articleService, UserService userService) {
+    public ArticleController(ArticleService articleService) {
         this.articleService = articleService;
-        this.userService = userService;
     }
 
     @GetMapping("/")
@@ -34,11 +32,10 @@ public class ArticleController {
 
     @PostMapping("/qna/create")
     public String create(ArticleForm articleForm) {
-        Optional<User> user = userService.findByUserId(articleForm.getUserId());
-        if(user.isPresent()) {
-            String contentWithBreaks = articleForm.getContent().replace("\n", "<br>");
-            Article article = new Article(user.get(),articleForm.getTitle(),contentWithBreaks);
-            articleService.saveArticle(article);
+        try{
+            articleService.createArticleAndSave(articleForm);
+        } catch (NoSuchElementException e){
+            String message = "오류가 발생했습니다. " + e.getMessage();
         }
         return "redirect:/";
     }
