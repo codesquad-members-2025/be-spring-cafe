@@ -38,4 +38,10 @@ public class ArticleController {
         return "/";
     }
 
+    @GetMapping("/articles/{articleId}")
+    public String showArticle(@PathVariable String articleId, Model model) {
+        Article article = articleService.findArticle(articleId);
+        model.addAttribute("article", article);
+        return "qna/show";
+    }
 }
