@@ -35,16 +35,24 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public String userList(Model model) {
+    public String showUserList(Model model) {
         List<User> users = userService.findUsers();
         model.addAttribute("users", users);
         return "user/list";
     }
 
     @GetMapping("/users/{userSeq}")
-    public String userProfile(@PathVariable Long userSeq, Model model) {
+    public String showUserProfile(@PathVariable Long userSeq, Model model) {
         User user = userService.findUser(userSeq);
         model.addAttribute("user", user);
         return "user/profile";
     }
+
+    @GetMapping("/users/{userSeq}/form")
+    public String updateUserProfile(@PathVariable Long userSeq, Model model) {
+        User user = userService.findUser(userSeq);
+        model.addAttribute("user", user);
+        return "user/updateForm";
+    }
+
 }
