@@ -39,8 +39,7 @@ public class ArticleService {
     }
 
     public Article createArticleAndSave(ArticleForm articleForm) {
-        User user = userService.findByUserId(articleForm.getUserId())
-                .orElseThrow(() -> new NoSuchElementException("해당 유저 아이디가 없습니다."));
+        User user = userService.findByUserId(articleForm.getUserId());
         Article article = articleForm.createParsedArticle(user);
         saveArticle(article);
         return article;

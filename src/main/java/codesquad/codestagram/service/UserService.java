@@ -20,7 +20,7 @@ public class UserService {
     public User join(UserForm userform){
         Optional<User> result = userRepository.findByUserId(userform.getUserId());
         result.ifPresent(u-> {
-            throw new IllegalStateException("이미 존재하는 아이디입니다.");
+            throw new NoSuchElementException("이미 존재하는 아이디입니다.");
         });
         return userRepository.save(userform.makeUser());
     }
@@ -29,14 +29,14 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> findByUserId(String userId){
-        return userRepository.findByUserId(userId);
+    public User findByUserId(String userId){
+        return userRepository.findByUserId(userId)
+                .orElseThrow(() -> new NoSuchElementException("해당하는 아이디의 유저가 없습니다."));
     }
 
     public boolean updateUser(UserForm userForm){
         String userId = userForm.getUserId();
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new NoSuchElementException("해당하는 아이디의 유저가 없습니다."));
+        User user = findByUserId(userId);
         if(isPasswordValid(user,userForm.getPassword())){
             user.setPassword(userForm.getChangedPassword());
             user.setName(userForm.getName());

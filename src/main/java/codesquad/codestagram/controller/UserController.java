@@ -29,7 +29,7 @@ public class UserController {
     public String create(UserForm userForm) {
         try{
             userService.join(userForm);
-        } catch(NoSuchElementException e){
+        } catch(NoSuchElementException e) {
             String message = e.getMessage();
         }
         return "redirect:/user/list";
@@ -44,22 +44,26 @@ public class UserController {
 
     @GetMapping("/users/{userId}")
     public String showProfile(@PathVariable String userId, Model model) {
-        Optional<User> findUser= userService.findByUserId(userId);
-        if(findUser.isPresent()) {
-            model.addAttribute("user", findUser.get());
+        try{
+            User user = userService.findByUserId(userId);
+            model.addAttribute("user", user);
             return "user/profile";
+        } catch (NoSuchElementException e){
+            String message = e.getMessage();
+            return "index";
         }
-        return "index";
     }
 
     @GetMapping("/users/{userId}/form")
     public String showUpdateForm(@PathVariable String userId, Model model) {
-        Optional<User> foundUser = userService.findByUserId(userId);
-        if(foundUser.isPresent()) {
-            model.addAttribute("user", foundUser.get());
+        try{
+            User user = userService.findByUserId(userId);
+            model.addAttribute("user", user);
             return "user/update-form";
+        } catch (NoSuchElementException e){
+            String message = e.getMessage();
+            return "user/list";
         }
-        return "user/list";
     }
 
     @PutMapping("/users/{userId}/update")
