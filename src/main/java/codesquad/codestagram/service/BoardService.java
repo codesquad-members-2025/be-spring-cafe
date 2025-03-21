@@ -26,8 +26,8 @@ public class BoardService {
         return boardRepository.findAll();
     }
 
-   //이게 필요할까..
-    public Optional<Board> getBoardId(Long boardId){
+
+    public Optional<Board> getBoardBydId(Long boardId){
         return boardRepository.findByBoardId(boardId);
     }
 
