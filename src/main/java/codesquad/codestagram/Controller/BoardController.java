@@ -3,6 +3,8 @@ package codesquad.codestagram.Controller;
 import codesquad.codestagram.domain.Board;
 import codesquad.codestagram.repository.BoardRepository;
 import codesquad.codestagram.service.BoardService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +18,7 @@ import java.util.*;
 @Controller
 public class BoardController {
     private BoardService boardService;
+    private static final Logger log  = LoggerFactory.getLogger(UserController.class);
 
     @Autowired // 생성자가 1개면 spring4.3 이상에서는 자동 주입됨. 하지만 명시적으로 적어주기 잘 모르니까...
     public BoardController(BoardService boardService) {
@@ -43,13 +46,14 @@ public class BoardController {
 
     @GetMapping("/")
     public String listBoards(Model model) {
-//        System.out.println("/ 요청 도착!");
+        log.info("/ 요청 도착!");
+
         List<Board> boards = boardService.getAllBoards();
-//        // 로그 찍기
-//        System.out.println("현재 저장된 게시글 개수: " + boards.size());
-//        for (Board b : boards) {
-//            System.out.println("게시글 제목: " + b.getTitle() + ", 작성자: " + b.getWriter());
-//        }
+
+        log.info("현재 저장된 게시글 개수: {}",  boards.size());
+        for (Board b : boards) {
+            log.debug("게시글 제목: {}, 작성자: {}", b.getTitle(), b.getWriter());
+        }
 
         model.addAttribute("boards", boards);
 
