@@ -25,8 +25,8 @@ public class ArticleService {
         return articleRepository.findAll();
     }
 
-    public Article findByIndex(Long index){
-        return articleRepository.findByIndex(index)
+    public Article findById(Long id){
+        return articleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("해당 질문을 찾을 수 없습니다."));
     }
 

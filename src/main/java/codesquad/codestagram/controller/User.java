@@ -1,6 +1,14 @@
 package codesquad.codestagram.controller;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "users")
 public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String userId;
 
@@ -16,6 +24,12 @@ public class User {
         this.password = password;
         this.email = email;
     }
+
+    protected User() {}
+
+    public Long getId() {return id;}
+
+    public void setId(Long id) {this.id = id;}
 
     public String getUserId() {
         return userId;

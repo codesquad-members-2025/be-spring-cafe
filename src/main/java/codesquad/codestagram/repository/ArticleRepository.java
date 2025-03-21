@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
 
-    Optional<Article> findByIndex(Long index);
+    Optional<Article> findById(Long id);
 
 }
