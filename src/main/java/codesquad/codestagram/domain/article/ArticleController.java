@@ -108,4 +108,28 @@ public class ArticleController {
         return "redirect:/articles/" + id;
     }
 
+    @DeleteMapping("{id}")
+    @Transactional
+    public String deleteArticle(@PathVariable Long id,
+                                HttpSession session) {
+        User user = (User) session.getAttribute(SessionConstants.USER_SESSION_KEY);
+        if (user == null) {
+            throw new UnauthorizedException("로그인이 필요합니다.");
+        }
+
+        Optional<Article> article = articleRepository.findById(id);
+        if (article.isEmpty()) {
+            return "redirect:/";
+        }
+
+        Article articleEntity = article.get();
+        if (!articleEntity.isSameWriter(user.getId())) {
+            throw new UnauthorizedException("본인이 작성한 글만 삭제할 수 있습니다.");
+        }
+
+        articleRepository.delete(articleEntity);
+
+        return "redirect:/";
+    }
+
 }
