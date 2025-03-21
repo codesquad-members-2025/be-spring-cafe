@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Optional;
+
 @RequestMapping("/auth")
 @Controller
 public class AuthController {
@@ -28,12 +30,12 @@ public class AuthController {
     public String login(@RequestParam String userId,
                         @RequestParam String password,
                         HttpSession session) {
-        User user = userRepository.findByUserId(userId);
-        if (user == null) {
+        Optional<User> user = userRepository.findByUserId(userId);
+        if (user.isEmpty()) {
             return "redirect:/auth/login?error=login-failed";
         }
 
-        if (user.isMatchPassword(password)) {
+        if (user.get().isMatchPassword(password)) {
             session.setAttribute("user", user);
             return "redirect:/";
         } else {
