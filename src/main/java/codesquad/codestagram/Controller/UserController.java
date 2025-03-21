@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
@@ -43,14 +44,15 @@ public class UserController {
     }
 
     @GetMapping("/users/{userId}")
-    public String userProfile(@PathVariable("userId") String userId, Model model) {
+    public String userProfile(@PathVariable("userId") String userId, Model model, RedirectAttributes redirectAttributes) {
         Optional<User> user = userService.findByUserId(userId);
         if (user.isPresent()) {
             model.addAttribute("user", user.get());
             return "user/profile"; //사용자 있으면 프로필로 이동
         } else {
             log.warn("사용자 없음: {}", userId); // 로그 추가
-            return "redirect:/user/list"; //사용자가 없으면 목록으로 리디렉션
+            redirectAttributes.addFlashAttribute("errorMessage", "존재하지 않는 사용자입니다.");
+            return "redirect:/user/list"; //사용자가 없으면 리다이렉션 하는 것보다 사용자에게 에러 메시지를 보여 주는게 더 좋은 방법일까?
         }
     }
 }
