@@ -2,6 +2,8 @@ package codesquad.codestagram.service;
 
 import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.User;
+import codesquad.codestagram.dto.ArticleForm;
+import codesquad.codestagram.dto.UserForm;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,27 +19,49 @@ public class ArticleServiceIntegrationTest {
     @Autowired private UserService userService;
 
     @Test
-    @DisplayName("회원가입 하고 글을 작성할 수 있다.")
+    @DisplayName("회원이 글을 쓰고, 해당하는 회원의 글을 가져올 수 있다.")
     public void add_article() {
-        User user = new User("dino","name", "pw","email@email.com");
-        userService.join(user);
-        Article article = new Article(user,"art","hello");
-        articleService.saveArticle(article);
+        UserForm userForm = new UserForm();
+        userForm.setUserId("dino");
+        userForm.setName("userName");
 
-        assertThat(articleService.findAllArticles().get(0)).isEqualTo(article);
+        User user = userService.join(userForm);
+
+        ArticleForm articleForm = new ArticleForm("dino","art","hello");
+        Article article = articleService.createArticleAndSave(articleForm);
+
+        assertThat(articleService.findArticlesByUser(user).get(0)).isEqualTo(article);
     }
 
     @Test
-    @DisplayName("article을 작성할 때마다 id가 1씩 증가한다.")
+    @DisplayName("article을 작성할 때마다 글의 개수가 증가한다.")
     public void check_article_id() {
-        User user = new User("dino","name", "pw","email@email.com");
-        userService.join(user);
-        Article article1 = new Article(user,"art1","hello");
-        articleService.saveArticle(article1);
-        Article article2 = new Article(user,"art2","hello");
-        articleService.saveArticle(article2);
+        int articleSize = articleService.findAllArticles().size();
+        UserForm userForm = new UserForm();
+        userForm.setUserId("dino");
+        userForm.setName("userName");
+        User user = userService.join(userForm);
+        ArticleForm articleForm1 = new ArticleForm("dino","art1","hello");
+        ArticleForm articleForm2 = new ArticleForm("dino","art2","hello");
 
-        assertThat(articleService.findAllArticles().get(0).getId()).isEqualTo(1);
-        assertThat(articleService.findAllArticles().get(1).getId()).isEqualTo(2);
+        Article article1 = articleService.createArticleAndSave(articleForm1);
+        Article article2 = articleService.createArticleAndSave(articleForm2);
+
+        assertThat(articleService.findAllArticles().size()).isEqualTo(articleSize + 2);
+    }
+
+    @Test
+    @DisplayName("해당하는 title 의 article을 가져올 수 있다. ")
+    public void get_article_by_title() {
+        UserForm userForm = new UserForm();
+        userForm.setUserId("dino");
+        userForm.setName("userName");
+        User user = userService.join(userForm);
+
+        ArticleForm articleForm1 = new ArticleForm("dino","art1","hello");
+        ArticleForm articleForm2 = new ArticleForm("dino","art2","hello");
+        Article article1 = articleService.createArticleAndSave(articleForm1);
+        Article article2 = articleService.createArticleAndSave(articleForm2);
+        assertThat(articleService.findArticlesByTitle("art1")).isEqualTo(article1);
     }
 }
