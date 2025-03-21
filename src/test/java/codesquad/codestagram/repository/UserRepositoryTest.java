@@ -37,7 +37,7 @@ public class UserRepositoryTest {
 
         //When
         User actualUser = userRepository.save(user);
-        User expectedUser = userRepository.findById(actualUser.getId());
+        User expectedUser = userRepository.findById(actualUser.getId()).orElseThrow();
 
         //Then
         softly.assertThat(user.getUserId()).isNotNull();
