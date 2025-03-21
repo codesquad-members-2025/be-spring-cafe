@@ -1,5 +1,6 @@
 package codesquad.codestagram.common.exception;
 
+import codesquad.codestagram.domain.article.ArticleNotFoundException;
 import codesquad.codestagram.domain.auth.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.ui.Model;
@@ -14,6 +15,16 @@ public class GlobalExceptionHandler {
                                                 HttpServletResponse response,
                                                 Model model) {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        model.addAttribute("errorMessage", ex.getMessage());
+
+        return "error";
+    }
+
+    @ExceptionHandler(ArticleNotFoundException.class)
+    public String handleArticleNotFoundException(ArticleNotFoundException ex,
+                                                HttpServletResponse response,
+                                                Model model) {
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         model.addAttribute("errorMessage", ex.getMessage());
 
         return "error";
