@@ -9,10 +9,12 @@ public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long userId;
     private String title;
     private String content;
 
-    public Article(String title, String content) {
+    public Article(Long UserId, String title, String content) {
+        this.userId = UserId;
         this.title = title;
         this.content = content;
     }

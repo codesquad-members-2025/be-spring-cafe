@@ -1,6 +1,9 @@
 package codesquad.codestagram.domain.article;
 
 import codesquad.codestagram.common.constants.SessionConstants;
+import codesquad.codestagram.domain.auth.UnauthorizedException;
+import codesquad.codestagram.domain.user.User;
+import codesquad.codestagram.domain.user.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,16 +16,23 @@ import java.util.Optional;
 public class ArticleController {
 
     private final ArticleRepository articleRepository;
+    private final UserRepository userRepository;
 
-    public ArticleController(ArticleRepository articleRepository) {
+    public ArticleController(ArticleRepository articleRepository, UserRepository userRepository) {
         this.articleRepository = articleRepository;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("")
     public String addArticle(@RequestParam String title,
-                             @RequestParam String content) {
+                             @RequestParam String content,
+                             HttpSession session) {
+        User user = (User) session.getAttribute(SessionConstants.USER_SESSION_KEY);
+        if (user == null) {
+            return "redirect:/auth/login";
+        }
 
-        Article article = new Article(title, content);
+        Article article = new Article(user.getId(), title, content);
         articleRepository.save(article);
 
         return "redirect:/";
