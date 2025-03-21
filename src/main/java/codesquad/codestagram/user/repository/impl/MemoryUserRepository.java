@@ -1,6 +1,7 @@
-package codesquad.codestagram.user.repository;
+package codesquad.codestagram.user.repository.impl;
 
 import codesquad.codestagram.user.domain.User;
+import codesquad.codestagram.user.repository.UserRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
