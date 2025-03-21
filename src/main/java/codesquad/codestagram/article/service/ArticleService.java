@@ -1,8 +1,11 @@
 package codesquad.codestagram.article.service;
 
+import codesquad.codestagram.article.domain.Article;
+import codesquad.codestagram.article.repository.ArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -15,7 +18,7 @@ public class ArticleService {
         this.articleRepository = articleRepository;
     }
 
-    public void register(Article article) {
+    public void create(Article article) {
         articleRepository.save(article);
     }
 

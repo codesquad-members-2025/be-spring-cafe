@@ -1,6 +1,7 @@
 package codesquad.codestagram.user.repository;
 
 import codesquad.codestagram.user.domain.User;
+import codesquad.codestagram.user.repository.impl.MemoryUserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

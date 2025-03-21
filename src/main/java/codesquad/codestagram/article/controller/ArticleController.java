@@ -1,5 +1,8 @@
 package codesquad.codestagram.article.controller;
 
+import codesquad.codestagram.article.domain.Article;
+import codesquad.codestagram.article.dto.ArticleRequest;
+import codesquad.codestagram.article.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
 
 @Controller
 public class ArticleController {
@@ -21,12 +26,12 @@ public class ArticleController {
     @PostMapping("/articles")
     public String create(@ModelAttribute ArticleRequest request) {
         Article article = new Article(
-                request.getWriter(),
-                request.getTitle(),
-                request.getContent()
+                request.writer(),
+                request.title(),
+                request.content()
         );
 
-        articleService.register(article);
+        articleService.create(article);
 
         return "redirect:/";
     }
@@ -39,7 +44,7 @@ public class ArticleController {
     }
 
     @GetMapping("/articles/{articleId}")
-    public String showArticle(@PathVariable String articleId, Model model) {
+    public String showArticle(@PathVariable Long articleId, Model model) {
         Article article = articleService.findArticle(articleId);
         model.addAttribute("article", article);
         return "qna/show";

@@ -1,8 +1,7 @@
 package codesquad.codestagram.user.service;
 
 import codesquad.codestagram.user.domain.User;
-import codesquad.codestagram.user.repository.MemoryUserRepository;
-import org.assertj.core.api.Assertions;
+import codesquad.codestagram.user.repository.impl.MemoryUserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
