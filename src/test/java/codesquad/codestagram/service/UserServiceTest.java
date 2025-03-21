@@ -3,6 +3,7 @@ package codesquad.codestagram.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.UserDto.UserRequestDto;
@@ -92,5 +93,6 @@ class UserServiceTest {
         //then
         assertThat(user.getName()).isEqualTo("changeUser");
         assertThat(user.getEmail()).isEqualTo("change@A.com");
+        verify(userRepository).save(user);
     }
 }
