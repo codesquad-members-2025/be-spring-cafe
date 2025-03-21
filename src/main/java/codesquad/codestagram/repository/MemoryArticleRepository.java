@@ -8,17 +8,17 @@ import java.util.*;
 @Repository
 public class MemoryArticleRepository implements ArticleRepository {
 
-    private final Map<String, Article> articleMemory = new HashMap<>();
+    private final Map<Long, Article> articleMemory = new HashMap<>();
 
     @Override
     public Article save(Article article) {
-        articleMemory.put(article.getWriter(), article);
+        articleMemory.put(article.getId(), article);
         return article;
     }
 
     @Override
-    public Optional<Article> findByWriter(String writer) {
-        return Optional.of(articleMemory.get(writer));
+    public Optional<Article> findByArticleId(Long id) {
+        return Optional.of(articleMemory.get(id));
     }
 
     @Override

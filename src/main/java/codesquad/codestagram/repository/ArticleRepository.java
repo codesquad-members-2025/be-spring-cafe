@@ -9,7 +9,7 @@ public interface ArticleRepository {
 
     Article save(Article article);
 
-    Optional<Article> findByWriter(String writer);
+    Optional<Article> findByArticleId(Long id);
 
     List<Article> findAllArticles();
 }
