@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
@@ -22,7 +23,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/users/signUp")
+    @PostMapping("/signUp")
     public String signUp(@ModelAttribute SignUpRequest request,
                          RedirectAttributes redirectAttributes) { // @ModelAttribute 공부,
         try {
@@ -31,30 +32,25 @@ public class UserController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 
-            redirectAttributes.addAttribute("userId", request.userId());
-            redirectAttributes.addAttribute("name", request.name());
-            redirectAttributes.addAttribute("email", request.email());
-
             return "redirect:/users/join";
         }
-
     }
 
-    @GetMapping("/users")
+    @GetMapping
     public String showUserList(Model model) {
         List<User> users = userService.findUsers();
         model.addAttribute("users", users);
         return "user/list";
     }
 
-    @GetMapping("/users/{userSeq}")
+    @GetMapping("/{userSeq}")
     public String showUserProfile(@PathVariable Long userSeq, Model model) {
         User user = userService.findUser(userSeq);
         model.addAttribute("user", user);
         return "user/profile";
     }
 
-    @GetMapping("/users/{userSeq}/verify")
+    @GetMapping("/{userSeq}/verify")
     public String verifyPasswordForm(@PathVariable Long userSeq, Model model) {
         userService.findUser(userSeq);
 
@@ -62,7 +58,7 @@ public class UserController {
         return "user/passwordVerifyForm";
     }
 
-    @PostMapping("/users/{userSeq}/verify-password")
+    @PostMapping("/{userSeq}/verify-password")
     public String verifyPassword(@PathVariable Long userSeq,
                                  @RequestParam String password,
                                  RedirectAttributes redirectAttributes) {
@@ -82,7 +78,7 @@ public class UserController {
 
     }
 
-    @GetMapping("/users/{userSeq}/form")
+    @GetMapping("/{userSeq}/form")
     public String updateUserProfileForm(@PathVariable Long userSeq, Model model) {
         User user = userService.findUser(userSeq);
         model.addAttribute("user", user);
@@ -90,7 +86,7 @@ public class UserController {
     }
 
 
-    @PutMapping("/users/{userSeq}")
+    @PutMapping("/{userSeq}")
     public String update(@PathVariable Long userSeq,
                          @ModelAttribute UserUpdateRequest request,
                          RedirectAttributes redirectAttributes) {
