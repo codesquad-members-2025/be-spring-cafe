@@ -14,6 +14,16 @@
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default content-main">
+            <!-- 성공 메시지 표시 -->
+            <div th:if="${message}" class="alert alert-success" role="alert" th:text="${message}">
+                회원정보가 성공적으로 수정되었습니다.
+            </div>
+
+            <!-- 에러 메시지 표시 -->
+            <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}">
+                오류 메시지
+            </div>
+
             <form name="question" method="post" th:action="@{/users/{seq}(seq=${user.seq})}">
                 <!-- PUT 메소드 지정을 위한 hidden input -->
                 <input type="hidden" name="_method" value="PUT" />
@@ -24,8 +34,9 @@
                     <small class="text-muted">사용자 아이디는 수정할 수 없습니다.</small>
                 </div>
                 <div class="form-group">
-                    <label for="password">비밀번호</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                    <label for="password">새 비밀번호</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="새 비밀번호">
+                    <small class="text-muted">비밀번호를 변경하지 않으려면 빈칸으로 두세요.</small>
                 </div>
                 <div class="form-group">
                     <label for="name">이름</label>
@@ -36,6 +47,7 @@
                     <input type="email" class="form-control" id="email" name="email" placeholder="Email" th:value="${user.email}">
                 </div>
                 <button type="submit" class="btn btn-success clearfix pull-right">정보수정</button>
+                <a th:href="@{/users}" class="btn btn-default clearfix pull-left">취소</a>
                 <div class="clearfix" />
             </form>
         </div>
