@@ -26,8 +26,13 @@ public class UserController {
                          @RequestParam String password,
                          @RequestParam String name,
                          @RequestParam String email) {
-        User user = new User(userId, password, name, email);
-        userRepository.save(user);
+        Optional<User> user = userRepository.findByUserId(userId);
+        if (user.isPresent()) {
+            return "redirect:/users?error=duplicated-user";
+        }
+
+        User newUser = new User(userId, password, name, email);
+        userRepository.save(newUser);
 
         return "redirect:/users";
     }
