@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         model.addAttribute("errorMessage", ex.getMessage());
 
-        return "error";
+        return "redirect:/error";
     }
 
     @ExceptionHandler(ArticleNotFoundException.class)
@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         model.addAttribute("errorMessage", ex.getMessage());
 
-        return "error";
+        return "redirect:/error";
     }
 
 }

@@ -25,4 +25,9 @@ public class ViewController {
         return "index";
     }
 
+    @GetMapping("/error")
+    public String error() {
+        return "error";
+    }
+
 }
