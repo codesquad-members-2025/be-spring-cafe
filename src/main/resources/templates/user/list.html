@@ -19,7 +19,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="user : ${users}">
+        <tr th:each="user : ${user}">
             <td>
                 <a th:href="@{/users/{id}(id=${user.id})}" style="display: block; width: 100%; text-decoration: none; color: inherit;">
                     <span th:text="${user.id}"></span>
