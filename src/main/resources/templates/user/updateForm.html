@@ -16,12 +16,13 @@
     <th:block th:replace="~{layout/subnav :: subnav}"></th:block>
 
     <div class="container" id="main">
+        <!-- 비밀번호 틀림 -> 팝업 알림 스크립트-->
+        <script th:if="${errorMessage}">
+            alert('[[${errorMessage}]]');
+        </script>
+
         <div class="col-md-6 col-md-offset-3">
             <div class="panel panel-default content-main">
-                <!-- ✅ 비밀번호 오류 알림 -->
-                <div class="alert alert-danger" th:if="${param.error == 'invalidPassword'}">
-                    비밀번호가 일치하지 않습니다. 다시 입력해주세요.
-                </div>
 
                 <form name="updateUser" method="post" th:action="@{/users/{id}/update(id=${user.id})}">
                     <!-- Hidden으로 PUT 메소드 사용 -->
