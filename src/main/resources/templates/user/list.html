@@ -38,7 +38,7 @@
     <!--                      <td th:text="${user.userId}"></td> &lt;!&ndash; 사용자 아이디 (Userid 값) &ndash;&gt;-->
                           <td th:text="${user.name}"></td> <!-- 사용자 이름 -->
                           <td th:text="${user.email}"></td> <!-- 사용자 이메일 -->
-                          <td><a th:href="@{/user/edit/{id}(id=${user.id})}" class="btn btn-success" role="button">수정</a></td>
+                          <td><a th:href="@{/users/edit/{id}(id=${user.id})}" class="btn btn-success" role="button">수정</a></td>
                       </tr>
                   </tbody>
               </table>
