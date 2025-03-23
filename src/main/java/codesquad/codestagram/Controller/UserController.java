@@ -41,15 +41,15 @@ public class UserController {
     }
 
     @GetMapping("/users/{userId}")
-    public String userProfile(@PathVariable("userId") String userId, Model model, RedirectAttributes redirectAttributes) {
+    public String userProfile(@PathVariable("userId") String userId, Model model, RedirectAttributes redirectAttributes) { //RedirectAttributes: 리다이렉트할 때 데이터를 잠깐 보낼 수 있게 도와주는 객체(팝업에 들어갈 메시지를 전달하는 통로)
         Optional<User> user = userService.findByUserId(userId);
         if (user.isPresent()) {
             model.addAttribute("user", user.get());
             return "user/profile"; //사용자 있으면 프로필로 이동
         } else {
             log.warn("사용자 없음: {}", userId); // 로그 추가
-            redirectAttributes.addFlashAttribute("errorMessage", "존재하지 않는 사용자입니다.");
-            return "redirect:/users/list"; //사용자가 없으면 리다이렉션 하는 것보다 사용자에게 에러 메시지를 보여 주는게 더 좋은 방법일까?
+            redirectAttributes.addFlashAttribute("errorMessage", "존재하지 않는 사용자입니다."); //에러 메시지 사용자에게 보여줌.
+            return "redirect:/users/list";
         }
     }
 
@@ -73,13 +73,15 @@ public class UserController {
                              @RequestParam("currentPassword") String currentPassword,
                              @RequestParam("newPassword") String newPassword,
                              @RequestParam("name") String name,
-                             @RequestParam("email") String email) {
+                             @RequestParam("email") String email,
+                             RedirectAttributes redirectAttributes) {
+
         boolean result = userService.updateUser(id,currentPassword, newPassword, name,email);
 
         if (!result) {
-            //비밀번호 틀린 경우 or 유저 없는 경우
             log.info("redirecting to /users/edit/{}?error=invalidPassword", id);
-            return "redirect:/users/edit/" + id + "?error=invalidPassword"; //에러 메시지 전달
+            redirectAttributes.addFlashAttribute("errorMessage", "❗ 비밀번호가 일치하지 않습니다."); //화면으로 메시지 전달
+            return "redirect:/users/edit/" + id;
         }
 
         return "redirect:/users/list";
