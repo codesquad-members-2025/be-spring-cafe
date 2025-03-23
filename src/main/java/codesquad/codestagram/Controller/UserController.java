@@ -31,10 +31,10 @@ public class UserController {
         user.setEmail(form.getEmail());
 
         userService.join(user);
-        return "redirect:/user/list";
+        return "redirect:/users/list";
     }
 
-    @GetMapping("/user/list")
+    @GetMapping("/users/list")
     public String userlist(Model model) {
         model.addAttribute("users", userService.findUsers());
         return "user/list";
@@ -49,25 +49,40 @@ public class UserController {
         } else {
             log.warn("사용자 없음: {}", userId); // 로그 추가
             redirectAttributes.addFlashAttribute("errorMessage", "존재하지 않는 사용자입니다.");
-            return "redirect:/user/list"; //사용자가 없으면 리다이렉션 하는 것보다 사용자에게 에러 메시지를 보여 주는게 더 좋은 방법일까?
+            return "redirect:/users/list"; //사용자가 없으면 리다이렉션 하는 것보다 사용자에게 에러 메시지를 보여 주는게 더 좋은 방법일까?
         }
     }
 
-    @GetMapping("/user/{id}/update")
+    //회원 정보 수정 폼 띄우기
+    @GetMapping("/users/edit/{id}")
+    public String updateForm(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+        Optional<User> userOptional = userService.findOne(id);
+
+        if (userOptional.isPresent()) {
+            model.addAttribute("user", userOptional.get());
+            return "user/updateForm"; // 수정 폼 화면 반환
+        } else {
+            log.warn("수정하려는 사용자 없음: {}", id);
+            redirectAttributes.addFlashAttribute("errorMessage", "존재하지 않는 사용자입니다.");
+            return "redirect:/users/list";
+        }
+    }
+
+    @PutMapping("/users/{id}/update")
     public String updateUser(@PathVariable("id") Long id,
-                             @RequestParam String currentPassword,
-                             @RequestParam String newPassword,
-                             @RequestParam String name,
-                             @RequestParam String email) {
+                             @RequestParam("currentPassword") String currentPassword,
+                             @RequestParam("newPassword") String newPassword,
+                             @RequestParam("name") String name,
+                             @RequestParam("email") String email) {
         boolean result = userService.updateUser(id,currentPassword, newPassword, name,email);
 
         if (!result) {
             //비밀번호 틀린 경우 or 유저 없는 경우
-            log.info("redirecting to /user/edit/{}?error=invalidPassword", id);
-            return "redirect:/user/edit/" + id + "?error=invalidPassword"; //에러 메시지 전달
+            log.info("redirecting to /users/edit/{}?error=invalidPassword", id);
+            return "redirect:/users/edit/" + id + "?error=invalidPassword"; //에러 메시지 전달
         }
 
-        return "redirect:/user/list";
+        return "redirect:/users/list";
 
     }
 
