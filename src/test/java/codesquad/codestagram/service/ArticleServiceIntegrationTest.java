@@ -21,9 +21,7 @@ public class ArticleServiceIntegrationTest {
     @Test
     @DisplayName("회원이 글을 쓰고, 해당하는 회원의 글을 가져올 수 있다.")
     public void add_article() {
-        UserForm userForm = new UserForm();
-        userForm.setUserId("dino");
-        userForm.setName("userName");
+        UserForm userForm = new UserForm("dino","userName","1234","jd@naver","");
 
         User user = userService.join(userForm);
 
@@ -37,9 +35,8 @@ public class ArticleServiceIntegrationTest {
     @DisplayName("article을 작성할 때마다 글의 개수가 증가한다.")
     public void check_article_id() {
         int articleSize = articleService.findAllArticles().size();
-        UserForm userForm = new UserForm();
-        userForm.setUserId("dino");
-        userForm.setName("userName");
+        UserForm userForm = new UserForm("dino","userName","1234","jd@naver","");
+
         User user = userService.join(userForm);
         ArticleForm articleForm1 = new ArticleForm("dino","art1","hello");
         ArticleForm articleForm2 = new ArticleForm("dino","art2","hello");
@@ -53,9 +50,8 @@ public class ArticleServiceIntegrationTest {
     @Test
     @DisplayName("해당하는 title 의 article을 가져올 수 있다. ")
     public void get_article_by_title() {
-        UserForm userForm = new UserForm();
-        userForm.setUserId("dino");
-        userForm.setName("userName");
+        UserForm userForm = new UserForm("dino","userName","1234","jd@naver","");
+
         User user = userService.join(userForm);
 
         ArticleForm articleForm1 = new ArticleForm("dino","art1","hello");

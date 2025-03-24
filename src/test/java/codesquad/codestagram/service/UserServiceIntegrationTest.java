@@ -1,16 +1,12 @@
 package codesquad.codestagram.service;
 
-import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.User;
-import codesquad.codestagram.dto.ArticleForm;
 import codesquad.codestagram.dto.UserForm;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -25,10 +21,7 @@ public class UserServiceIntegrationTest {
     @DisplayName("join해서 repository에 추가하면 유저의 수가 늘어난다.")
     public void find_user() {
         int userCount = userService.findAllUsers().size();
-        UserForm userForm = new UserForm();
-        userForm.setUserId("dino");
-        userForm.setName("userName");
-
+        UserForm userForm = new UserForm("dino","userName","1234","jd@naver","");
         User user = userService.join(userForm);
 
         assertThat(userService.findAllUsers().size()).isEqualTo(userCount + 1);
@@ -37,10 +30,7 @@ public class UserServiceIntegrationTest {
     @Test
     @DisplayName("만약 동일한 아이디가 이미 존재하면, 에러를 던진다.")
     public void can_not_make_same_user() {
-        UserForm userForm = new UserForm();
-        userForm.setUserId("dino");
-        userForm.setName("userName");
-
+        UserForm userForm = new UserForm("dino","userName","1234","jd@naver","");
         User user = userService.join(userForm);
 
         assertThatThrownBy(()->userService.join(userForm)).isInstanceOf(IllegalStateException.class).hasMessage("이미 존재하는 아이디입니다.");
@@ -49,13 +39,13 @@ public class UserServiceIntegrationTest {
     @Test
     @DisplayName("비밀번호를 받아 같으면 유저의 정보를 업데이트 할 수 있다.")
     public void update_user() {
-        UserForm userForm = new UserForm();
+        UserForm userForm = new UserForm("dino","userName","1234","jd@naver","");
         userForm.setUserId("dino");
         userForm.setName("userName");
         userForm.setPassword("password");
         User user = userService.join(userForm);
 
-        UserForm updatedUserForm = new UserForm();
+        UserForm updatedUserForm =  new UserForm("dino","userName2","1234","jd@naver","12345");
         updatedUserForm.setUserId("dino");
         updatedUserForm.setName("userName2");
         updatedUserForm.setPassword("password");
@@ -67,17 +57,10 @@ public class UserServiceIntegrationTest {
     @Test
     @DisplayName("비밀번호를 받아 다르면 업데이트 하지 않는다.")
     public void do_not_update_user() {
-        UserForm userForm = new UserForm();
-        userForm.setUserId("dino");
-        userForm.setName("userName");
-        userForm.setPassword("password");
+        UserForm userForm = new UserForm("dino","userName","1234","jd@naver","");
         User user = userService.join(userForm);
 
-        UserForm updatedUserForm = new UserForm();
-        updatedUserForm.setUserId("dino");
-        updatedUserForm.setName("userName2");
-        updatedUserForm.setPassword("wrongPassword");
-        updatedUserForm.setChangedPassword("changed");
+        UserForm updatedUserForm =  new UserForm("dino","userName2","wrongPassword","jd@naver","12345");
         assertThat(userService.updateUser(updatedUserForm)).isEqualTo(false);
         assertThat(userService.findByUserId("dino").getName()).isEqualTo("userName");
     }
