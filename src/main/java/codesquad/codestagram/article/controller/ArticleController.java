@@ -5,10 +5,7 @@ import codesquad.codestagram.article.repository.ArticleRepository;
 import codesquad.codestagram.article.service.ArticleService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,8 +24,7 @@ public class ArticleController {
 
     //글쓰기 폼 렌더링
     @GetMapping("/qna/form")
-    public String showArticleForm(Model model){
-        model.addAttribute("article", new Article("", "", ""));
+    public String showArticleForm(){
         return "/qna/form";
     }
 
@@ -45,4 +41,12 @@ public class ArticleController {
         return "index";
     }
 
+
+    // 게시글 상세 페이지
+    @GetMapping("/articles/{id}")
+    public String getArticleById(@PathVariable("id") int id, Model model) {
+        Article article = articleRepository.findById(id);
+        model.addAttribute("article", article);
+        return "/qna/show";
+    }
 }

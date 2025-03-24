@@ -10,9 +10,12 @@ public class Article {
 
     String contents;
 
+    // 기본 생성자 추가 (Thymeleaf 바인딩을 위해 필요)
+    public Article() {}
+
     //기본 생성자
-    public Article (String writer, String title, String contents){
-        //this.id=id;
+    public Article (int id, String writer, String title, String contents){
+        this.id=id;
         this.writer=writer;
         this.title=title;
         this.contents = contents;

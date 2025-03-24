@@ -14,4 +14,9 @@ public interface ArticleRepository {
 
     //글 목록 조회하기
     List<Article> getAllArticles();
+
+    Article findById(int id);
+
+
+
 }

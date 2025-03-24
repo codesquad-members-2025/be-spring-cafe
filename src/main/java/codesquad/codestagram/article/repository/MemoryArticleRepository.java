@@ -12,7 +12,8 @@ public class MemoryArticleRepository implements ArticleRepository{
 
     @Override
     public Article save(Article article) {
-        articleStore.add(article);
+        int id = articleStore.size()+1;
+        articleStore.add(new Article(id, article.getWriter(), article.getTitle(), article.getContents()));
         return article;
     }
 
@@ -20,4 +21,11 @@ public class MemoryArticleRepository implements ArticleRepository{
     public List<Article> getAllArticles() {
         return articleStore;
     }
+
+    @Override
+    public Article findById(int id) {
+        return articleStore.get(id-1);
+    }
+
+
 }

@@ -19,20 +19,16 @@ public class UserController { //url을 읽어서 처리
 
     private final UserService userService;
 
-    //private final MemoryUserRepository memoryUserRepository; -> SOLID 위배
-    private final UserRepository userRepository;
 
     //생성자를 자동으로 주입
     @Autowired
-    public UserController(UserService userService, UserRepository userRepository, MemoryUserRepository memoryUserRepository, UserRepository userRepository1) {
+    public UserController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
-        this.userRepository = userRepository1;
     }
 
     // 회원가입 폼 페이지 렌더링
     @GetMapping("/form")
-    public String showSignupForm(Model model) {
-        model.addAttribute("user", new User("","","",""));
+    public String showSignupForm() {
         return "user/form";
     }
 
@@ -45,7 +41,7 @@ public class UserController { //url을 읽어서 처리
     @GetMapping
     public String listUsers(Model model) {
 
-        List<User> users = userRepository.findAll();
+        List<User> users = userService.getAllUsers();
         //회원 리스트를 뷰에 전달
         model.addAttribute("users", users);
         return "user/list";  // user/list.html 렌더링
@@ -54,7 +50,7 @@ public class UserController { //url을 읽어서 처리
     //회원 프로필 정보보기
     @GetMapping("/{userId}")
     public String showUserProfile(@PathVariable String userId, Model model){
-        Optional<User> user = userRepository.findByUserId(userId);
+        Optional<User> user = userService.findByUserId(userId);
         if (user.isPresent()) {
             model.addAttribute("user", user.get());
             return "user/profile";  // profile.html로 렌더링

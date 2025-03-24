@@ -32,4 +32,5 @@ public class MemoryUserRepository implements UserRepository{
     public List<User> findAll() {
         return store;
     }
+
 }
