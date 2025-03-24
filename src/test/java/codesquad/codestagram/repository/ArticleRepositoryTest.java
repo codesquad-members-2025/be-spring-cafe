@@ -10,7 +10,11 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class ArticleRepositoryTest {
 
-    private ArticleRepository articleRepository = new ArticleRepository();
+    private ArticleRepository articleRepository;
+
+    public ArticleRepositoryTest(ArticleRepository articleRepository) {
+        this.articleRepository = articleRepository;
+    }
 
     @Test
     @DisplayName("1번 글이 작성됩니다.")
