@@ -9,7 +9,7 @@ public class UserForm {
     private String changedPassword;
     private String email;
 
-    public UserForm() {
+    protected UserForm() {
     }
 
     public UserForm(String userId, String name, String password, String email, String changedPassword) {
