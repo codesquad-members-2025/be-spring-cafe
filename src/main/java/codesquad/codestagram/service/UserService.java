@@ -35,10 +35,37 @@ public class UserService {
     public List<User> findUsers() {
         return userRepository.findAll();
     }
+
     public Optional<User> findOne(Long userId) {
         return userRepository.findById(userId);
     }
+
     public Optional<User> findByUserId(String userId) {
         return userRepository.findByUserId(userId);
     }
+
+    /**
+     * 회원 정보 수정
+     */
+
+    public boolean updateUser(Long id, String currentPassword, String newPassword, String name, String email ) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        //실행 흐름상 유저가 없을 수는 없지만 . 사이에 누군가가 삭제했을 수도 있으니 넣어주기.
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            if (!user.getPassword().equals(currentPassword)) {
+                return false; // 비밀번호 틀림
+            }
+
+            user.setPassword(newPassword);
+            user.setName(name);
+            user.setEmail(email);
+
+            userRepository.save(user);
+            return true;
+        }
+        return false; // 유저 없음
+    }
+
+
 }
