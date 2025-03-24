@@ -59,7 +59,7 @@ public class UserForm {
         this.changedPassword = changedPassword;
     }
 
-    public User makeUser(){
+    public User toEntity(){
         return new User(userId, name, password, email);
     }
 }

@@ -23,7 +23,7 @@ public class UserService {
         result.ifPresent(u-> {
             throw new IllegalStateException("이미 존재하는 아이디입니다.");
         });
-        return userRepository.save(userform.makeUser());
+        return userRepository.save(userform.toEntity());
     }
 
     public List<User> findAllUsers(){
