@@ -3,13 +3,11 @@ package codesquad.codestagram.controller;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.UserForm;
 import codesquad.codestagram.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -75,5 +73,17 @@ public class UserController {
         }
         redirectAttributes.addFlashAttribute("alertMessage", "잘못된 입력입니다.");
         return "redirect:/users/"+userForm.getUserId()+"/form";
+    }
+
+    @PostMapping("/user/login")
+    public String login(@RequestParam String userId, @RequestParam String password, HttpSession session) {
+        try {
+            User user = userService.userLogin(userId, password);
+            session.setAttribute("loginUser", user);
+            return "redirect:/users/" + userId;
+        }
+        catch (NoSuchElementException e){
+            return "redirect:/user/login_failed";
+        }
     }
 }

@@ -45,4 +45,12 @@ public class UserService {
                 userForm.getName(),
                 userForm.getEmail());
     }
+
+    public User userLogin(String userId, String password){
+        User user = findByUserId(userId);
+        if(user.isPasswordValid(password)){
+            return user;
+        }
+        throw new NoSuchElementException("잘못된 비밀번호 입니다.");
+    }
 }
