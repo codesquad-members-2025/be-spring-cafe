@@ -31,11 +31,12 @@ public class ArticleRepositoryTest {
         article.setContent("반갑습니다.");
 
         //When
-        articleRepository.save(article);
-        Article expected = articleRepository.findById(1L).orElseThrow();
+        Article actual = articleRepository.save(article);
+        Article expected = articleRepository.findById(actual.getId()).orElseThrow();
 
         //Then
-        assertThat(article.getId()).isEqualTo(expected.getId());
+        assertThat(article.getTitle()).isEqualTo(expected.getTitle());
+        assertThat(article.getContent()).isEqualTo(expected.getContent());
     }
 
     @Test
