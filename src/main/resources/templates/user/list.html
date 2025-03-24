@@ -29,7 +29,7 @@
                     <td th:text="${user.name}">자바지기</td>
                     <td th:text="${user.email}">javajigi@sample.net</td>
                     <td>
-                        <a href="#" class="btn btn-success" role="button">수정</a>
+                        <a th:href="@{/users/{seq}/verify(seq=${user.seq})}" class="btn btn-success" role="button">수정</a>
                     </td>
                 </tr>
                 </tbody>
