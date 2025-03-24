@@ -18,12 +18,14 @@ import java.util.Optional;
 public class UserController { //url을 읽어서 처리
 
     private final UserService userService;
+    private final UserRepository userRepository;
 
 
     //생성자를 자동으로 주입
     @Autowired
-    public UserController(UserService userService, UserRepository userRepository) {
+    public UserController(UserService userService, UserRepository userRepository1) {
         this.userService = userService;
+        this.userRepository = userRepository1;
     }
 
     // 회원가입 폼 페이지 렌더링
@@ -69,6 +71,19 @@ public class UserController { //url을 읽어서 처리
         } else {
             return "error/404";  // 유저가 없을 경우 404 페이지로 이동
         }
+    }
+
+    //회원정보 수정
+    @PostMapping("{userId}/update")
+    public String updateUserInformation(@PathVariable String userId, @ModelAttribute User updatingUser){
+        User existingUser = userService.findOne(userId);
+        existingUser.setName(updatingUser.getName());
+        existingUser.setEmail(updatingUser.getEmail());
+        existingUser.setPassword(updatingUser.getPassword());
+
+        userRepository.save(existingUser);
+
+        return "redirect:/users";
     }
 
 }

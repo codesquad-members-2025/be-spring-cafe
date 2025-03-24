@@ -13,7 +13,7 @@ public class MemoryUserRepository implements UserRepository{
     private static final ArrayList<User> store = new ArrayList<>();
 
     @Override
-    public User save(User user) {
+    public User join(User user) {
         store.add(user);
         return user;
     }
@@ -31,6 +31,17 @@ public class MemoryUserRepository implements UserRepository{
     @Override
     public List<User> findAll() {
         return store;
+    }
+
+    @Override
+    public void save(User updatingUser) {
+        for(User user : store){
+            if(user.getUserId().equals(updatingUser.getUserId())){
+                user.setName(updatingUser.getName());
+                user.setEmail(updatingUser.getEmail());
+                user.setPassword(updatingUser.getPassword());
+            }
+        }
     }
 
 }

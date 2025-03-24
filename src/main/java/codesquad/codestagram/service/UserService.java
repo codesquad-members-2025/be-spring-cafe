@@ -21,7 +21,7 @@ public class UserService {
 
     // 회원 가입
     public void join(User user) {
-        userRepository.save(user);
+        userRepository.join(user);
     }
 
     // 모든 회원 조회
@@ -38,6 +38,16 @@ public class UserService {
         }
         return Optional.empty();
     }
+
+    public User findOne(String userId) {
+        for(User user : memoryUserRepository.findAll()){
+            if(user.getUserId().equals(userId)){
+                return user;
+            }
+        }
+        return null;
+    }
+
 
 
 /*
