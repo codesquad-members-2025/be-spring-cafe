@@ -8,7 +8,7 @@ public class ArticleForm {
     private String title;
     private String content;
 
-    public ArticleForm() {}
+    protected ArticleForm() {}
 
     public ArticleForm(String userId, String title, String content) {
         this.userId = userId;
