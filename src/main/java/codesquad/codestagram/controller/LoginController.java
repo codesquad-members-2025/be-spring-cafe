@@ -41,6 +41,6 @@ public class LoginController {
         session.setAttribute("loginUser", loginUser);
 
         //로그인 성공 처리 TODO
-        return "redirect:/users";
+        return "redirect:/";
     }
 }
