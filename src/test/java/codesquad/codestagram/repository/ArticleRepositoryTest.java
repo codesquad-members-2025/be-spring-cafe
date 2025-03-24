@@ -43,15 +43,15 @@ public class ArticleRepositoryTest {
     @Transactional
     void findAll() {
         //Given
-        Article article1 = new Article();
-        article1.setTitle("안녕하세요");
-        article1.setContent("반갑습니다.");
-        articleRepository.save(article1);
+        Article firstArticle = new Article();
+        firstArticle.setTitle("안녕하세요");
+        firstArticle.setContent("반갑습니다.");
+        articleRepository.save(firstArticle);
 
-        Article article2 = new Article();
-        article2.setTitle("반갑습니다.");
-        article2.setContent("안녕하세요.");
-        articleRepository.save(article2);
+        Article secoundArticle = new Article();
+        secoundArticle.setTitle("반갑습니다.");
+        secoundArticle.setContent("안녕하세요.");
+        articleRepository.save(secoundArticle);
 
         //When
         List<Article> articles = articleRepository.findAll();
