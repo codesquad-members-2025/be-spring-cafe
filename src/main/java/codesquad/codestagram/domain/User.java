@@ -1,9 +1,17 @@
 package codesquad.codestagram.domain;
 
 public class User {
+    private Long id;
     private String userId;
     private String name;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
     public String getUserId() {
         return userId;
     }
@@ -11,6 +19,8 @@ public class User {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+
 
     public String getName() {
         return name;

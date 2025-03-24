@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<head>
+    <title>글 작성</title>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="container py-5" id="main">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 rounded-3">
+                    <div class="card-header bg-primary text-white py-3">
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="post" action="/article">
+                            <h2 th:text="${article.title}"></h2>
+
+                            <div class="mb-4">
+                                <textarea class="form-control" id="postContent" rows="10" name="content"
+                                          th:text="${article.content}" readonly></textarea>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
