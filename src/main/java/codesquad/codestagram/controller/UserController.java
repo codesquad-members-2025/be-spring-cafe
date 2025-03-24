@@ -1,24 +1,19 @@
 package codesquad.codestagram.controller;
 
-import codesquad.codestagram.repository.UserRepository;
 import codesquad.codestagram.service.UserService;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class UserController {
 
-    private final UserRepository userRepository;
     private final UserService userService;
 
-    public UserController(UserRepository userRepository, UserService userService) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
