@@ -23,7 +23,7 @@ public class MainController {
     public String list(Model model) {
         List<Article> articles = articleService.findAllArticle();
         model.addAttribute("articles", articles);
-        return "/qna/show";
+        return "index";
     }
 
 //    @GetMapping("/users")
