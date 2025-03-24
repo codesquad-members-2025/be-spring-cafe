@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class ArticleRepositoryTest {
 
     @Test
     @DisplayName("1번 글이 작성됩니다.")
+    @Transactional
     void save() {
         //Given
         Article article = new Article();
@@ -38,6 +40,7 @@ public class ArticleRepositoryTest {
 
     @Test
     @DisplayName("모든 글의 갯수는 2개입니다.")
+    @Transactional
     void findAll() {
         //Given
         Article article1 = new Article();
