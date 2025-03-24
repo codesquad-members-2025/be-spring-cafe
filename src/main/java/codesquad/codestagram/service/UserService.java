@@ -39,16 +39,10 @@ public class UserService {
     public boolean updateUser(UserForm userForm){
         String userId = userForm.getUserId();
         User user = findByUserId(userId);
-        if(isPasswordValid(user,userForm.getPassword())){
-            user.setPassword(userForm.getChangedPassword());
-            user.setName(userForm.getName());
-            user.setEmail(userForm.getEmail());
-            return true;
-        }
-        return false;
-    }
-
-    private boolean isPasswordValid(User user,String password){
-        return user.getPassword().equals(password);
+        return user.updateIfPasswordValid(
+                userForm.getPassword(),
+                userForm.getChangedPassword(),
+                userForm.getName(),
+                userForm.getEmail());
     }
 }
