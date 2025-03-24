@@ -1,19 +1,12 @@
 package codesquad.codestagram.Controller;
 
 public class UserForm {
-    private Long id;
     private String userId;
     private String name;
     private String email;
     private String password;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getUserId() {
         return userId;
