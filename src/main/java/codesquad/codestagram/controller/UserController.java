@@ -59,4 +59,16 @@ public class UserController { //url을 읽어서 처리
         }
     }
 
+    //회원정보 수정 화면
+    @GetMapping("/{userId}/form")
+    public String getUserInformation(@PathVariable String userId, Model model){
+        Optional<User> user = userService.findByUserId(userId);
+        if (user.isPresent()) {
+            model.addAttribute("user", user.get());
+            return "user/updateForm";  // updateForm.html로 렌더링
+        } else {
+            return "error/404";  // 유저가 없을 경우 404 페이지로 이동
+        }
+    }
+
 }
