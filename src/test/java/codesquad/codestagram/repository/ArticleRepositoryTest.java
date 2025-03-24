@@ -3,15 +3,19 @@ package codesquad.codestagram.repository;
 import codesquad.codestagram.domain.Article;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+@SpringBootTest
 public class ArticleRepositoryTest {
 
-    private ArticleRepository articleRepository;
+    private final ArticleRepository articleRepository;
 
+    @Autowired
     public ArticleRepositoryTest(ArticleRepository articleRepository) {
         this.articleRepository = articleRepository;
     }
