@@ -13,4 +13,5 @@ UserController는 UserService를 통해 회원을 추가하거나 목록을 조�
 ## 스프링 카페 - DB에 저장하기
 H2 데이터 베이스를 추가하고 스프링 데이터 JPA를 사용해서 연결.  
 추가로 에러가 발생하면 에러 메시지를 출력하도록 html과 컨트롤러 수정.  
-
+배포 url - https://port-0-be-spring-cafe-m8ic5llb2a1ee439.sel4.cloudtype.app/
+서버가 주기적으로 꺼져서 안될수도 있음!
