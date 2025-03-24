@@ -37,8 +37,12 @@ public class User {
         return userId;
     }
 
+    public boolean isPasswordValid(String password) {
+        return this.password.equals(password);
+    }
+
     public boolean updateIfPasswordValid(String password,String changedPassword, String name, String email) {
-        if(this.password.equals(password)){
+        if(isPasswordValid(password)){
             this.name = name;
             this.email = email;
             this.password = changedPassword;
