@@ -13,7 +13,6 @@ public class ArticleController {
 
     private final ArticleRepository articleRepository;
 
-    @Autowired
     public ArticleController(ArticleRepository articleRepository) {
         this.articleRepository = articleRepository;
     }

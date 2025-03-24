@@ -16,7 +16,6 @@ public class MainController {
 
     private final ArticleRepository articleRepository;
 
-    @Autowired
     public MainController(ArticleRepository articleRepository) {
         this.articleRepository = articleRepository;
     }
