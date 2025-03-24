@@ -17,6 +17,7 @@ import java.util.Optional;
 @Controller
 public class ArticleController {
 
+
     private final ArticleRepository articleRepository;
     private final ArticleService articleService;
 
@@ -33,10 +34,12 @@ public class ArticleController {
 
     @GetMapping("/")
     public String showArticles(Model model){
+
         List<Article> articleList = articleService.findAll();
         model.addAttribute("articles", articleList);
         return "article/index";
     }
+
 
     @GetMapping("/articles/{id}")
     public String showArticle(@PathVariable Long id, Model model){

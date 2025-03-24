@@ -91,7 +91,9 @@
                     <td th:text="${user.name}"></td>
                     <td th:text="${user.email}"></td>
                     <td>
+
                         <a th:href="@{/users/{id}/form (id=${user.id})}" class="btn btn-success" role="button">수정</a>
+
                     </td>
                 </tr>
               </tbody>
