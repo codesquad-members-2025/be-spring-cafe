@@ -74,7 +74,7 @@ public class UserController { //url을 읽어서 처리
     }
 
     //회원정보 수정
-    @PostMapping("{userId}/update")
+    @PutMapping("{userId}/update")
     public String updateUserInformation(@PathVariable String userId, @ModelAttribute User updatingUser){
         User existingUser = userService.findOne(userId);
         existingUser.setName(updatingUser.getName());

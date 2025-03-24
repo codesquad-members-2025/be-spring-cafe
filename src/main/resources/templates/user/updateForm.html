@@ -76,6 +76,8 @@
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default content-main"> <!-- <form name="question" method="get"   th:action="@{/users/{userId}/form(userId=${user.userId})}" > -->
             <form name="question" method="post" th:object="${user}"   th:action="@{/users/{userId}/update(userId=${user.userId})}" >
+                <!-- Hidden 필드 추가 -->
+                <input type="hidden" name="_method" value="PUT" />
                 <div class="form-group">
                     <label for="userId">사용자 아이디</label>
                     <input class="form-control" type="userId"  id="userId" name="userId" th:value="${user.userId}" required placeholder="User ID">
