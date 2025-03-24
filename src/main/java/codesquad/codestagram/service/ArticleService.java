@@ -17,13 +17,13 @@ public class ArticleService {
     }
 
     // 게시글 등록
-    public Long ask(Article article) {
+    public int ask(Article article) {
         articleRepository.save(article);
         return article.getId();
     }
 
-    public Optional<Article> findOneArticle(Long articleId) {
-        return articleRepository.findByArticleId(articleId);
+    public Optional<Article> findOneArticle(int id) {
+        return articleRepository.findByArticleId(id);
     }
 
     public List<Article> findAllArticle() {
