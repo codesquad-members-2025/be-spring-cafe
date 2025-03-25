@@ -8,7 +8,6 @@ import codesquad.codestagram.repository.ArticleRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class ArticleService {
@@ -34,15 +33,14 @@ public class ArticleService {
 
     public Article findArticleById(int id) {
         Article article = articleRepository.findById(id)
-                .orElseThrow(ArticleNotFoundException::new);
+                .orElseThrow(() -> new ArticleNotFoundException("해당하는 ID("+ id +")의 게시글을 찾을 수 없습니다."));
         return article;
     }
 
     public Article createArticleAndSave(ArticleForm articleForm) {
         User user = userService.findByUserId(articleForm.getUserId());
         Article article = articleForm.createParsedArticle(user);
-        saveArticle(article);
-        return article;
+        return saveArticle(article);
     }
 
     private Article saveArticle(Article article) {
