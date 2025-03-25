@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Controller
 public class UserController {
@@ -31,13 +30,8 @@ public class UserController {
 
     @PostMapping("/user/create")
     public String create(UserForm userForm, RedirectAttributes redirectAttributes) {
-        try{
-            userService.join(userForm);
-            return "redirect:/user/list";
-        } catch(IllegalStateException e) {
-            redirectAttributes.addFlashAttribute("alertMessage", e.getMessage());
-            return "redirect:/user/form";
-        }
+        userService.join(userForm);
+        return "redirect:/user/list";
     }
 
     @GetMapping("/user/list")
@@ -49,33 +43,23 @@ public class UserController {
 
     @GetMapping("/users/{userId}")
     public String showProfile(@PathVariable String userId, Model model) {
-        try{
-            User user = userService.findByUserId(userId);
-            model.addAttribute("user", user);
-            return "user/profile";
-        } catch (NoSuchElementException e){
-            model.addAttribute("alertMessage", e.getMessage());
-            return "index";
-        }
+        User user = userService.findByUserId(userId);
+        model.addAttribute("user", user);
+        return "user/profile";
     }
 
     @GetMapping("/users/{userId}/form")
     public String showUpdateForm(@PathVariable String userId, Model model, HttpSession session) {
-        try{
-            User loginUser = (User) session.getAttribute("loginUser");
-            if(loginUser == null) {
-                return "redirect:/";
-            }
-            User user = userService.findByUserId(userId);
-            if(loginUser.equals(user)){
-                model.addAttribute("user", user);
-                return "user/update-form";
-            }
-            return "user/list";
-        } catch (NoSuchElementException e){
-            model.addAttribute("alertMessage", e.getMessage());
-            return "user/list";
+        User loginUser = (User) session.getAttribute("loginUser");
+        if(loginUser == null) {
+            return "redirect:/";
         }
+        User user = userService.findByUserId(userId);
+        if(loginUser.equals(user)){
+            model.addAttribute("user", user);
+            return "user/update-form";
+        }
+        return "user/list";
     }
 
     @PutMapping("/users/{userId}/update")
@@ -99,19 +83,14 @@ public class UserController {
 
     @PostMapping("/user/login")
     public String login(@RequestParam String userId, @RequestParam String password, HttpServletRequest request) {
-        try {
-            User user = userService.userLogin(userId, password);
-            HttpSession oldSession = request.getSession(false);
-            if (oldSession != null) {
-                oldSession.invalidate();
-            }
-            HttpSession newSession = request.getSession(true);
-            newSession.setAttribute("loginUser", user);
-            return "redirect:/users/" + userId;
+        User user = userService.userLogin(userId, password);
+        HttpSession oldSession = request.getSession(false);
+        if (oldSession != null) {
+            oldSession.invalidate();
         }
-        catch (NoSuchElementException e){
-            return "redirect:/user/login_failed";
-        }
+        HttpSession newSession = request.getSession(true);
+        newSession.setAttribute("loginUser", user);
+        return "redirect:/users/" + userId;
     }
 
     @PostMapping("/user/logout")
