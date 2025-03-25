@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 수정</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .edit-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .edit-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            font-weight: 500;
+            color: #495057;
+        }
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+        .btn-update {
+            width: 100%;
+            padding: 12px;
+            background-color: #0d6efd;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            margin-top: 20px;
+            transition: background-color 0.2s;
+        }
+        .btn-update:hover {
+            background-color: #0b5ed7;
+        }
+        .btn-cancel {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #6c757d;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            margin-top: 10px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        .btn-cancel:hover {
+            background-color: #5c636a;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-light">
+<div class="container">
+    <div class="edit-container">
+        <h2 class="edit-title">게시글 수정</h2>
+        <form th:action="@{/qna/articles/{articleId}/edit(articleId=${article.id})}" method="post">
+            <input type="hidden" name="_method" value="put">
+
+            <div class="form-group">
+                <label for="title" class="form-label">제목</label>
+                <input type="text" class="form-control" id="title" name="title" th:value="${article.title}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="content" class="form-label">내용</label>
+                <textarea class="form-control" id="content" name="content" rows="10" th:text="${article.content}" required></textarea>
+            </div>
+
+            <button type="submit" class="btn-update">수정하기</button>
+        </form>
+        <a th:href="@{/qna/articles/{articleId}(articleId=${article.id})}" class="btn-cancel">취소</a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
