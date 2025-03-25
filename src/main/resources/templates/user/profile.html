@@ -92,7 +92,6 @@
         <div th:if="${session.loginUser != null and session.loginUser.id == user.id}">
             <a th:href="@{/users/{userId}/edit(userId=${user.id})}" class="btn-edit">프로필 수정</a>
         </div>
-        <a th:href="@{/users/{userId}/edit(userId=${user.id})}" class="btn-profile-edit">프로필 수정하기</a>
         <a th:href="@{/users}" class="btn-list">목록으로</a>
     </div>
 </div>

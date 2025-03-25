@@ -7,6 +7,7 @@ import codesquad.codestagram.dto.request.ArticleUpdateRequest;
 import codesquad.codestagram.dto.request.ArticleWriteRequest;
 import codesquad.codestagram.service.ArticleService;
 import codesquad.codestagram.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Controller
 @RequestMapping("/qna")
 public class ArticleController {
@@ -78,11 +80,12 @@ public class ArticleController {
         public String showUpdateArticleForm(@Login User user, @PathVariable("articleId")Long articleId,Model model){
 
         Optional<Article> article = articleService.findArticleById(articleId);
+
         if (article.isEmpty()) {
             return "redirect:/qna";
         }
 
-        if(article.get().getUser()!=user || user==null){
+        if(!article.get().getUser().equals(user) || user==null){
             return "redirect:/login";
         }
 

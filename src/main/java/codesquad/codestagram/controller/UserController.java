@@ -81,7 +81,7 @@ public class UserController {
     }
 
     // 회원 정보 업데이트
-    @PutMapping("/{userId}/form")
+    @PostMapping("/{userId}/form")
     public String updateUserProfile(@PathVariable("userId") Long userId,
                                     @RequestParam("password") String password,
                                     @RequestParam("name") String name,

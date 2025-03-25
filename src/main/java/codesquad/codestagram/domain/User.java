@@ -51,6 +51,13 @@ public class User {
         article.setUser(this);
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        User user = (User) o;
+        return id.equals(user.id);
+    }
+
     // Getter & Setter
     public Long getId() {
         return id;
