@@ -2,6 +2,7 @@ package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.UserForm;
+import codesquad.codestagram.exception.NotLoggedInException;
 import codesquad.codestagram.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -52,7 +53,7 @@ public class UserController {
     public String showUpdateForm(@PathVariable String userId, Model model, HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
         if(loginUser == null) {
-            return "redirect:/";
+            throw new NotLoggedInException();
         }
         User user = userService.findByUserId(userId);
         if(loginUser.equals(user)){
@@ -66,7 +67,7 @@ public class UserController {
     public String updateForm(UserForm userForm, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
         if(loginUser == null) {
-            return "redirect:/";
+            throw new NotLoggedInException();
         }
         boolean isUpdated = userService.updateUser(loginUser, userForm);
         if(isUpdated) {
