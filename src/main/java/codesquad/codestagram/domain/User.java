@@ -12,9 +12,6 @@ public class User {
 
     String email;
 
-    // 기본 생성자 -> 객체를 먼저 생성하고 값을 나중에 설정할 수 있도록 함
-    public User() {}
-
     // 생성자 -> 객체를 생성하면서 동시에 값을 설정
     public User(String userId, String password, String name, String email) {
         this.userId = userId;

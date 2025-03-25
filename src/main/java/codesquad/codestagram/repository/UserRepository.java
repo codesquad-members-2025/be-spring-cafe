@@ -8,9 +8,11 @@ import java.util.Optional;
 public interface UserRepository {
 
     //회원가입
-    User save(User user);
+    User join(User user);
 
     Optional<User> findByUserId(String userId);
 
     List<User> findAll();
+
+    void save(User user);
 }
