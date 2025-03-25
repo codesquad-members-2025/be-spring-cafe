@@ -19,7 +19,8 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="/">Posts</a></li>
                 {{#loginUser}}
-                <li><a href="#" role="button">로그아웃</a></li>
+                <form id="logoutForm" method="post" action="/user/logout" style="display: none;"></form>
+                <li><a href="#" onclick="document.getElementById('logoutForm').submit(); return false;">로그아웃</a></li>
                 <li><a href="#" role="button">개인정보수정</a></li>
                 {{/loginUser}}
 
