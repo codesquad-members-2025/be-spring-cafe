@@ -56,7 +56,8 @@ public class ArticleController {
 
         try {
             Article article = articleService.findArticleById(articleId);
-
+            boolean isArticleAuthor = articleService.isArticleAuthor(session, article);
+            model.addAttribute(AUTHOR, isArticleAuthor);
             model.addAttribute(article);
         }catch (IllegalArgumentException e){
             redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
