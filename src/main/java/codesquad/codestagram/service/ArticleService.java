@@ -5,10 +5,13 @@ import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.ArticleDto.ArticleRequestDto;
 import codesquad.codestagram.repository.ArticleRepository;
 import codesquad.codestagram.repository.UserRepository;
+import jakarta.annotation.PostConstruct;
 import java.util.List;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
 @Service
+@DependsOn("userService")
 public class ArticleService {
     public static final String NO_USER = "유저가 존재하지 않습니다.";
     public static final String NO_ARTICLE = "게시글이 존재하지 않습니다.";
@@ -19,7 +22,14 @@ public class ArticleService {
         this.articleRepository = articleRepository;
         this.userRepository = userRepository;
     }
-
+    @PostConstruct
+    public void initArticle() {
+        User user1 = userRepository.findById(1L).orElseThrow();
+        User user2 = userRepository.findById(2L).orElseThrow();
+        articleRepository.save(new Article("test1", "content1", user1));
+        articleRepository.save(new Article("test2", "content2", user1));
+        articleRepository.save(new Article("tes3", "content3", user2));
+    }
     public void saveArticle(ArticleRequestDto requestDto) {
         User user = userRepository.findByUserId(requestDto.getUserId())
                 .orElseThrow(()->new IllegalArgumentException(NO_USER));
