@@ -1,10 +1,17 @@
 package codesquad.codestagram.controller;
 
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Article {
 
-    private static int count = 0;
-
-    private int index;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String writer;
 
@@ -13,15 +20,14 @@ public class Article {
     private String contents;
 
     public Article(String writer, String title, String contents) {
-        this.index = ++count;
         this.writer = writer;
         this.title = title;
         this.contents = contents;
     }
 
-    public int getIndex() {
-        return index;
-    }
+    protected Article() {}
+
+    public Long getId() {return id;}
 
     public String getWriter() {
         return writer;

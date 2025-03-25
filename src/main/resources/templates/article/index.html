@@ -94,7 +94,9 @@
                   <div class="wrap">
                       <div class="main">
                           <strong class="subject">
-                              <a th:href="@{/articles/{index}(index=${article.index})}" th:text="${article.title}"></a>
+
+                              <a th:href="@{/articles/{id}(id=${article.id})}" th:text="${article.title}"></a>
+
                           </strong>
                           <div class="auth-info">
                               <i class="icon-add-comment"></i>

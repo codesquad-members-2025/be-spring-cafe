@@ -86,12 +86,14 @@
                 <tr th:each="user, stat : ${users}">
                     <th scope="row" th:text="${stat.count}">1</th>
                     <td>
-                        <a th:href="@{/users/{userid}(userid=${user.userId})}" th:text="${user.userId}"></a>
+                        <a th:href="@{/users/{id}(id=${user.id})}" th:text="${user.userId}"></a>
                     </td>
                     <td th:text="${user.name}"></td>
                     <td th:text="${user.email}"></td>
                     <td>
-                        <a th:href="@{/users/{userid}/form (userid=${user.userId})}" class="btn btn-success" role="button">수정</a>
+
+                        <a th:href="@{/users/{id}/form (id=${user.id})}" class="btn btn-success" role="button">수정</a>
+
                     </td>
                 </tr>
               </tbody>
