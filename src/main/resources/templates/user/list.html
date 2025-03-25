@@ -45,7 +45,7 @@
                     <td th:text="${user.name}"></td>
                     <td th:text="${user.email}"></td>
                     <td>
-                        <a th:href="@{/user/edit/{userId}(userId=${user.userId})}" class="btn btn-success">수정</a>
+                        <a th:href="@{/users/{userId}/form(userId=${user.userId})}" class="btn btn-success">수정</a>
                     </td>
                 </tr>
                 </tbody>
