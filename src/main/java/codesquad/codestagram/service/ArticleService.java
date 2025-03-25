@@ -3,6 +3,7 @@ package codesquad.codestagram.service;
 import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.ArticleForm;
+import codesquad.codestagram.exception.ArticleNotFoundException;
 import codesquad.codestagram.repository.ArticleRepository;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,7 @@ public class ArticleService {
 
     public Article findArticleById(int id) {
         Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당하는 게시물이 없습니다."));
+                .orElseThrow(ArticleNotFoundException::new);
         return article;
     }
 
