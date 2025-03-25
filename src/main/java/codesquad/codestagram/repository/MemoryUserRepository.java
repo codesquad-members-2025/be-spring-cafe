@@ -1,3 +1,4 @@
+/*
 package codesquad.codestagram.repository;
 
 import codesquad.codestagram.domain.User;
@@ -45,3 +46,4 @@ public class MemoryUserRepository implements UserRepository{
     }
 
 }
+*/
