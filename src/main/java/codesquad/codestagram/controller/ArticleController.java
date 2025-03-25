@@ -53,33 +53,37 @@ public class ArticleController {
     @GetMapping("articles/{articleId}")
     public String showArticleDetail(@PathVariable Long articleId, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         if (checkLogin(session)) return "redirect:/login";
-
+        Article article;
         try {
-            Article article = articleService.findArticleById(articleId);
-            boolean isArticleAuthor = articleService.isArticleAuthor(session, article);
-            model.addAttribute(AUTHOR, isArticleAuthor);
-            model.addAttribute(article);
+            article = articleService.findArticleById(articleId);
         }catch (IllegalArgumentException e){
             redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return "redirect:/";
         }
+
+        boolean isArticleAuthor = articleService.isArticleAuthor(session, article);
+        model.addAttribute(AUTHOR, isArticleAuthor);
+        model.addAttribute(article);
+
         return "articles/show";
     }
 
     @GetMapping("articles/{articleId}/edit")
     public String editArticleForm(@PathVariable Long articleId, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         if (checkLogin(session)) return "redirect:/login";
-
+        Article article;
         try {
-            Article article = articleService.findArticleById(articleId);
+            article = articleService.findArticleById(articleId);
 
             articleService.matchArticleAuthor(session, article);
-            model.addAttribute(AUTHOR, true);
-            model.addAttribute(article);
         }catch (IllegalArgumentException | AccessDeniedException e){
             redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return "redirect:/articles/" + articleId;
         }
+
+        model.addAttribute(AUTHOR, true);
+        model.addAttribute(article);
+
         return "articles/edit";
     }
 
@@ -88,16 +92,19 @@ public class ArticleController {
                                 HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         if (checkLogin(session)) return "redirect:/login";
 
+        Article article;
         try {
-            Article article = articleService.findArticleById(articleId);
+            article = articleService.findArticleById(articleId);
 
             articleService.matchArticleAuthor(session, article);
-            model.addAttribute(AUTHOR, true);
-            articleService.updateArticle(articleId, title, content);
         }catch (IllegalArgumentException | AccessDeniedException e){
             redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return "redirect:/articles/" + articleId;
         }
+
+        model.addAttribute(AUTHOR, true);
+        articleService.updateArticle(articleId, title, content);
+
         return "redirect:/articles/" + articleId;
     }
 
@@ -105,8 +112,9 @@ public class ArticleController {
     public String deleteArticle(@PathVariable Long articleId, HttpSession session, RedirectAttributes redirectAttributes) {
         if (checkLogin(session)) return "redirect:/login";
 
+        Article article;
         try {
-            Article article = articleService.findArticleById(articleId);
+            article = articleService.findArticleById(articleId);
             articleService.matchArticleAuthor(session, article);
             articleService.delete(articleId);
         }catch (IllegalArgumentException | AccessDeniedException  e){

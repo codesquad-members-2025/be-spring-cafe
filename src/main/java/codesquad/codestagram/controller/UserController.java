@@ -39,27 +39,29 @@ public class UserController {
 
     @GetMapping("/users/{id}")
     public String showUserProfile(@PathVariable Long id, Model model) {
+        User user;
         try{
-            User user = userService.getUserById(id);
-            model.addAttribute(USER, user);
+            user = userService.getUserById(id);
         }catch (IllegalArgumentException e){
             model.addAttribute(ERROR_MESSAGE, e.getMessage());
         }
+
+        model.addAttribute(USER, user);
         return "user/profile";
     }
 
     @GetMapping("/users/{id}/update")
     public String editUser(Model model, @PathVariable Long id, HttpSession httpSession, RedirectAttributes redirectAttributes) {
         if (ArticleController.checkLogin(httpSession)) return "redirect:/login";
-
+        User user;
         try{
-            User user = (User) httpSession.getAttribute(SESSIONED_USER);
+            user = (User) httpSession.getAttribute(SESSIONED_USER);
             user.matchId(id);
-            model.addAttribute(USER, user);
         }catch (IllegalArgumentException e){
             redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return "redirect:/users";
         }
+        model.addAttribute(USER, user);
         return "user/updateForm";  // 정보 수정 페이지로 이동
     }
 
