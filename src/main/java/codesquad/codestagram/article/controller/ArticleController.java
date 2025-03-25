@@ -21,7 +21,7 @@ public class ArticleController {
     //글쓰기 폼 렌더링
     @GetMapping("/qna/form")
     public String showArticleForm(){
-        return "/qna/form";
+        return "qna/form";
     }
 
     //게시글 데이터 저장하기
@@ -45,7 +45,7 @@ public class ArticleController {
     public String getArticleById(@PathVariable("id") Long id, Model model) {
         Article article = articleService.getArticleById(id);
         model.addAttribute("article", article);
-        return "/qna/show";
+        return "qna/show";
     }
 
 }
