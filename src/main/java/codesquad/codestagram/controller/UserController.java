@@ -3,18 +3,13 @@ package codesquad.codestagram.controller;
 import static codesquad.codestagram.controller.AuthController.SESSIONED_USER;
 
 import codesquad.codestagram.domain.User;
-import codesquad.codestagram.dto.UserDto;
 import codesquad.codestagram.service.UserService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -24,6 +19,7 @@ public class UserController {
     public static final String USER = "user";
     public static final String PASSWORD_VALID = "passwordValid";
     public static final String ERROR_MESSAGE = "errorMessage";
+    public static final String NOT_EQUAL_ID = "아이디가 일치하지 않습니다.";
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -54,14 +50,13 @@ public class UserController {
     @GetMapping("/users/{id}/update")
     public String editUser(Model model, @PathVariable Long id, HttpSession httpSession, RedirectAttributes redirectAttributes) {
         if (ArticleController.checkLogin(httpSession)) return "redirect:/login";
-        User user;
-        try{
-            user = (User) httpSession.getAttribute(SESSIONED_USER);
-            user.matchId(id);
-        }catch (IllegalArgumentException e){
-            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
+        User user = (User) httpSession.getAttribute(SESSIONED_USER);
+
+        if(!user.matchId(id)){
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, NOT_EQUAL_ID);
             return "redirect:/users";
         }
+
         model.addAttribute(USER, user);
         return "user/updateForm";  // 정보 수정 페이지로 이동
     }

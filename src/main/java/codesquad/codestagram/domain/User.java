@@ -60,9 +60,7 @@ public class User {
     }
 
     public boolean matchId(Long id){
-        if(!this.id.equals(id))
-            throw new IllegalArgumentException("아이디가 일치하지 않습니다.");
-        return true;
+        return this.id.equals(id);
     }
 
 }
