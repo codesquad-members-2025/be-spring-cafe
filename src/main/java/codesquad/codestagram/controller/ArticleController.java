@@ -54,10 +54,7 @@ public class ArticleController {
         try {
             Article article = articleService.findArticleById(articleId);
 
-            User sessionedUser = (User) session.getAttribute(SESSIONED_USER);
-            if (sessionedUser.getUserId().equals(article.getUser().getUserId())) {
-                model.addAttribute("author", true);
-            }
+            matchArticleAuthor(session, model, article);
 
             model.addAttribute(article);
         }catch (IllegalArgumentException e){
@@ -69,11 +66,12 @@ public class ArticleController {
 
     @GetMapping("articles/{articleId}/edit")
     public String editArticleForm(@PathVariable Long articleId, Model model, HttpSession session) {
-
         if (checkLogin(session)) return "redirect:/login";
 
         try {
             Article article = articleService.findArticleById(articleId);
+
+            matchArticleAuthor(session, model, article);
             model.addAttribute(article);
         }catch (IllegalArgumentException e){
             model.addAttribute(ERROR_MESSAGE, e.getMessage());
@@ -88,12 +86,22 @@ public class ArticleController {
         if (checkLogin(session)) return "redirect:/login";
 
         try {
+            Article article = articleService.findArticleById(articleId);
+
+            matchArticleAuthor(session, model, article);
             articleService.updateArticle(articleId, title, content);
         }catch (IllegalArgumentException e){
             model.addAttribute(ERROR_MESSAGE, e.getMessage());
             return "redirect:/articles/" + articleId;
         }
         return "redirect:/articles/" + articleId;
+    }
+
+    private void matchArticleAuthor(HttpSession session, Model model, Article article) {
+        User sessionedUser = (User) session.getAttribute(SESSIONED_USER);
+        if (sessionedUser.getUserId().equals(article.getUser().getUserId())) {
+            model.addAttribute("author", true);
+        }
     }
 
     @DeleteMapping("articles/{articleId}")
