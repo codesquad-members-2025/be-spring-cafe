@@ -2,7 +2,9 @@ package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.UserForm;
+import codesquad.codestagram.exception.InvalidPasswordException;
 import codesquad.codestagram.exception.NotLoggedInException;
+import codesquad.codestagram.exception.UnauthorizedAccessException;
 import codesquad.codestagram.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -60,7 +62,7 @@ public class UserController {
             model.addAttribute("user", user);
             return "user/update-form";
         }
-        return "user/list";
+        throw new UnauthorizedAccessException("다른 유저의 정보는 수정할 수 없습니다.");
     }
 
     @PutMapping("/users/{userId}/update")
@@ -73,8 +75,7 @@ public class UserController {
         if(isUpdated) {
             return "redirect:/users/" + userForm.getUserId();
         }
-        redirectAttributes.addFlashAttribute("alertMessage", "잘못된 입력입니다.");
-        return "redirect:/users/"+userForm.getUserId()+"/form";
+        throw new InvalidPasswordException();
     }
 
     @GetMapping("/user/login")
