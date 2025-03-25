@@ -8,6 +8,7 @@ import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.ArticleDto;
 import codesquad.codestagram.service.ArticleService;
 import jakarta.servlet.http.HttpSession;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,10 +19,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class ArticleController {
     public static final String ARTICLES = "articles";
+    public static final String AUTHOR = "author";
 
     private final ArticleService articleService;
 
@@ -48,70 +51,65 @@ public class ArticleController {
     }
 
     @GetMapping("articles/{articleId}")
-    public String showArticleDetail(@PathVariable Long articleId, Model model, HttpSession session) {
+    public String showArticleDetail(@PathVariable Long articleId, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         if (checkLogin(session)) return "redirect:/login";
 
         try {
             Article article = articleService.findArticleById(articleId);
 
-            matchArticleAuthor(session, model, article);
-
             model.addAttribute(article);
         }catch (IllegalArgumentException e){
-            model.addAttribute(ERROR_MESSAGE, e.getMessage());
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return "redirect:/";
         }
         return "articles/show";
     }
 
     @GetMapping("articles/{articleId}/edit")
-    public String editArticleForm(@PathVariable Long articleId, Model model, HttpSession session) {
+    public String editArticleForm(@PathVariable Long articleId, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         if (checkLogin(session)) return "redirect:/login";
 
         try {
             Article article = articleService.findArticleById(articleId);
 
-            matchArticleAuthor(session, model, article);
+            articleService.matchArticleAuthor(session, article);
+            model.addAttribute(AUTHOR, true);
             model.addAttribute(article);
-        }catch (IllegalArgumentException e){
-            model.addAttribute(ERROR_MESSAGE, e.getMessage());
+        }catch (IllegalArgumentException | AccessDeniedException e){
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return "redirect:/articles/" + articleId;
         }
         return "articles/edit";
     }
 
     @PutMapping("articles/{articleId}")
-    public String updateArticle(@PathVariable Long articleId, @RequestParam String title,
-                              @RequestParam String content, HttpSession session, Model model) {
+    public String updateArticle(@PathVariable Long articleId, @RequestParam String title, @RequestParam String content,
+                                HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         if (checkLogin(session)) return "redirect:/login";
 
         try {
             Article article = articleService.findArticleById(articleId);
 
-            matchArticleAuthor(session, model, article);
+            articleService.matchArticleAuthor(session, article);
+            model.addAttribute(AUTHOR, true);
             articleService.updateArticle(articleId, title, content);
-        }catch (IllegalArgumentException e){
-            model.addAttribute(ERROR_MESSAGE, e.getMessage());
+        }catch (IllegalArgumentException | AccessDeniedException e){
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return "redirect:/articles/" + articleId;
         }
         return "redirect:/articles/" + articleId;
     }
 
-    private void matchArticleAuthor(HttpSession session, Model model, Article article) {
-        User sessionedUser = (User) session.getAttribute(SESSIONED_USER);
-        if (sessionedUser.getUserId().equals(article.getUser().getUserId())) {
-            model.addAttribute("author", true);
-        }
-    }
-
     @DeleteMapping("articles/{articleId}")
-    public String deleteArticle(@PathVariable Long articleId, HttpSession session, Model model) {
+    public String deleteArticle(@PathVariable Long articleId, HttpSession session, RedirectAttributes redirectAttributes) {
         if (checkLogin(session)) return "redirect:/login";
 
         try {
+            Article article = articleService.findArticleById(articleId);
+            articleService.matchArticleAuthor(session, article);
             articleService.delete(articleId);
-        }catch (IllegalArgumentException e){
-            model.addAttribute(ERROR_MESSAGE, e.getMessage());
+        }catch (IllegalArgumentException | AccessDeniedException  e){
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return "redirect:/";
         }
         return "redirect:/";
