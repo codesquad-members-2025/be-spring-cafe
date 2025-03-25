@@ -29,6 +29,11 @@ public class ArticleController {
         return "index";
     }
 
+    @GetMapping("/qna/form")
+    public String form(Model model) {
+        return "qna/form";
+    }
+
     @PostMapping("/qna/create")
     public String create(ArticleForm articleForm, RedirectAttributes redirectAttributes) {
         try{
@@ -37,6 +42,11 @@ public class ArticleController {
             redirectAttributes.addFlashAttribute("alertMessage", e.getMessage());
         }
         return "redirect:/";
+    }
+
+    @GetMapping("/qna/show")
+    public String show(Model model) {
+        return "qna/show";
     }
 
     @GetMapping("/articles/{index}")

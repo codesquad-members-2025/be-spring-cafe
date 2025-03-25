@@ -23,6 +23,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/user/form")
+    public String userForm() {
+        return "user/form";
+    }
+
     @PostMapping("/user/create")
     public String create(UserForm userForm, RedirectAttributes redirectAttributes) {
         try{
