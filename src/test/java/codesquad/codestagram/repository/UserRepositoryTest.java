@@ -16,14 +16,14 @@ public class UserRepositoryTest {
     private final UserRepository userRepository;
     private SoftAssertions softly;
 
-    @BeforeEach
-    void setUp() {
-        this.softly = new SoftAssertions();
-    }
-
     @Autowired
     public UserRepositoryTest(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @BeforeEach
+    void setUp() {
+        this.softly = new SoftAssertions();
     }
 
     @Test
@@ -73,13 +73,14 @@ public class UserRepositoryTest {
     void update() {
         //Given
         User user = new User();
+        user.setUserId("testerId");
         user.setName("tester");
         user.setPassword("1234");
-        userRepository.save(user);
+        User actualUser = userRepository.save(user);
 
         //When
-        user.setName("머드");
-        User actualUser = userRepository.save(user);
+        actualUser.setName("머드");
+        actualUser = userRepository.save(actualUser);
 
         //Then
         softly.assertThat(actualUser.getName()).isEqualTo("머드");

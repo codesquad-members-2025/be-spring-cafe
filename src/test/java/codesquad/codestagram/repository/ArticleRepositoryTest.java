@@ -3,17 +3,27 @@ package codesquad.codestagram.repository;
 import codesquad.codestagram.domain.Article;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+@SpringBootTest
 public class ArticleRepositoryTest {
 
-    private ArticleRepository articleRepository = new ArticleRepository();
+    private final ArticleRepository articleRepository;
+
+    @Autowired
+    public ArticleRepositoryTest(ArticleRepository articleRepository) {
+        this.articleRepository = articleRepository;
+    }
 
     @Test
     @DisplayName("1번 글이 작성됩니다.")
+    @Transactional
     void save() {
         //Given
         Article article = new Article();
@@ -21,26 +31,28 @@ public class ArticleRepositoryTest {
         article.setContent("반갑습니다.");
 
         //When
-        articleRepository.save(article);
-        Article expected = articleRepository.findById(1L).orElseThrow();
+        Article actual = articleRepository.save(article);
+        Article expected = articleRepository.findById(actual.getId()).orElseThrow();
 
         //Then
-        assertThat(article.getId()).isEqualTo(expected.getId());
+        assertThat(article.getTitle()).isEqualTo(expected.getTitle());
+        assertThat(article.getContent()).isEqualTo(expected.getContent());
     }
 
     @Test
     @DisplayName("모든 글의 갯수는 2개입니다.")
+    @Transactional
     void findAll() {
         //Given
-        Article article1 = new Article();
-        article1.setTitle("안녕하세요");
-        article1.setContent("반갑습니다.");
-        articleRepository.save(article1);
+        Article firstArticle = new Article();
+        firstArticle.setTitle("안녕하세요");
+        firstArticle.setContent("반갑습니다.");
+        articleRepository.save(firstArticle);
 
-        Article article2 = new Article();
-        article2.setTitle("반갑습니다.");
-        article2.setContent("안녕하세요.");
-        articleRepository.save(article2);
+        Article secoundArticle = new Article();
+        secoundArticle.setTitle("반갑습니다.");
+        secoundArticle.setContent("안녕하세요.");
+        articleRepository.save(secoundArticle);
 
         //When
         List<Article> articles = articleRepository.findAll();
