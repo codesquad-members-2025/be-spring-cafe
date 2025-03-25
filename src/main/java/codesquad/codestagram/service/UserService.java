@@ -45,6 +45,7 @@ public class UserService {
         }
     }
 
+
 /*
     public String join(User user){
         //같은 아이디가 있는 중복 회원 x
@@ -53,12 +54,13 @@ public class UserService {
         return user.getUserId();
     }
 
-    private void validateDuplicateUser(User user) {
+private void validateDuplicateUser(User user) {
         userRepository.findByUserId(user)
                 .ifPresent(m -> {
                     throw new IllegalStateException("이미 존재하는 아이디입니다");
                 });
     }
+
 */
 
 }

@@ -1,20 +1,29 @@
 package codesquad.codestagram.article.domain;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="articles")
 public class Article {
 
-    int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
 
+    @Column(nullable = false, unique = true)
     String writer;
 
+    @Column(nullable = false)
     String title;
 
+    @Column(nullable = false)
     String contents;
 
     // 기본 생성자 추가 (Thymeleaf 바인딩을 위해 필요)
     public Article() {}
 
     //기본 생성자
-    public Article (int id, String writer, String title, String contents){
+    public Article (Long id, String writer, String title, String contents){
         this.id=id;
         this.writer=writer;
         this.title=title;
@@ -22,11 +31,11 @@ public class Article {
     }
 
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

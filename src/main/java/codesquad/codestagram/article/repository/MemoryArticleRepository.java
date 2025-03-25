@@ -1,3 +1,4 @@
+/*
 package codesquad.codestagram.article.repository;
 
 import codesquad.codestagram.article.domain.Article;
@@ -29,3 +30,4 @@ public class MemoryArticleRepository implements ArticleRepository{
 
 
 }
+*/
