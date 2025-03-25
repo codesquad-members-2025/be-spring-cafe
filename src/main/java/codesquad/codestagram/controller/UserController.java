@@ -96,4 +96,10 @@ public class UserController {
             return "redirect:/user/login_failed";
         }
     }
+
+    @PostMapping("/user/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
+    }
 }
