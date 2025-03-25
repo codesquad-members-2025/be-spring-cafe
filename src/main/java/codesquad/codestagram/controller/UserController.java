@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Controller
 public class UserController {
@@ -25,10 +26,14 @@ public class UserController {
     }
 
     @PostMapping("/user/create")
-    public String create(UserForm userForm) {
-        User user = new User(userForm.getUserId(), userForm.getName(), userForm.getPassword(),userForm.getEmail());
-        userService.join(user);
-        return "redirect:/user/list";
+    public String create(UserForm userForm, RedirectAttributes redirectAttributes) {
+        try{
+            userService.join(userForm);
+            return "redirect:/user/list";
+        } catch(IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("alertMessage", e.getMessage());
+            return "redirect:/user/form";
+        }
     }
 
     @GetMapping("/user/list")
@@ -40,30 +45,35 @@ public class UserController {
 
     @GetMapping("/users/{userId}")
     public String showProfile(@PathVariable String userId, Model model) {
-        Optional<User> findUser= userService.findByUserId(userId);
-        if(findUser.isPresent()) {
-            model.addAttribute("user", findUser.get());
+        try{
+            User user = userService.findByUserId(userId);
+            model.addAttribute("user", user);
             return "user/profile";
+        } catch (NoSuchElementException e){
+            model.addAttribute("alertMessage", e.getMessage());
+            return "index";
         }
-        return "index";
     }
 
     @GetMapping("/users/{userId}/form")
     public String showUpdateForm(@PathVariable String userId, Model model) {
-        Optional<User> foundUser = userService.findByUserId(userId);
-        if(foundUser.isPresent()) {
-            model.addAttribute("user", foundUser.get());
+        try{
+            User user = userService.findByUserId(userId);
+            model.addAttribute("user", user);
             return "user/update-form";
+        } catch (NoSuchElementException e){
+            model.addAttribute("alertMessage", e.getMessage());
+            return "user/list";
         }
-        return "user/list";
     }
 
     @PutMapping("/users/{userId}/update")
-    public String updateForm(UserForm userForm, Model model) {
-        boolean isUpdated =userService.updateUser(userForm);
+    public String updateForm(UserForm userForm, Model model, RedirectAttributes redirectAttributes) {
+        boolean isUpdated = userService.updateUser(userForm);
         if(isUpdated) {
             return "redirect:/users/" + userForm.getUserId();
         }
+        redirectAttributes.addFlashAttribute("alertMessage", "잘못된 입력입니다.");
         return "redirect:/users/"+userForm.getUserId()+"/form";
     }
 }

@@ -1,11 +1,14 @@
 package codesquad.codestagram.dto;
 
+import codesquad.codestagram.domain.Article;
+import codesquad.codestagram.domain.User;
+
 public class ArticleForm {
     private String userId;
     private String title;
     private String content;
 
-    public ArticleForm() {}
+    protected ArticleForm() {}
 
     public ArticleForm(String userId, String title, String content) {
         this.userId = userId;
@@ -21,19 +24,15 @@ public class ArticleForm {
         this.userId = userId;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public String getContent() {
-        return content;
-    }
-
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Article createParsedArticle(User user){
+        return new Article(user, title, content.replace("\n", "<br>"));
     }
 }

@@ -1,28 +1,25 @@
 package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.Article;
-import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.ArticleForm;
 import codesquad.codestagram.service.ArticleService;
-import codesquad.codestagram.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Controller
 public class ArticleController {
 
     private final ArticleService articleService;
-    private final UserService userService;
 
-    public ArticleController(ArticleService articleService, UserService userService) {
+    public ArticleController(ArticleService articleService) {
         this.articleService = articleService;
-        this.userService = userService;
     }
 
     @GetMapping("/")
@@ -33,26 +30,24 @@ public class ArticleController {
     }
 
     @PostMapping("/qna/create")
-    public String create(ArticleForm articleForm) {
-        Optional<User> user = userService.findByUserId(articleForm.getUserId());
-
-
-        if(user.isPresent()) {
-            String contentWithBreaks = articleForm.getContent().replace("\n", "<br>");
-            Article article = new Article(user.get(),articleForm.getTitle(),contentWithBreaks, articleService.getArticleCount() + 1);
-            articleService.saveArticle(article);
+    public String create(ArticleForm articleForm, RedirectAttributes redirectAttributes) {
+        try{
+            articleService.createArticleAndSave(articleForm);
+        } catch (NoSuchElementException e){
+            redirectAttributes.addFlashAttribute("alertMessage", e.getMessage());
         }
         return "redirect:/";
     }
 
     @GetMapping("/articles/{index}")
     public String viewArticle(@PathVariable int index, Model model) {
-        Optional<Article> article = articleService.findArticleById(index);
-        if(article.isPresent()){
-            model.addAttribute("article", article.get());
+        try{
+            Article article = articleService.findArticleById(index);
+            model.addAttribute("article", article);
             return "qna/show";
-        } else {
-            return "redirect:/";
+        } catch(NoSuchElementException e){
+            model.addAttribute("alertMessage", e.getMessage());
+            return "index";
         }
     }
 }

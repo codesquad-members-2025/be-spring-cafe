@@ -5,6 +5,7 @@
 {{> partials/nav}}
 {{> partials/subnav}}
 <div class="container" id="main">
+    {{> partials/alerts}}
    <div class="col-md-6 col-md-offset-3">
       <div class="panel panel-default content-main">
           <form name="question" method="post" action="/users/{{userId}}/update">
@@ -29,7 +30,7 @@
                   <label for="email">이메일</label>
                   <input type="email" class="form-control" id="email" name="email" placeholder="{{user.email}}">
               </div>
-              <button type="submit" class="btn btn-success clearfix pull-right">회원가입</button>
+              <button type="submit" class="btn btn-success clearfix pull-right">회원 정보 수정</button>
               <div class="clearfix" />
           </form>
         </div>

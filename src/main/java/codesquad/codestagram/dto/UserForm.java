@@ -1,5 +1,7 @@
 package codesquad.codestagram.dto;
 
+import codesquad.codestagram.domain.User;
+
 public class UserForm {
     private String userId;
     private String name;
@@ -7,7 +9,7 @@ public class UserForm {
     private String changedPassword;
     private String email;
 
-    public UserForm() {
+    protected UserForm() {
     }
 
     public UserForm(String userId, String name, String password, String email, String changedPassword) {
@@ -55,5 +57,9 @@ public class UserForm {
     }
     public void setChangedPassword(String changedPassword) {
         this.changedPassword = changedPassword;
+    }
+
+    public User toEntity(){
+        return new User(userId, name, password, email);
     }
 }
