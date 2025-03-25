@@ -59,11 +59,18 @@ public class UserController {
     }
 
     @GetMapping("/users/{userId}/form")
-    public String showUpdateForm(@PathVariable String userId, Model model) {
+    public String showUpdateForm(@PathVariable String userId, Model model, HttpSession session) {
         try{
+            User loginUser = (User) session.getAttribute("loginUser");
+            if(loginUser == null) {
+                return "redirect:/";
+            }
             User user = userService.findByUserId(userId);
-            model.addAttribute("user", user);
-            return "user/update-form";
+            if(loginUser.equals(user)){
+                model.addAttribute("user", user);
+                return "user/update-form";
+            }
+            return "redirect:/user/form";
         } catch (NoSuchElementException e){
             model.addAttribute("alertMessage", e.getMessage());
             return "user/list";
