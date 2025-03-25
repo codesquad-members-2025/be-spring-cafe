@@ -26,7 +26,8 @@ public class GlobalModelControllerAdvice {
             InvalidPasswordException.class,
             ArticleNotFoundException.class,
             DuplicateUserIdException.class,
-            NotLoggedInException.class
+            NotLoggedInException.class,
+            UnauthorizedAccessException.class
     })
     public String handleCommonExceptions(RuntimeException  e, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
