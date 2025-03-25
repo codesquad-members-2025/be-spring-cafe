@@ -3,6 +3,7 @@ package codesquad.codestagram.controller;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.UserForm;
 import codesquad.codestagram.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -97,10 +98,15 @@ public class UserController {
     }
 
     @PostMapping("/user/login")
-    public String login(@RequestParam String userId, @RequestParam String password, HttpSession session) {
+    public String login(@RequestParam String userId, @RequestParam String password, HttpServletRequest request) {
         try {
             User user = userService.userLogin(userId, password);
-            session.setAttribute("loginUser", user);
+            HttpSession oldSession = request.getSession(false);
+            if (oldSession != null) {
+                oldSession.invalidate();
+            }
+            HttpSession newSession = request.getSession(true);
+            newSession.setAttribute("loginUser", user);
             return "redirect:/users/" + userId;
         }
         catch (NoSuchElementException e){
