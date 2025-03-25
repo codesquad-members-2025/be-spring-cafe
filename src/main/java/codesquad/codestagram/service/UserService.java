@@ -36,9 +36,12 @@ public class UserService {
     }
 
     @Transactional
-    public boolean updateUser(UserForm userForm){
+    public boolean updateUser(User loginUser, UserForm userForm){
         String userId = userForm.getUserId();
         User user = findByUserId(userId);
+        if(!user.equals(loginUser)) {
+            return false;
+        }
         return user.updateIfPasswordValid(
                 userForm.getPassword(),
                 userForm.getChangedPassword(),

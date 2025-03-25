@@ -78,8 +78,12 @@ public class UserController {
     }
 
     @PutMapping("/users/{userId}/update")
-    public String updateForm(UserForm userForm, Model model, RedirectAttributes redirectAttributes) {
-        boolean isUpdated = userService.updateUser(userForm);
+    public String updateForm(UserForm userForm, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
+        User loginUser = (User) session.getAttribute("loginUser");
+        if(loginUser == null) {
+            return "redirect:/";
+        }
+        boolean isUpdated = userService.updateUser(loginUser, userForm);
         if(isUpdated) {
             return "redirect:/users/" + userForm.getUserId();
         }
