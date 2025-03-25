@@ -21,7 +21,7 @@
                 {{#loginUser}}
                 <form id="logoutForm" method="post" action="/user/logout" style="display: none;"></form>
                 <li><a href="#" onclick="document.getElementById('logoutForm').submit(); return false;">로그아웃</a></li>
-                <li><a href="#" role="button">개인정보수정</a></li>
+                <li><a href="/users/{{userId}}/form" role="button">개인정보수정</a></li>
                 {{/loginUser}}
 
                 <!--
