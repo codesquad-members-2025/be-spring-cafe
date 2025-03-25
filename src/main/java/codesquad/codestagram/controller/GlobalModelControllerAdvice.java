@@ -25,26 +25,26 @@ public class GlobalModelControllerAdvice {
     }
 
     @ExceptionHandler(InvalidPasswordException.class)
-    public String handleInvalidPassword(HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("errorMessage", "로그인에 실패했습니다.");
+    public String handleInvalidPassword(InvalidPasswordException e, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         return "redirect:" + request.getHeader("Referer");
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public String handleUserNotFound(HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("errorMessage", "유저를 찾을 수 없습니다.");
+    public String handleUserNotFound(UserNotFoundException e, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         return "redirect:" + request.getHeader("Referer");
     }
 
     @ExceptionHandler(ArticleNotFoundException.class)
-    public String handleArticleNotFound(HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("errorMessage", "게시물을 찾을 수 없습니다.");
+    public String handleArticleNotFound(ArticleNotFoundException e, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         return "redirect:" + request.getHeader("Referer");
     }
 
     @ExceptionHandler(DuplicateUserIdException.class)
-    public String handleDuplicateUserId(HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("errorMessage", "이미 동일한 아이디의 사용자가 있습니다.");
+    public String handleDuplicateUserId(DuplicateUserIdException e, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         return "redirect:" + request.getHeader("Referer");
     }
 }
