@@ -39,13 +39,14 @@ public class UserController {
 
     @GetMapping("/users/{id}")
     public String showUserProfile(@PathVariable Long id, Model model) {
-        User user;
+        User user = null;
         try{
             user = userService.getUserById(id);
         }catch (IllegalArgumentException e){
             model.addAttribute(ERROR_MESSAGE, e.getMessage());
         }
 
+        if (user == null) return "redirect:/users";
         model.addAttribute(USER, user);
         return "user/profile";
     }
