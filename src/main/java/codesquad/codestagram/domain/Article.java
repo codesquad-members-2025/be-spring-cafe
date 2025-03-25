@@ -3,11 +3,12 @@ package codesquad.codestagram.domain;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "Articles")
 public class Article {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;        // 게시글 id
+    private Long id;        // 게시글 id
 
     @Column(nullable = false)
     private String title;  // 게시글 제목
@@ -28,19 +29,14 @@ public class Article {
         this.user = user;
     }
 
-    public Article(String title,String content){
-        this.title = title;
-        this.content = content;
-    }
-
 
 
     // Getter & Setter
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

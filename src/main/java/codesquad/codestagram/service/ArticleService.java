@@ -2,6 +2,7 @@ package codesquad.codestagram.service;
 
 import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.User;
+import codesquad.codestagram.dto.request.ArticleUpdateRequest;
 import codesquad.codestagram.dto.request.ArticleWriteRequest;
 import codesquad.codestagram.repository.ArticleRepository;
 import codesquad.codestagram.repository.UserRepositoryV2;
@@ -28,17 +29,9 @@ public class ArticleService {
 
 
     public List<Article> getArticlesV2() {
-        return articleRepository.findAll().stream()
-                .map(article -> new Article(article.getTitle(), article.getContent(), article.getUser()))
-                .collect(Collectors.toList());
+        return articleRepository.findAll();
     }
 
-
-    // 사용자를 지정해서 게시글 추가
-    public void addArticleV2(ArticleWriteRequest request) {
-        Article article = new Article(request.getTitle(), request.getContent(),request.getUser());
-        articleRepository.save(article);
-    }
 
     @PostConstruct
     public void init() {
@@ -48,7 +41,7 @@ public class ArticleService {
             userRepository.save(defaultUser);
         }
 
-        User administrator = new User("김동찬","codesquad@gmail.com","hello","word!");
+        User administrator = new User("김동찬","codesquad@gmail.com","hello","world!");
         userRepository.save(administrator);
 
         articleRepository.save(new Article("InitializingBean implements afterPropertiesSet() 호출되지 않는 문제.",
@@ -58,8 +51,28 @@ public class ArticleService {
 
         articleRepository.save(new Article("두 번째 게시글", "내용 2", defaultUser));
     }
+    // 사용자를 지정해서 게시글 추가
+
+    public void addArticleV2(ArticleWriteRequest request) {
+        Article article = new Article(request.getTitle(), request.getContent(),request.getUser());
+        articleRepository.save(article);
+    }
 
     public Optional<Article> findArticleById(Long articleId) {
        return articleRepository.findArticleById(articleId);
+    }
+
+    public void updateArticleById(Long articleId, ArticleUpdateRequest request){
+
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. ID: " + articleId));
+
+        article.setTitle(request.getTitle());
+        article.setContent(request.getContent());
+        //영속성 컨텍스트 생각해보자
+    }
+
+    public void deleteArticleById(Long articleId) {
+        articleRepository.deleteById(articleId);
     }
 }

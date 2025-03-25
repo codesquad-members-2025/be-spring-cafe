@@ -90,9 +90,4 @@ public class UserController {
         return "redirect:/users/" + userId;
     }
 
-    @GetMapping("/users/form")
-    public String createForm(Model model) {
-        model.addAttribute("user", new User());
-        return "user/form";
-    }
 }

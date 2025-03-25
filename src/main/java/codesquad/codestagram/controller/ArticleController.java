@@ -3,10 +3,10 @@ package codesquad.codestagram.controller;
 import codesquad.codestagram.annotation.Login;
 import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.User;
+import codesquad.codestagram.dto.request.ArticleUpdateRequest;
 import codesquad.codestagram.dto.request.ArticleWriteRequest;
 import codesquad.codestagram.service.ArticleService;
 import codesquad.codestagram.service.UserService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -65,16 +65,43 @@ public class ArticleController {
         request.setUser(user);
 
         if (user == null) {
-            return "redirect:/qna?error=userNotFound";
+            return "redirect:/login";
         }
 
-        if (request.getContent() == null || request.getContent().isEmpty()) {
-            return "redirect:/qna?error=contentRequired";
-        }
 
         articleService.addArticleV2(request);
         return "redirect:/qna";
     }
 
+
+    @GetMapping("/articles/{articleId}/edit")
+        public String showUpdateArticleForm(@Login User user, @PathVariable("articleId")Long articleId,Model model){
+
+        Optional<Article> article = articleService.findArticleById(articleId);
+        if (article.isEmpty()) {
+            return "redirect:/qna";
+        }
+
+        if(article.get().getUser()!=user || user==null){
+            return "redirect:/login";
+        }
+
+        model.addAttribute("article", article.get());
+        return "qna/edit";
+    }
+
+    // 게시글 수정
+    @PostMapping("/articles/{articleId}/edit")
+    public String updateArticle(@PathVariable("articleId") Long articleId, @ModelAttribute ArticleUpdateRequest request) {
+        articleService.updateArticleById(articleId, request);
+        return "redirect:/qna";
+    }
+
+    //게시글 삭제
+    @PostMapping("/articles/{articleId}/delete")
+    public String deleteArticle(@PathVariable("articleId") Long articleId) {
+        articleService.deleteArticleById(articleId);
+        return "redirect:/qna";
+    }
 
 }
