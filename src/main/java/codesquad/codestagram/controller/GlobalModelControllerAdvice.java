@@ -1,10 +1,7 @@
 package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.User;
-import codesquad.codestagram.exception.ArticleNotFoundException;
-import codesquad.codestagram.exception.DuplicateUserIdException;
-import codesquad.codestagram.exception.InvalidPasswordException;
-import codesquad.codestagram.exception.UserNotFoundException;
+import codesquad.codestagram.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
@@ -24,26 +21,14 @@ public class GlobalModelControllerAdvice {
         }
     }
 
-    @ExceptionHandler(InvalidPasswordException.class)
-    public String handleInvalidPassword(InvalidPasswordException e, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-        return "redirect:" + request.getHeader("Referer");
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public String handleUserNotFound(UserNotFoundException e, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-        return "redirect:" + request.getHeader("Referer");
-    }
-
-    @ExceptionHandler(ArticleNotFoundException.class)
-    public String handleArticleNotFound(ArticleNotFoundException e, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-        return "redirect:" + request.getHeader("Referer");
-    }
-
-    @ExceptionHandler(DuplicateUserIdException.class)
-    public String handleDuplicateUserId(DuplicateUserIdException e, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    @ExceptionHandler({
+            UserNotFoundException.class,
+            InvalidPasswordException.class,
+            ArticleNotFoundException.class,
+            DuplicateUserIdException.class,
+            NotLoggedInException.class
+    })
+    public String handleCommonExceptions(RuntimeException  e, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         return "redirect:" + request.getHeader("Referer");
     }
