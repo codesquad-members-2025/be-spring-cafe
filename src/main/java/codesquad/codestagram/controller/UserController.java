@@ -70,7 +70,7 @@ public class UserController {
                 model.addAttribute("user", user);
                 return "user/update-form";
             }
-            return "redirect:/user/form";
+            return "user/list";
         } catch (NoSuchElementException e){
             model.addAttribute("alertMessage", e.getMessage());
             return "user/list";
