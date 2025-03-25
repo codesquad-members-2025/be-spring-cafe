@@ -25,7 +25,7 @@ public class UserController {
     @PostMapping("/users/create")
     public String create(@ModelAttribute UserForm form) {
         User user = new User();
-        user.setUserId(form.getUserId());
+        user.setLoginId(form.getLoginId());
         user.setName(form.getName());
         user.setPassword(form.getPassword());
         user.setEmail(form.getEmail());
@@ -40,14 +40,14 @@ public class UserController {
         return "user/list";
     }
 
-    @GetMapping("/users/{userId}")
-    public String userProfile(@PathVariable("userId") String userId, Model model, RedirectAttributes redirectAttributes) { //RedirectAttributes: 리다이렉트할 때 데이터를 잠깐 보낼 수 있게 도와주는 객체(팝업에 들어갈 메시지를 전달하는 통로)
-        Optional<User> user = userService.findByUserId(userId);
+    @GetMapping("/users/{loginId}")
+    public String userProfile(@PathVariable("loginId") String loginId, Model model, RedirectAttributes redirectAttributes) { //RedirectAttributes: 리다이렉트할 때 데이터를 잠깐 보낼 수 있게 도와주는 객체(팝업에 들어갈 메시지를 전달하는 통로)
+        Optional<User> user = userService.findByLoginId(loginId);
         if (user.isPresent()) {
             model.addAttribute("user", user.get());
             return "user/profile"; //사용자 있으면 프로필로 이동
         } else {
-            log.warn("사용자 없음: {}", userId); // 로그 추가
+            log.warn("사용자 없음: {}", loginId); // 로그 추가
             redirectAttributes.addFlashAttribute("errorMessage", "존재하지 않는 사용자입니다."); //에러 메시지 사용자에게 보여줌.
             return "redirect:/users/list";
         }
