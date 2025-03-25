@@ -75,6 +75,11 @@ public class UserController {
         return "redirect:/users/"+userForm.getUserId()+"/form";
     }
 
+    @GetMapping("/user/login")
+    public String showLoginPage(Model model) {
+        return "user/login";
+    }
+
     @PostMapping("/user/login")
     public String login(@RequestParam String userId, @RequestParam String password, HttpSession session) {
         try {
