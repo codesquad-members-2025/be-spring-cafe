@@ -5,15 +5,14 @@ import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.ArticleForm;
 import codesquad.codestagram.exception.NotLoggedInException;
 import codesquad.codestagram.exception.UnauthorizedAccessException;
-import codesquad.codestagram.repository.JpaArticleRepository;
 import codesquad.codestagram.service.ArticleService;
+import codesquad.codestagram.utility.TextUtility;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.util.HtmlUtils;
 
 import java.util.List;
 
@@ -68,7 +67,7 @@ public class ArticleController {
 
         Article article = articleService.findArticleById(index);
         model.addAttribute("article", article);
-        model.addAttribute("parsedContent", escapeAndConvertNewlines(article.getContent()));
+        model.addAttribute("parsedContent", TextUtility.escapeAndConvertNewlines(article.getContent()));
         return "qna/show";
     }
 
@@ -96,7 +95,7 @@ public class ArticleController {
 
         Article article = articleService.findArticleById(index);
         model.addAttribute("article", article);
-        model.addAttribute("parsedContent", escapeAndConvertNewlines(article.getContent()));
+        model.addAttribute("parsedContent", TextUtility.escapeAndConvertNewlines(article.getContent()));
         return "qna/update-form";
     }
 
@@ -113,9 +112,5 @@ public class ArticleController {
             return "redirect:/articles/" + index;
         }
         throw new UnauthorizedAccessException("본인의 게시물만 수정할 수 있습니다.");
-    }
-
-    private String escapeAndConvertNewlines(String content) {
-        return HtmlUtils.htmlEscape(content).replace("\n", "<br>");
     }
 }
