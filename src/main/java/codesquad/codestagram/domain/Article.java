@@ -1,7 +1,7 @@
 package codesquad.codestagram.domain;
 
+import codesquad.codestagram.dto.ArticleForm;
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -53,6 +53,11 @@ public class Article {
 
     public boolean isAuthor(User user) {
         return this.user.equals(user);
+    }
+
+    public void update(ArticleForm articleForm) {
+        title = articleForm.getTitle();
+        content = articleForm.getContent();
     }
 
     @Override
