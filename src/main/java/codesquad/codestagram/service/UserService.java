@@ -2,7 +2,7 @@ package codesquad.codestagram.service;
 
 import codesquad.codestagram.dto.UserRequestDto;
 import codesquad.codestagram.entity.User;
-import codesquad.codestagram.repository.userrepository.UserRepository;
+import codesquad.codestagram.repository.user.UserRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 import java.util.List;
