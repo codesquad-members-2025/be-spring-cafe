@@ -41,4 +41,8 @@ public class ArticleService {
         Article article = articleForm.createParsedArticle(user);
         return articleRepository.save(article);
     }
+
+    public void delete(Article article) {
+        articleRepository.delete(article);
+    }
 }
