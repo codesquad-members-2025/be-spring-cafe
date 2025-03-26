@@ -2,6 +2,8 @@ package codesquad.codestagram.domain;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "Articles")
 public class Article {
@@ -18,6 +20,10 @@ public class Article {
 
     @ManyToOne
     private User user;  // 작성자 (기존 코드 유지)
+
+    @OneToMany(mappedBy = "article", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OrderBy("id asc") // 댓글 정렬
+    private List<Comment> comments;
 
     protected Article() {
     }
