@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public class JpaUserRepository implements UserRepository {
 
-    public final EntityManager em;
+    private final EntityManager em;
 
     public JpaUserRepository(EntityManager em) {
         this.em = em;

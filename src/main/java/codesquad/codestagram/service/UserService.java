@@ -10,7 +10,6 @@ import java.util.Optional;
 
 @Service
 @Transactional
-
 public class UserService {
 
     private final UserRepository userRepository;
@@ -21,7 +20,7 @@ public class UserService {
 
     // 회원가입
     public String join(User user) {
-//        validateDuplication(user);
+        validateDuplication(user);
         userRepository.save(user);
         return user.getUserId();
     }
