@@ -34,13 +34,13 @@ public class ArticleController {
     }
 
     @PostMapping("/qna/create")
-    public String create(ArticleForm articleForm, RedirectAttributes redirectAttributes) {
+    public String create(ArticleForm articleForm) {
         articleService.createArticleAndSave(articleForm);
         return "redirect:/";
     }
 
     @GetMapping("/qna/show")
-    public String show(Model model) {
+    public String show() {
         return "qna/show";
     }
 
