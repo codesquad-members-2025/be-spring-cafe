@@ -24,7 +24,7 @@ public class UserService {
     }
 
     private void validateDuplication(User user) {
-        userRepository.findById(user.getUserId())
+        userRepository.findByUserId(user.getUserId())
                 .ifPresent(u -> {
                     throw new IllegalStateException("사용할 수 없는 아이디입니다.");
                 });
@@ -35,6 +35,6 @@ public class UserService {
     }
 
     public Optional<User> findOneUser(String userId) {
-        return userRepository.findById(userId);
+        return userRepository.findByUserId(userId);
     }
 }
