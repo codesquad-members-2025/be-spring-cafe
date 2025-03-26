@@ -77,12 +77,9 @@ public class ArticleController {
             throw new NotLoggedInException();
         }
 
-        Article article = articleService.findArticleById(index);
-        if (article.isAuthor(loginUser)) {
-            articleService.delete(article);
-            return "redirect:/";
-        }
-        throw new UnauthorizedAccessException("본인의 게시물만 삭제할 수 있습니다.");
+        Article article = articleService.findArticleIfOwner(loginUser, index);
+        articleService.delete(article);
+        return "redirect:/";
     }
 
     @GetMapping("/articles/{index}/update-form")
