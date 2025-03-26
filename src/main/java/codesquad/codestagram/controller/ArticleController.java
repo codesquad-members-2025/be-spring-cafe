@@ -12,7 +12,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -93,7 +92,8 @@ public class ArticleController {
             throw new NotLoggedInException();
         }
 
-        Article article = articleService.findArticleById(index);
+        Article article = articleService.findArticleIfOwner(loginUser, index);
+
         model.addAttribute("article", article);
         model.addAttribute("parsedContent", TextUtility.escapeAndConvertNewlines(article.getContent()));
         return "qna/update-form";

@@ -54,4 +54,12 @@ public class ArticleService {
         }
         article.update(articleForm);
     }
+
+    public Article findArticleIfOwner(User user, int id) {
+        Article article = findArticleById(id);
+        if(!article.isAuthor(user)){
+            throw new UnauthorizedAccessException("해당 게시물의 작성자가 아닙니다.");
+        }
+        return article;
+    }
 }
