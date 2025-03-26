@@ -26,7 +26,7 @@ class UserServiceTest {
     private UserService userService;
 
     @Test
-    @DisplayName("회원 가입시 중복된 아이디가 있으면 에러가 발생한다.")
+    @DisplayName("회원 가입시 중복된 아이디가 있으면 true를 리턴한다.")
     void registerUserErrorTest() {
         // Given
         User user = new User("testUser", "password123", "test", "test@example.com");
@@ -34,10 +34,8 @@ class UserServiceTest {
         UserRequestDto requestDto = new UserRequestDto("testUser", "12345", "AAA", "AAA@a.com");
 
         // When && Then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> userService.joinUser(requestDto));
-
-        assertThat(exception.getMessage()).isEqualTo("이미 존재하는 사용자 ID입니다.");
+        boolean ieEqual = userService.checkEqualUserId(requestDto.getUserId());
+        assertThat(ieEqual).isTrue();
     }
     @Test
     @DisplayName("회원 가입시 중복된 아이디가 없으면 가입에 성공한다.")
@@ -48,6 +46,7 @@ class UserServiceTest {
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
 
         // When
+        userService.checkEqualUserId(requestDto.getUserId());
         userService.joinUser(requestDto);
         User findUser = userRepository.findById(1L).get();
 
