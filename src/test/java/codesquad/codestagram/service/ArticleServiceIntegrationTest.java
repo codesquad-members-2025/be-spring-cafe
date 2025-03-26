@@ -25,8 +25,8 @@ public class ArticleServiceIntegrationTest {
 
         User user = userService.join(userForm);
 
-        ArticleForm articleForm = new ArticleForm("dino","art","hello");
-        Article article = articleService.createArticleAndSave(articleForm);
+        ArticleForm articleForm = new ArticleForm("art","hello");
+        Article article = articleService.createArticleAndSave(user, articleForm);
 
         assertThat(articleService.findArticlesByUser(user).get(0)).isEqualTo(article);
     }
@@ -38,11 +38,11 @@ public class ArticleServiceIntegrationTest {
         UserForm userForm = new UserForm("dino","userName","1234","jd@naver","");
 
         User user = userService.join(userForm);
-        ArticleForm articleForm1 = new ArticleForm("dino","art1","hello");
-        ArticleForm articleForm2 = new ArticleForm("dino","art2","hello");
+        ArticleForm articleForm1 = new ArticleForm("art1","hello");
+        ArticleForm articleForm2 = new ArticleForm("art2","hello");
 
-        Article article1 = articleService.createArticleAndSave(articleForm1);
-        Article article2 = articleService.createArticleAndSave(articleForm2);
+        Article article1 = articleService.createArticleAndSave(user, articleForm1);
+        Article article2 = articleService.createArticleAndSave(user, articleForm2);
 
         assertThat(articleService.findAllArticles().size()).isEqualTo(articleSize + 2);
     }
@@ -54,10 +54,10 @@ public class ArticleServiceIntegrationTest {
 
         User user = userService.join(userForm);
 
-        ArticleForm articleForm1 = new ArticleForm("dino","art1","hello");
-        ArticleForm articleForm2 = new ArticleForm("dino","art2","hello");
-        Article article1 = articleService.createArticleAndSave(articleForm1);
-        Article article2 = articleService.createArticleAndSave(articleForm2);
+        ArticleForm articleForm1 = new ArticleForm("art1","hello");
+        ArticleForm articleForm2 = new ArticleForm("art2","hello");
+        Article article1 = articleService.createArticleAndSave(user, articleForm1);
+        Article article2 = articleService.createArticleAndSave(user, articleForm2);
         assertThat(articleService.findArticlesByTitle("art1").get(0)).isEqualTo(article1);
     }
 }
