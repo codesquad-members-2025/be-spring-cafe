@@ -21,7 +21,7 @@
         <div class="alert alert-danger" role="alert" th:if="${loginError}" th:text="${loginError}"></div>
         <div class="panel panel-default qna-list">
             <ul class="list">
-                <li th:each="board, stat : ${boards}">
+                <li th:each="board, stat : ${posts}">
                     <div class="wrap">
                         <div class="main">
                             <strong class="subject">
