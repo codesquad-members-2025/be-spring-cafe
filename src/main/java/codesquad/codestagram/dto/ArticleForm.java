@@ -30,7 +30,7 @@ public class ArticleForm {
         return content;
     }
 
-    public Article createParsedArticle(User user){
+    public Article toEntity(User user){
         return new Article(user, title, content);
     }
 }
