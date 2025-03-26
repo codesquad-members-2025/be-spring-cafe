@@ -12,6 +12,5 @@ public interface ArticleRepository {
     List<Article> findByTitle(String title);
     Optional<Article> findById(int id);
     List<Article> findAll();
-//    void clearStore();
-//    int getStoreSize();
+    void delete(Article article);
 }
