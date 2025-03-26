@@ -82,7 +82,7 @@ public class ArticleController {
         }
 
         Article article = articleService.findArticleById(index);
-        if (loginUser.equals(article.getUser())){
+        if (article.isAuthor(loginUser)) {
             articleService.delete(article);
             return "redirect:/";
         }

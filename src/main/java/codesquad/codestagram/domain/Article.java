@@ -51,6 +51,10 @@ public class Article {
         return createdAt.format(dateFormatter)+" "+createdAt.format(timeFormatter);
     }
 
+    public boolean isAuthor(User user) {
+        return this.user.equals(user);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
