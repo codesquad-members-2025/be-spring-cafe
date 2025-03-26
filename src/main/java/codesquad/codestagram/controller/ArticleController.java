@@ -96,8 +96,9 @@ public class ArticleController {
             throw new NotLoggedInException();
         }
 
-//        Article article = articleService.findArticleById(index);
-//        model.addAttribute("article", article);
+        Article article = articleService.findArticleById(index);
+        model.addAttribute("article", article);
+        model.addAttribute("parsedContent", escapeAndConvertNewlines(article.getContent()));
         return "qna/update-form";
     }
 
