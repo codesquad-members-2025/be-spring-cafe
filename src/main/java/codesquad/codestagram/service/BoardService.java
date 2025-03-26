@@ -3,10 +3,12 @@ package codesquad.codestagram.service;
 
 import codesquad.codestagram.domain.Board;
 import codesquad.codestagram.repository.BoardRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public class BoardService {
     private BoardRepository boardRepository;
 
