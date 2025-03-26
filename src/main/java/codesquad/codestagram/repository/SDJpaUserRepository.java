@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface SDJpaUserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByLoginId(String loginId);
+public interface SDJpaUserRepository extends JpaRepository<User, Long>, UserRepository {
+    Optional<User> findByLoginId(String loginId); //UserRepositoryf를 상속받고 있기떄문에 생략 가능
     Optional<User> findByName(String name);
 }
