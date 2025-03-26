@@ -29,11 +29,19 @@ public class ArticleService {
     }
     @PostConstruct
     public void initArticle() {
-        User user1 = userRepository.findById(1L).orElseThrow();
-        User user2 = userRepository.findById(2L).orElseThrow();
+        User user1 = userRepository.findById(1L).orElseGet(() -> {
+            User newUser = new User("javajigi", "test", "자바지기", "javajigi@slipp.net");
+            return userRepository.save(newUser);
+        });
+
+        User user2 = userRepository.findById(2L).orElseGet(() -> {
+            User newUser = new User("sanjigi", "test", "산지기", "sanjigi@slipp.net");
+            return userRepository.save(newUser);
+        });
+
         articleRepository.save(new Article("test1", "content1", user1));
         articleRepository.save(new Article("test2", "content2", user1));
-        articleRepository.save(new Article("tes3", "content3", user2));
+        articleRepository.save(new Article("test3", "content3", user2));
     }
     public void saveArticle(ArticleRequestDto requestDto) {
         User user = userRepository.findByUserId(requestDto.getUserId())
