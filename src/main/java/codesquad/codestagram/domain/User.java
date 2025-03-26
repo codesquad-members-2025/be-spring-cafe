@@ -1,16 +1,27 @@
 package codesquad.codestagram.domain;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "users") // 예약어 충돌 방지
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Column(nullable = false, unique = true)
     String userId;
 
+    @Column(nullable = false)
     String password;
-
+    @Column(nullable = false)
     String name;
-
+    @Column(nullable = false)
     String email;
+
+    // 기본 생성자 필수 (JPA)
+    public User() {}
 
     // 생성자 -> 객체를 생성하면서 동시에 값을 설정
     public User(String userId, String password, String name, String email) {

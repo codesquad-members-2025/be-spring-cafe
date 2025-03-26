@@ -1,53 +1,49 @@
 package codesquad.codestagram.service;
 
 import codesquad.codestagram.domain.User;
-import codesquad.codestagram.repository.MemoryUserRepository;
 import codesquad.codestagram.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
-    private final MemoryUserRepository memoryUserRepository;
 
-    public UserService(UserRepository userRepository, MemoryUserRepository memoryUserRepository) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.memoryUserRepository = memoryUserRepository;
     }
+
 
     // 회원 가입
     public void join(User user) {
-        userRepository.join(user);
+        userRepository.save(user);
     }
+
 
     // 모든 회원 조회
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-
-    public Optional<User> findByUserId(String userId) {
-        for (User user : memoryUserRepository.findAll()) {
-            if (user.getUserId().equals(userId)) {
-                return Optional.of(user);
-            }
-        }
-        return Optional.empty();
-    }
-
     public User findOne(String userId) {
-        for(User user : memoryUserRepository.findAll()){
-            if(user.getUserId().equals(userId)){
-                return user;
-            }
-        }
-        return null;
+        return userRepository.findByUserId(userId);
     }
 
+    //회원 정보 수정
+    @Transactional
+    public void updateUser(String userId, User updatedUser) {
+        User user = userRepository.findByUserId(userId);
+        if (user != null) {
+            user.setName(updatedUser.getName());
+            user.setEmail(updatedUser.getEmail());
+            user.setPassword(updatedUser.getPassword());
+            userRepository.save(user);
+        }
+    }
 
 
 /*
@@ -58,11 +54,13 @@ public class UserService {
         return user.getUserId();
     }
 
-    private void validateDuplicateUser(User user) {
+private void validateDuplicateUser(User user) {
         userRepository.findByUserId(user)
                 .ifPresent(m -> {
                     throw new IllegalStateException("이미 존재하는 아이디입니다");
                 });
     }
+
 */
+
 }

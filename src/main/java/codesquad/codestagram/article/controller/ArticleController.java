@@ -10,44 +10,42 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-//@RequestMapping("/articles")
 public class ArticleController {
 
     private final ArticleService articleService;
 
-    private final ArticleRepository articleRepository;
-
     public ArticleController(ArticleService articleService, ArticleRepository articleRepository) {
         this.articleService = articleService;
-        this.articleRepository = articleRepository;
     }
 
     //글쓰기 폼 렌더링
     @GetMapping("/qna/form")
     public String showArticleForm(){
-        return "/qna/form";
+        return "qna/form";
     }
 
+    //게시글 데이터 저장하기
     @PostMapping("/articles")
     public String createArticle(@ModelAttribute Article article){
         articleService.write(article);
         return "redirect:/";
     }
 
+    //게시글 목록 구현하기
     @GetMapping("/")
     public String getArticleList(Model model){
-        List<Article> articles = articleRepository.getAllArticles();
+        List<Article> articles = articleService.getAllArticles();
         model.addAttribute("articles", articles);
         return "index";
     }
 
 
-    // 게시글 상세 페이지
+    // 게시글 상세 보기 구현하기
     @GetMapping("/articles/{id}")
-    public String getArticleById(@PathVariable("id") int id, Model model) {
-        Article article = articleRepository.findById(id);
+    public String getArticleById(@PathVariable("id") Long id, Model model) {
+        Article article = articleService.getArticleById(id);
         model.addAttribute("article", article);
-        return "/qna/show";
+        return "qna/show";
     }
 
 }

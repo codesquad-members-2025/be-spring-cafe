@@ -20,4 +20,14 @@ public class ArticleService {
         articleRepository.save(article);
     }
 
+    //게시글 목록 구현하기
+    public List<Article> getAllArticles(){
+        return articleRepository.findAll();
+    }
+
+    //게시글 상세보기 구현하기
+    public Article getArticleById(Long Id){
+        return articleRepository.findArticleById(Id);
+    }
+
 }
