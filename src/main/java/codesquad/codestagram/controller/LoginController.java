@@ -48,5 +48,15 @@ public class LoginController {
         return "redirect:/";
     }
 
+    @PostMapping("users/logout")
+    public String logout(HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        if(session != null){
+            session.invalidate();
+        }
+        return "redirect:/";
+    }
+
+
 
 }
