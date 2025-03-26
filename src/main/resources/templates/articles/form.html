@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>글쓰기</title>
+    <title>게시글 작성</title>
     <link rel="stylesheet" href="/css/styles.css">
+
 </head>
 <body>
 <div th:replace="~{header.html}"></div>
@@ -19,13 +20,12 @@
             <label for="content">내용:</label>
             <textarea name="content" id="content" rows="10" required></textarea>
         </div>
+        <input type="hidden" name="userId" th:value="${session.sessionedUser.userId}">
         <button type="submit">게시하기</button>
     </form>
     <a href="/">홈으로</a>
 </main>
 
-
 <div th:replace="~{footer.html}"></div>
-
 </body>
 </html>
