@@ -4,7 +4,9 @@ import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.ArticleForm;
 import codesquad.codestagram.exception.ArticleNotFoundException;
+import codesquad.codestagram.exception.UnauthorizedAccessException;
 import codesquad.codestagram.repository.ArticleRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,11 +38,20 @@ public class ArticleService {
     }
 
     public Article createArticleAndSave(User user, ArticleForm articleForm) {
-        Article article = articleForm.createParsedArticle(user);
+        Article article = articleForm.toEntity(user);
         return articleRepository.save(article);
     }
 
     public void delete(Article article) {
         articleRepository.delete(article);
+    }
+
+    @Transactional
+    public void update(User user, int id, ArticleForm articleForm) {
+        Article article = findArticleById(id);
+        if(!article.isAuthor(user)){
+            throw new UnauthorizedAccessException("게시물을 수정할 권한이 없습니다.");
+        }
+        article.update(articleForm);
     }
 }

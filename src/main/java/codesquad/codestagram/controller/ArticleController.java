@@ -106,11 +106,8 @@ public class ArticleController {
         if(loginUser == null) {
             throw new NotLoggedInException();
         }
-        Article article = articleService.findArticleById(index);
-        if(article.isAuthor(loginUser)) {
-            article.update(articleForm);
-            return "redirect:/articles/" + index;
-        }
-        throw new UnauthorizedAccessException("본인의 게시물만 수정할 수 있습니다.");
+        articleService.update(loginUser, index, articleForm);
+
+        return "redirect:/articles/" + index;
     }
 }
