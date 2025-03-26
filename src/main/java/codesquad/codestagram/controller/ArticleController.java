@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Controller
 public class ArticleController {
@@ -29,25 +28,26 @@ public class ArticleController {
         return "index";
     }
 
+    @GetMapping("/qna/form")
+    public String form(Model model) {
+        return "qna/form";
+    }
+
     @PostMapping("/qna/create")
     public String create(ArticleForm articleForm, RedirectAttributes redirectAttributes) {
-        try{
-            articleService.createArticleAndSave(articleForm);
-        } catch (NoSuchElementException e){
-            redirectAttributes.addFlashAttribute("alertMessage", e.getMessage());
-        }
+        articleService.createArticleAndSave(articleForm);
         return "redirect:/";
+    }
+
+    @GetMapping("/qna/show")
+    public String show(Model model) {
+        return "qna/show";
     }
 
     @GetMapping("/articles/{index}")
     public String viewArticle(@PathVariable int index, Model model) {
-        try{
-            Article article = articleService.findArticleById(index);
-            model.addAttribute("article", article);
-            return "qna/show";
-        } catch(NoSuchElementException e){
-            model.addAttribute("alertMessage", e.getMessage());
-            return "index";
-        }
+        Article article = articleService.findArticleById(index);
+        model.addAttribute("article", article);
+        return "qna/show";
     }
 }
