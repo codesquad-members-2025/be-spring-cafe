@@ -18,8 +18,16 @@ public class ArticleForm {
         this.title = title;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getContent() {
+        return content;
     }
 
     public Article createParsedArticle(User user){
