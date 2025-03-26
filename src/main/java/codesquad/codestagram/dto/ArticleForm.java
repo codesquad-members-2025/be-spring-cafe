@@ -23,6 +23,6 @@ public class ArticleForm {
     }
 
     public Article createParsedArticle(User user){
-        return new Article(user, title, content.replace("\n", "<br>"));
+        return new Article(user, title, content);
     }
 }

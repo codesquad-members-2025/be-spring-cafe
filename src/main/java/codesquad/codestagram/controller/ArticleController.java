@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.HtmlUtils;
 
 import java.util.List;
 
@@ -66,6 +67,11 @@ public class ArticleController {
 
         Article article = articleService.findArticleById(index);
         model.addAttribute("article", article);
+        model.addAttribute("parsedContent", escapeAndConvertNewlines(article.getContent()));
         return "qna/show";
+    }
+
+    private String escapeAndConvertNewlines(String content) {
+        return HtmlUtils.htmlEscape(content).replace("\n", "<br>");
     }
 }
