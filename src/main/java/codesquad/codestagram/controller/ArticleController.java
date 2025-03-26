@@ -8,12 +8,10 @@ import codesquad.codestagram.exception.UnauthorizedAccessException;
 import codesquad.codestagram.repository.JpaArticleRepository;
 import codesquad.codestagram.service.ArticleService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.HtmlUtils;
 
@@ -100,6 +98,21 @@ public class ArticleController {
         model.addAttribute("article", article);
         model.addAttribute("parsedContent", escapeAndConvertNewlines(article.getContent()));
         return "qna/update-form";
+    }
+
+    @Transactional
+    @PutMapping("/articles/{index}/update")
+    public String update(@PathVariable int index, ArticleForm articleForm, HttpSession session) {
+        User loginUser = (User) session.getAttribute("loginUser");
+        if(loginUser == null) {
+            throw new NotLoggedInException();
+        }
+        Article article = articleService.findArticleById(index);
+        if(article.isAuthor(loginUser)) {
+            article.update(articleForm);
+            return "redirect:/articles/" + index;
+        }
+        throw new UnauthorizedAccessException("본인의 게시물만 수정할 수 있습니다.");
     }
 
     private String escapeAndConvertNewlines(String content) {
