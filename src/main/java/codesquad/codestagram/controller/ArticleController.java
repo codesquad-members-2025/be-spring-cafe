@@ -1,8 +1,11 @@
 package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.Article;
+import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.ArticleForm;
+import codesquad.codestagram.exception.NotLoggedInException;
 import codesquad.codestagram.service.ArticleService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,12 +32,22 @@ public class ArticleController {
     }
 
     @GetMapping("/qna/form")
-    public String form() {
+    public String form(HttpSession session) {
+        User loginUser = (User) session.getAttribute("loginUser");
+        if(loginUser == null) {
+            throw new NotLoggedInException();
+        }
+
         return "qna/form";
     }
 
     @PostMapping("/qna/create")
-    public String create(ArticleForm articleForm) {
+    public String create(ArticleForm articleForm, HttpSession session) {
+        User loginUser = (User) session.getAttribute("loginUser");
+        if(loginUser == null) {
+            throw new NotLoggedInException();
+        }
+
         articleService.createArticleAndSave(articleForm);
         return "redirect:/";
     }
@@ -45,7 +58,12 @@ public class ArticleController {
     }
 
     @GetMapping("/articles/{index}")
-    public String viewArticle(@PathVariable int index, Model model) {
+    public String viewArticle(@PathVariable int index, Model model, HttpSession session) {
+        User loginUser = (User) session.getAttribute("loginUser");
+        if(loginUser == null) {
+            throw new NotLoggedInException();
+        }
+
         Article article = articleService.findArticleById(index);
         model.addAttribute("article", article);
         return "qna/show";
