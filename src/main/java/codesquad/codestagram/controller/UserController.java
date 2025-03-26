@@ -63,4 +63,23 @@ public class UserController {
         return "redirect:/users/" + id + "/form";
     }
 
+    @PostMapping("/login")
+    public String login(@RequestParam String loginId, @RequestParam String password, HttpSession session
+        , RedirectAttributes redirectAttributes) {
+
+        if (!userRepository.existsUserByLoginId(loginId)) {
+            redirectAttributes.addFlashAttribute("message", "아이디가 존재하지 않습니다.");
+            return "redirect:/users/loginForm";
+        }
+
+        User findUser = userRepository.findByLoginId(loginId);
+        if (password.equals(findUser.getPassword())) {
+            session.setAttribute("loginUser", findUser);
+            return "redirect:/";
+        }
+
+        redirectAttributes.addFlashAttribute("message", "비밀번호가 일치하지 않습니다.");
+
+        return "redirect:/users/loginForm";
+    }
 }
