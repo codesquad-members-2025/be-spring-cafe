@@ -32,10 +32,10 @@ public class UserServiceIntegrationTest {
         user.setEmail("brie822@gmail.com");
 
         //when
-        Long saveId = userService.join(user);
+        Long id = userService.join(user);
 
         //then
-        Optional<User> findUser = userRepository.findById(saveId);
+        Optional<User> findUser = userService.findOne(id);
         assertThat(findUser).isPresent();
         assertThat(findUser.get().getLoginId()).isEqualTo("brie822");
         assertThat(findUser.get().getName()).isEqualTo("브리");
@@ -85,7 +85,7 @@ public class UserServiceIntegrationTest {
         // Then
         assertThat(result).isTrue();
 
-        Optional<User> updated = userRepository.findById(id);
+        Optional<User> updated = userService.findOne(id);
         assertThat(updated).isPresent();
         assertThat(updated.get().getPassword()).isEqualTo("abcd");
         assertThat(updated.get().getName()).isEqualTo("규원");
@@ -108,7 +108,7 @@ public class UserServiceIntegrationTest {
 
         // Then
         assertThat(result).isFalse(); // 수정 실패
-        User updated = userRepository.findById(id).get();
+        User updated = userService.findOne(id).get();
         assertThat(updated.getPassword()).isEqualTo("123456"); // 안 바뀜
     }
 
