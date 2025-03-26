@@ -89,6 +89,18 @@ public class ArticleController {
         throw new UnauthorizedAccessException("본인의 게시물만 삭제할 수 있습니다.");
     }
 
+    @GetMapping("/articles/{index}/update-form")
+    public String updateForm(@PathVariable int index, Model model, HttpSession session) {
+        User loginUser = (User) session.getAttribute("loginUser");
+        if(loginUser == null) {
+            throw new NotLoggedInException();
+        }
+
+//        Article article = articleService.findArticleById(index);
+//        model.addAttribute("article", article);
+        return "qna/update-form";
+    }
+
     private String escapeAndConvertNewlines(String content) {
         return HtmlUtils.htmlEscape(content).replace("\n", "<br>");
     }
