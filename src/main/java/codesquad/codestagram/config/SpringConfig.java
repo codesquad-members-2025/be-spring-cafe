@@ -11,21 +11,22 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SpringConfig {
+    private final UserRepository userRepository;
+    private final BoardRepository boardRepository;
+
+    public SpringConfig(UserRepository userRepository, BoardRepository boardRepository) {
+        this.userRepository = userRepository;
+        this.boardRepository = boardRepository;
+    }
+
     @Bean
     public UserService userService() {
-        return new UserService(userRepository());
+        return new UserService(userRepository);
     }
-    @Bean
-    public UserRepository userRepository() {
-        return new MemoryUserRepository();
-    }
-    @Bean
-    public BoardRepository boardRepository() {
-        return new MemoryBoardRepository();
-    }
+
     @Bean
     public BoardService boardService() {
-        return new BoardService(boardRepository());
+        return new BoardService(boardRepository);
     }
 
 }
