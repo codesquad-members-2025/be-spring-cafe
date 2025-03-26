@@ -4,24 +4,14 @@ import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.User;
 
 public class ArticleForm {
-    private String userId;
     private String title;
     private String content;
 
     protected ArticleForm() {}
 
-    public ArticleForm(String userId, String title, String content) {
-        this.userId = userId;
+    public ArticleForm(String title, String content) {
         this.title = title;
         this.content = content;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public void setTitle(String title) {
