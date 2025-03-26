@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class AuthController {
@@ -31,11 +32,11 @@ public class AuthController {
         this.userService = userService;
     }
     @PostMapping("/users")
-    public String signUp(@ModelAttribute UserDto.UserRequestDto requestDto, Model model) {
-        if (!userService.checkEqualUserId(requestDto.getUserId())){
+    public String signUp(@ModelAttribute UserDto.UserRequestDto requestDto, RedirectAttributes redirectAttributes) {
+        if (userService.checkEqualUserId(requestDto.getUserId())){
             // 이미 존재하는 user_id일 경우
-            model.addAttribute(ERROR_MESSAGE, USER_ALREADY_EXIST);
-            return "register";  // 회원가입 페이지로 다시 돌아감
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, USER_ALREADY_EXIST);
+            return "redirect:/register";  // 회원가입 페이지로 다시 돌아감
         }
 
         userService.joinUser(requestDto);
