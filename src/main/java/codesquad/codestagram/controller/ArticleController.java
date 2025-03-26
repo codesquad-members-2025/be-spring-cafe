@@ -33,7 +33,8 @@ public class ArticleController {
     }
 
     @PostMapping("/articles")
-    public String writeArticle(@ModelAttribute ArticleDto.ArticleRequestDto requestDto, Model model) {
+    public String writeArticle(@ModelAttribute ArticleDto.ArticleRequestDto requestDto, Model model, HttpSession session) {
+        if (checkLogin(session)) return "redirect:/login";
         try {
             articleService.saveArticle(requestDto);
         }catch (IllegalArgumentException e){
