@@ -48,7 +48,7 @@ public class ArticleController {
             throw new NotLoggedInException();
         }
 
-        articleService.createArticleAndSave(articleForm);
+        articleService.createArticleAndSave(loginUser, articleForm);
         return "redirect:/";
     }
 

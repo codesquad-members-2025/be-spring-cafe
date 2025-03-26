@@ -37,8 +37,7 @@ public class ArticleService {
         return article;
     }
 
-    public Article createArticleAndSave(ArticleForm articleForm) {
-        User user = userService.findByUserId(articleForm.getUserId());
+    public Article createArticleAndSave(User user, ArticleForm articleForm) {
         Article article = articleForm.createParsedArticle(user);
         return articleRepository.save(article);
     }
