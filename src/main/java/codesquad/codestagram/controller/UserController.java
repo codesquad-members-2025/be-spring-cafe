@@ -66,7 +66,7 @@ public class UserController {
     }
 
     @PutMapping("/users/{userId}/update")
-    public String updateForm(UserForm userForm, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
+    public String updateForm(UserForm userForm, HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
         if(loginUser == null) {
             throw new NotLoggedInException();
@@ -79,7 +79,7 @@ public class UserController {
     }
 
     @GetMapping("/user/login")
-    public String showLoginPage(Model model) {
+    public String showLoginPage() {
         return "user/login";
     }
 

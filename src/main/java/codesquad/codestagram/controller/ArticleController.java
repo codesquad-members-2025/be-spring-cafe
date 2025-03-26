@@ -29,7 +29,7 @@ public class ArticleController {
     }
 
     @GetMapping("/qna/form")
-    public String form(Model model) {
+    public String form() {
         return "qna/form";
     }
 
