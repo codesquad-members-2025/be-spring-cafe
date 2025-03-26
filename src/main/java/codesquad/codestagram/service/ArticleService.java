@@ -40,10 +40,6 @@ public class ArticleService {
     public Article createArticleAndSave(ArticleForm articleForm) {
         User user = userService.findByUserId(articleForm.getUserId());
         Article article = articleForm.createParsedArticle(user);
-        return saveArticle(article);
-    }
-
-    private Article saveArticle(Article article) {
         return articleRepository.save(article);
     }
 }
