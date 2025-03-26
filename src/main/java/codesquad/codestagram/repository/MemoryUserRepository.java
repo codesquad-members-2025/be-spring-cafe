@@ -8,25 +8,25 @@ import java.util.*;
 @Repository
 public class MemoryUserRepository implements UserRepository {
 
-    private static Map<String, User> memory = new HashMap<>();
+    private static Map<String, User> userMemory = new HashMap<>();
 
     @Override
     public User save(User user) {
-        memory.put(user.getUserId(), user);
+        userMemory.put(user.getUserId(), user);
         return user;
     }
 
     @Override
     public Optional<User> findById(String id) {
-        return Optional.of(memory.get(id));
+        return Optional.of(userMemory.get(id));
     }
 
     @Override
     public List<User> findAll() {
-        return new ArrayList<>(memory.values());
+        return new ArrayList<>(userMemory.values());
     }
 
     public void clearMemory() {
-        memory.clear();
+        userMemory.clear();
     }
 }

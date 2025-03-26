@@ -35,3 +35,10 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# macOS Finder 설정 파일 (무시해야 함)
+.DS_Store
+._.DS_Store
+**/.DS_Store
+**/._.DS_Store
+.DS_Store
