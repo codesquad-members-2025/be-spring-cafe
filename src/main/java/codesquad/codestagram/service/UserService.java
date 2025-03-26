@@ -27,7 +27,7 @@ public class UserService {
         //같은 아이디 중복 회원 x
         userRepository.findByLoginId(user.getLoginId())
                 .ifPresent(u -> {
-                    throw new IllegalStateException("user already exists");
+                    throw new IllegalStateException("User already exists");
                 });
     }
 
