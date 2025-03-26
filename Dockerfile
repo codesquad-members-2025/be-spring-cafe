@@ -14,6 +14,9 @@ FROM eclipse-temurin:21 AS runtime
 
 WORKDIR /app
 
+# /app/data 디렉토리 미리 생성
+RUN mkdir -p /app/data
+
 # Build Stage에서 생성된 JAR 파일 복사
 COPY --from=build /app/build/libs/*.jar app.jar
 
