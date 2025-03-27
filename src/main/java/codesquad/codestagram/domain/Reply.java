@@ -55,6 +55,10 @@ public class Reply {
         return user;
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
     public void changeDeleteStatus(boolean status){
         isDeleted = status;
     }
