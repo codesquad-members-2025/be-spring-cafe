@@ -15,6 +15,10 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+/**
+ * 테스트 클래스에 @transactional 붙이면, 각 테스트가 끝난 후 데이터가 롤백되어 DB가 깨끗하게 유지됨
+ * 테스트를 위한거라, 비지니스 로직의 ㅡ랜잭션 처리와는 별개.
+ */
 @SpringBootTest
 @Transactional
 public class UserServiceIntegrationTest {
