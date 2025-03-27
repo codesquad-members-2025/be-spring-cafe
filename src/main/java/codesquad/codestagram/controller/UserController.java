@@ -2,7 +2,6 @@ package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.UserForm;
-import codesquad.codestagram.exception.InvalidPasswordException;
 import codesquad.codestagram.exception.NotLoggedInException;
 import codesquad.codestagram.exception.UnauthorizedAccessException;
 import codesquad.codestagram.service.UserService;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -32,9 +30,10 @@ public class UserController {
     }
 
     @PostMapping("/user/create")
-    public String create(UserForm userForm, RedirectAttributes redirectAttributes) {
-        userService.join(userForm);
-        return "redirect:/user/list";
+    public String create(UserForm userForm, HttpSession session) {
+        User user = userService.join(userForm);
+        session.setAttribute("loginUser", user);
+        return "redirect:/";
     }
 
     @GetMapping("/user/list")
