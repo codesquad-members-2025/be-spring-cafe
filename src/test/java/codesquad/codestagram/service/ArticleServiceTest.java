@@ -76,7 +76,7 @@ class ArticleServiceTest {
         Article article2 = new Article("test2", "content2", user1);
         Article article3 = new Article("test3", "content3", user2);
         List<Article> articleList = List.of(article1, article2, article3);
-        given(articleRepository.findAll()).willReturn(articleList);
+        given(articleRepository.findAllIsNotDeleted()).willReturn(articleList);
 
         //when
         List<Article> articles = articleService.findArticles();
@@ -120,7 +120,7 @@ class ArticleServiceTest {
     }
 
     @Test
-    @DisplayName("게시글 삭제가 되면 DB에서 조회 되는 경우 에러가 발생한다.")
+    @DisplayName("게시글 삭제가 되면 isDeleted를 true로 바꾼다.")
     void deleteArticleTest() {
         //given
         User user = new User("testUser", "password123", "test", "test@example.com");
@@ -130,13 +130,8 @@ class ArticleServiceTest {
 
         //when
         articleService.delete(1L);
-        given(articleRepository.findById(1L)).willReturn(Optional.empty());
-
+        Article deletedArticle = articleService.findArticleById(1L);
         //then
-        verify(articleRepository).delete(article);
-
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> articleService.findArticleById(1L));
-        assertThat(exception.getMessage()).isEqualTo("게시글이 존재하지 않습니다.");
+        assertThat(deletedArticle.isDeleted()).isTrue();
     }
 }

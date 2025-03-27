@@ -2,17 +2,15 @@ package codesquad.codestagram.service;
 
 import static codesquad.codestagram.controller.AuthController.SESSIONED_USER;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.Reply;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.repository.ReplyRepository;
+import codesquad.codestagram.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Optional;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +24,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 class ReplyServiceTest {
     @MockitoBean
     private ReplyRepository replyRepository;
+    @MockitoBean
+    private UserRepository userRepository;
     @Autowired
     private ReplyService replyService;
 
