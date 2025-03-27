@@ -1,12 +1,11 @@
 package codesquad.codestagram.repository;
 
 import codesquad.codestagram.domain.Board;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface BoardRepository {
-    Board save(Board board);
-    Optional<Board> findByBoardId(Long boardId);
-    List<Board> findAll();
+public interface BoardRepository extends JpaRepository<Board, Long> {
+    Optional<Board> findByWriter(String writer);
+    Optional<Board> findByTitle(String title);
 }

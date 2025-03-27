@@ -1,9 +1,7 @@
 package codesquad.codestagram.service;
 
 import codesquad.codestagram.domain.User;
-import codesquad.codestagram.repository.BoardRepository;
 import codesquad.codestagram.repository.UserRepository;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

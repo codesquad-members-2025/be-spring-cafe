@@ -1,16 +1,11 @@
 package codesquad.codestagram.repository;
 
 import codesquad.codestagram.domain.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository {
-    User save(User user);
-    Optional<User> findById(Long id);
-    Optional<User> findByLoginId(String loginId);
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByLoginId(String loginId); //UserRepositoryf를 상속받고 있기떄문에 생략 가능
     Optional<User> findByName(String name);
-    List<User> findAll();
-
-
 }

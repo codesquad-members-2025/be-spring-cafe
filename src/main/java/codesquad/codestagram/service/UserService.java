@@ -2,11 +2,13 @@ package codesquad.codestagram.service;
 
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.repository.UserRepository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class UserService {
     private final UserRepository userRepository;
     //생성자를 통해 외부에서 UserRepository 주입 -> DI 활용 위해

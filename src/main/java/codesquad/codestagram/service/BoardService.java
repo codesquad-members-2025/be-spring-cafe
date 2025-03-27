@@ -3,11 +3,13 @@ package codesquad.codestagram.service;
 
 import codesquad.codestagram.domain.Board;
 import codesquad.codestagram.repository.BoardRepository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class BoardService {
     private BoardRepository boardRepository;
 
@@ -30,7 +32,7 @@ public class BoardService {
 
 
     public Optional<Board> getBoardById(Long boardId){
-        return boardRepository.findByBoardId(boardId);
+        return boardRepository.findById(boardId);
     }
 
 

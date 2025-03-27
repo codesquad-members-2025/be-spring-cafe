@@ -2,6 +2,7 @@ package codesquad.codestagram.service;
 
 import codesquad.codestagram.domain.Board;
 import codesquad.codestagram.repository.BoardRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,11 @@ public class BoardServiceIntegrationTest {
 
     @Autowired private BoardService boardService;
     @Autowired private BoardRepository boardRepository;
+
+    @BeforeEach
+    void clear() {
+        boardRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("게시글 작성 테스트")
