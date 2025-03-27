@@ -24,6 +24,13 @@ public class UserMapRepository implements UserRepository {
         return new ArrayList<>(users.values());
     }
 
+    @Override
+    public Optional<User> findByUserid(String userid) {
+        return users.values().stream()
+                .filter(user -> user.getUserid().equals(userid))
+                .findFirst();
+    }
+
     public void clearStore(){
         users.clear();
     }
