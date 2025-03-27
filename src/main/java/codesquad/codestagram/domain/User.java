@@ -1,6 +1,7 @@
 package codesquad.codestagram.domain;
 
 import codesquad.codestagram.dto.UserForm;
+import codesquad.codestagram.exception.InvalidPasswordException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -41,14 +42,13 @@ public class User {
         return this.password.equals(password);
     }
 
-    public boolean updateIfPasswordValid(String password,String changedPassword, String name, String email) {
-        if(isPasswordValid(password)){
-            this.name = name;
-            this.email = email;
-            this.password = changedPassword;
-            return true;
+    public void updateIfPasswordValid(String password,String changedPassword, String name, String email) {
+        if(!isPasswordValid(password)){
+            throw new InvalidPasswordException();
         }
-        return false;
+        this.name = name;
+        this.email = email;
+        this.password = changedPassword;
     }
 
     @Override

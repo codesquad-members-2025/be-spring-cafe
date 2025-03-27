@@ -4,6 +4,7 @@ import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.UserForm;
 import codesquad.codestagram.exception.DuplicateUserIdException;
 import codesquad.codestagram.exception.InvalidPasswordException;
+import codesquad.codestagram.exception.UnauthorizedAccessException;
 import codesquad.codestagram.exception.UserNotFoundException;
 import codesquad.codestagram.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -38,13 +39,13 @@ public class UserService {
     }
 
     @Transactional
-    public boolean updateUser(User loginUser, UserForm userForm) {
+    public void updateUser(User loginUser, UserForm userForm) {
         String userId = userForm.getUserId();
         User user = findByUserId(userId);
         if (!user.equals(loginUser)) {
-            return false;
+            throw new UnauthorizedAccessException("해당 사용자가 아닙니다.");
         }
-        return user.updateIfPasswordValid(
+        user.updateIfPasswordValid(
                 userForm.getPassword(),
                 userForm.getChangedPassword(),
                 userForm.getName(),

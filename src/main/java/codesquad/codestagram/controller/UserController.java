@@ -71,11 +71,8 @@ public class UserController {
         if(loginUser == null) {
             throw new NotLoggedInException();
         }
-        boolean isUpdated = userService.updateUser(loginUser, userForm);
-        if(isUpdated) {
-            return "redirect:/users/" + userForm.getUserId();
-        }
-        throw new InvalidPasswordException();
+        userService.updateUser(loginUser, userForm);
+        return "redirect:/users/" + loginUser.getUserId();
     }
 
     @GetMapping("/user/login")
