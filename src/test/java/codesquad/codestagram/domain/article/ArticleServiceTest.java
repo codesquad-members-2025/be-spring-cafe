@@ -2,6 +2,7 @@ package codesquad.codestagram.domain.article;
 
 import codesquad.codestagram.domain.auth.UnauthorizedException;
 import codesquad.codestagram.domain.user.User;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,6 @@ import org.mockito.MockitoAnnotations;
 import java.lang.reflect.Field;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -62,8 +62,10 @@ class ArticleServiceTest {
         Article createdArticle = articleService.createArticle("Title", "Content", user);
 
         // then
-        assertThat(createdArticle).isNotNull();
-        assertThat(createdArticle.getTitle()).isEqualTo("Title");
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(createdArticle).isNotNull();
+        softly.assertThat(createdArticle.getTitle()).isEqualTo("Title");
+        softly.assertAll();
         verify(articleRepository).save(any(Article.class));
     }
 
@@ -86,7 +88,11 @@ class ArticleServiceTest {
         Article foundArticle = articleService.findArticle(1L);
 
         // then
-        assertThat(foundArticle).isEqualTo(article);
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(foundArticle).isEqualTo(article);
+        softly.assertThat(foundArticle.getTitle()).isEqualTo("Title");
+        softly.assertThat(foundArticle.getContent()).isEqualTo("Content");
+        softly.assertAll();
     }
 
     @Test
@@ -120,7 +126,10 @@ class ArticleServiceTest {
         Article authorizedArticle = articleService.getAuthorizedArticle(1L, user);
 
         // then
-        assertThat(authorizedArticle).isEqualTo(article);
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(authorizedArticle).isEqualTo(article);
+        softly.assertThat(authorizedArticle.getTitle()).isEqualTo("Title");
+        softly.assertAll();
     }
 
     @Test
@@ -147,8 +156,10 @@ class ArticleServiceTest {
         Article updatedArticle = articleService.updateArticle(1L, "New Title", "New Content", user);
 
         // then
-        assertThat(updatedArticle.getTitle()).isEqualTo("New Title");
-        assertThat(updatedArticle.getContent()).isEqualTo("New Content");
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(updatedArticle.getTitle()).isEqualTo("New Title");
+        softly.assertThat(updatedArticle.getContent()).isEqualTo("New Content");
+        softly.assertAll();
     }
 
     @Test

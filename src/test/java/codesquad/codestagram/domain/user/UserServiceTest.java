@@ -1,6 +1,7 @@
 package codesquad.codestagram.domain.user;
 
 import codesquad.codestagram.domain.auth.UnauthorizedException;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -36,7 +36,7 @@ class UserServiceTest {
         setField(user, "id", 1L);
     }
 
-    // Reflection을 이용해 private 필드에 값을 설정
+    // Reflection을 이용해 private 필드에 값을 설정하는 헬퍼 메서드
     private void setField(Object target, String fieldName, Object value) {
         try {
             Field field = target.getClass().getDeclaredField(fieldName);
@@ -86,7 +86,10 @@ class UserServiceTest {
         List<User> result = userService.findAll();
 
         // then
-        assertThat(result).hasSize(2).containsExactly(user, anotherUser);
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(result).hasSize(2);
+        softly.assertThat(result).containsExactly(user, anotherUser);
+        softly.assertAll();
     }
 
     @Test
@@ -99,7 +102,10 @@ class UserServiceTest {
         User result = userService.getUserProfile(1L);
 
         // then
-        assertThat(result).isEqualTo(user);
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(result).isEqualTo(user);
+        softly.assertThat(result.getUserId()).isEqualTo("javajigi");
+        softly.assertAll();
     }
 
     @Test
@@ -129,7 +135,6 @@ class UserServiceTest {
     void updateUser_withMismatchedUser_shouldThrowUnauthorizedException() {
         // given
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        // given
         User anotherUser = new User("other", "otherPass", "다른사용자", "other@example.com");
         setField(anotherUser, "id", 2L);
 
@@ -163,9 +168,11 @@ class UserServiceTest {
         User updatedUser = userService.updateUser(1L, "new@example.com", "NewName", "test", "newPass", user);
 
         // then
-        assertThat(updatedUser.getEmail()).isEqualTo("new@example.com");
-        assertThat(updatedUser.getName()).isEqualTo("NewName");
-        assertThat(updatedUser.getPassword()).isEqualTo("newPass");
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(updatedUser.getEmail()).isEqualTo("new@example.com");
+        softly.assertThat(updatedUser.getName()).isEqualTo("NewName");
+        softly.assertThat(updatedUser.getPassword()).isEqualTo("newPass");
+        softly.assertAll();
     }
 
 }
