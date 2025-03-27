@@ -57,11 +57,11 @@ public class UserController {
             throw new NotLoggedInException();
         }
         User user = userService.findByUserId(userId);
-        if(loginUser.equals(user)){
-            model.addAttribute("user", user);
-            return "user/update-form";
+        if(!loginUser.equals(user)){
+            throw new UnauthorizedAccessException("다른 유저의 정보는 수정할 수 없습니다.");
         }
-        throw new UnauthorizedAccessException("다른 유저의 정보는 수정할 수 없습니다.");
+        model.addAttribute("user", user);
+        return "user/update-form";
     }
 
     @PutMapping("/users/{userId}/update")
