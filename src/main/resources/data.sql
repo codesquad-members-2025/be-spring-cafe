@@ -1,0 +1,2 @@
+INSERT INTO users (user_id, name, password, email) VALUES ('javajigi', '자바지기', 'test', 'javajigi@slipp.net');
+INSERT INTO users (user_id, name, password, email) VALUES ('sanjigi', '산지기', 'test', 'sanjigi@slipp.net');

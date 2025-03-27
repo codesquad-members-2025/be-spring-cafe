@@ -57,7 +57,7 @@ public class UserController {
             return "redirect:/users/{id}/form";
         }
         userService.update(user, name, email);
-        return "redirect:/";
+        return "redirect:/users";
     }
 
 
