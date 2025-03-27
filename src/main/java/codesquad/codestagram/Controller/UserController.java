@@ -23,14 +23,20 @@ public class UserController {
     }
 
     @PostMapping("/users/create")
-    public String create(@ModelAttribute UserForm form) {
+    public String create(@ModelAttribute UserForm form, RedirectAttributes redirectAttributes) {
         User user = new User();
         user.setLoginId(form.getLoginId());
         user.setName(form.getName());
         user.setPassword(form.getPassword());
         user.setEmail(form.getEmail());
 
-        userService.join(user);
+        boolean success = userService.join(user);
+
+        if (!success) {
+            redirectAttributes.addFlashAttribute("errorMessage", "⚠️ 이미 존재하는 아이디입니다.");
+            return "redirect:/users/new"; // form.html로 다시
+        }
+
         return "redirect:/users/list";
     }
 

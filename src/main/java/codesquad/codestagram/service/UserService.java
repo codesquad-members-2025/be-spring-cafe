@@ -19,10 +19,13 @@ public class UserService {
      * 회원가입
      */
     @Transactional
-    public Long join(User user) {
-        validateDuplicateUser(user); //중복 회원 검증
+    public  boolean join(User user) {
+        // 중복 아이디 존재하면 false 반환
+        if (userRepository.findByLoginId(user.getLoginId()).isPresent()) {
+            return false;
+        }
         userRepository.save(user);
-        return user.getId();
+        return true;
     }
 
     private void validateDuplicateUser(User user) {

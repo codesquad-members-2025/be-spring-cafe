@@ -33,16 +33,18 @@ public class UserServiceIntegrationTest {
         user.setPassword("123456");
         user.setEmail("brie822@gmail.com");
 
-        //when
-        Long id = userService.join(user);
+        // When
+        boolean success = userService.join(user);
+
+        // Then
+        assertThat(success).isTrue();
 
         //then
-        Optional<User> findUser = userService.findOne(id);
+        Optional<User> findUser = userService.findByLoginId("brie822"); // ← id 대신 loginId로 조회
         assertThat(findUser).isPresent();
-        assertThat(findUser.get().getLoginId()).isEqualTo("brie822");
         assertThat(findUser.get().getName()).isEqualTo("브리");
-        assertThat(findUser.get().getPassword()).isEqualTo("123456");
         assertThat(findUser.get().getEmail()).isEqualTo("brie822@gmail.com");
+        assertThat(findUser.get().getPassword()).isEqualTo("123456");
     }
 
     @Test
@@ -56,11 +58,12 @@ public class UserServiceIntegrationTest {
         user2.setLoginId("gyuwon");
 
         // When
-        userService.join(user1);
+        boolean firstJoin = userService.join(user1);
+        boolean secondJoin = userService.join(user2);
 
         // Then
-        IllegalStateException e = assertThrows(IllegalStateException.class, () -> userService.join(user2));
-        assertThat(e.getMessage()).isEqualTo("User already exists");
+        assertThat(firstJoin).isTrue();
+        assertThat(secondJoin).isFalse();
 
     }
 
@@ -73,7 +76,11 @@ public class UserServiceIntegrationTest {
         user.setName("브리");
         user.setPassword("123456");
         user.setEmail("brie822@email.com");
-        Long id = userService.join(user);
+        userService.join(user);
+
+        Optional<User> optional = userService.findByLoginId("brie822");
+        assertThat(optional).isPresent();
+        Long id = optional.get().getId();
 
         // When
         boolean result = userService.updateUser(
@@ -103,7 +110,11 @@ public class UserServiceIntegrationTest {
         user.setName("브리");
         user.setPassword("123456");
         user.setEmail("brie822@email.com");
-        Long id = userService.join(user);
+        userService.join(user);
+
+        Optional<User> optional = userService.findByLoginId("brie822");
+        assertThat(optional).isPresent();
+        Long id = optional.get().getId();
 
         // When
         boolean result = userService.updateUser(id, "abcd", "abcedf", "브리", "brie822@email.com");
