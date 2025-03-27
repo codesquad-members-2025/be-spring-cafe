@@ -37,6 +37,9 @@ public class UserService {
         if (!existingUser.getPassword().equals(confirmPassword)) {
             return false;
         }
+
+        userRepository.save(user);
+
         return true;
     }
 
