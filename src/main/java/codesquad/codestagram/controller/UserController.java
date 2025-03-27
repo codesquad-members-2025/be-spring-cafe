@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/users")
@@ -47,9 +48,21 @@ public class UserController {
     }
 
     @GetMapping("/{id}/form")
-    public String viewUpdateForm(@PathVariable("id") Long id, Model model) {
-        User user = userRepository.findById(id).orElseThrow();
-        model.addAttribute("user", user);
+    public String viewUpdateForm(@PathVariable("id") Long id, Model model, HttpSession session
+        , RedirectAttributes redirectAttributes) {
+        if (session.getAttribute("loginUser") == null) { //로그인 상태인지 확인
+            return "redirect:/users/loginForm";
+        }
+
+        User loginUser = (User) session.getAttribute("loginUser");
+        User findUser = userRepository.findById(id).orElseThrow();
+
+        if (!Objects.equals(loginUser.getId(), findUser.getId())) {
+            redirectAttributes.addFlashAttribute("alertMessage", "잘못된 접근입니다.");
+            return "redirect:/";
+        }
+
+        model.addAttribute("user", findUser);
         return "user/updateForm";
     }
 
