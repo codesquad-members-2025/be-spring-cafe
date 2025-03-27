@@ -34,7 +34,7 @@ public class ArticleController {
     public String show(@PathVariable Long id, Model model) {
         Article article = articleService.findOneArticle(id).get();
         model.addAttribute("article", article);
-        return "/qna/show";
+        return "qna/show";
     }
 }
 
