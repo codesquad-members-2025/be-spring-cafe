@@ -52,7 +52,7 @@ public class ArticleService {
     }
 
     public List<Article> findArticles() {
-        return articleRepository.findAll();
+        return articleRepository.findAllIsNotDeleted();
     }
 
     public Article findArticleById(Long articleId) {
@@ -69,7 +69,8 @@ public class ArticleService {
     public void delete(Long articleId) {
         //해당 게시글이 DB에 존재하는지 확인
         Article article = findArticleById(articleId);
-        articleRepository.delete(article);
+        article.changeDeleteStatus(true);
+        articleRepository.save(article);
     }
     public void matchArticleAuthor(HttpSession session, Article article) throws AccessDeniedException {
         User sessionedUser = (User) session.getAttribute(SESSIONED_USER);

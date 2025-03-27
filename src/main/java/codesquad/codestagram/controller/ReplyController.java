@@ -60,7 +60,7 @@ public class ReplyController {
             redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return "redirect:/articles/" + articleId;
         }
-        if (!replyService.isReplyAuthor(user, reply)){
+        if (replyService.isNotReplyAuthor(user, reply)){
             redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "작성자만 댓글을 지울 수 있습니다.");
             return "redirect:/articles/" + articleId;
         }

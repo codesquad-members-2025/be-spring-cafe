@@ -125,13 +125,19 @@ public class ArticleController {
         try {
             article = articleService.findArticleById(articleId);
             articleService.matchArticleAuthor(session, article);
-            articleService.delete(articleId);
         }catch (IllegalArgumentException | AccessDeniedException  e){
             redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return "redirect:/";
         }
+
+        if(!replyService.checkCanDelete(article, session)){
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "글을 삭제 할 수 없습니다.");
+            return "redirect:/articles/" + articleId;
+        }
+        articleService.delete(articleId);
         return "redirect:/";
     }
+
 
     public static boolean checkLogin(HttpSession session) {
         User sessionedUser = (User) session.getAttribute(SESSIONED_USER);
