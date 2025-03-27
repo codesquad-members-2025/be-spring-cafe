@@ -9,16 +9,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequestMapping("/users")
 @Controller
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @PostMapping("")
@@ -26,20 +25,18 @@ public class UserController {
                          @RequestParam String password,
                          @RequestParam String name,
                          @RequestParam String email) {
-        Optional<User> user = userRepository.findByUserId(userId);
-        if (user.isPresent()) {
+        try {
+            userService.signUp(userId, password, name, email);
+        } catch (UnauthorizedException e) {
             return "redirect:/users?error=duplicated-user";
         }
-
-        User newUser = new User(userId, password, name, email);
-        userRepository.save(newUser);
 
         return "redirect:/users";
     }
 
     @GetMapping("")
     public String index(Model model) {
-        List<User> users = userRepository.findAll();
+        List<User> users = userService.findAll();
         model.addAttribute("users", users);
 
         return "user/list";
@@ -47,28 +44,24 @@ public class UserController {
 
     @GetMapping("{id}")
     public String showUserProfile(@PathVariable Long id, Model model) {
-        Optional<User> user = userRepository.findById(id);
-
-        if (user.isEmpty()) {
-            // 사용자를 찾을 수 없을 때 리스트 페이지로 리다이렉트하고
-            // 에러 메시지를 던달
+        try {
+            User user = userService.getUserProfile(id);
+            model.addAttribute("user", user);
+        } catch (UserNotFoundException e) {
             return "redirect:/users?error=user-not-found";
         }
-
-        model.addAttribute("user", user.get());
 
         return "user/profile";
     }
 
     @GetMapping("{id}/form")
     public String showUpdateForm(@PathVariable Long id, Model model) {
-        Optional<User> user = userRepository.findById(id);
-
-        if (user.isEmpty()) {
+        try {
+            User user = userService.getUserProfile(id);
+            model.addAttribute("user", user);
+        } catch (UserNotFoundException e) {
             return "redirect:/users?error=user-not-found";
         }
-
-        model.addAttribute("user", user.get());
 
         return "user/edit";
     }
@@ -82,28 +75,12 @@ public class UserController {
                              @RequestParam String newPassword,
                              HttpSession session) {
         User sessionUser = (User) session.getAttribute(SessionConstants.USER_SESSION_KEY);
-        if (sessionUser == null) {
-            throw new UnauthorizedException("로그인이 필요합니다.");
-        }
-
-        Optional<User> user = userRepository.findById(id);
-        if (user.isEmpty()) {
+        try {
+            userService.updateUser(id, email, name, currentPassword, newPassword, sessionUser);
+        } catch (UserNotFoundException e) {
             return "redirect:/users?error=user-not-found";
-        }
-
-        User userEntity = user.get();
-        if (!sessionUser.equals(userEntity)) {
-            throw new UnauthorizedException("본인의 정보만 수정할 수 있습니다.");
-        }
-
-        if (!userEntity.isMatchPassword(currentPassword)) {
-            return "redirect:/users/" + id + "/form?error=wrong-password";
-        }
-
-        userEntity.setEmail(email);
-        userEntity.setName(name);
-        if (newPassword != null && !newPassword.isEmpty()) {
-            userEntity.setPassword(newPassword);
+        } catch (DuplicatedUserException e) {
+            return "redirect:/users?error=duplicated-user";
         }
 
         return "redirect:/users/" + id;
