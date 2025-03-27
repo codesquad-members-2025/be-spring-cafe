@@ -52,7 +52,7 @@ public class AuthController {
             return "user/signIn";
         }
         //세션에 user데이터 등록
-        httpSession.setAttribute(SESSIONED_USER, user);
+        httpSession.setAttribute(SESSIONED_USER, user.get());
         // 세션 설정
         httpSession.setMaxInactiveInterval(ONE_HOUR); // 1시간
 
