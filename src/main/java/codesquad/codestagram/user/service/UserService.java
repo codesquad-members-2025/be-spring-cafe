@@ -15,6 +15,8 @@ import java.util.NoSuchElementException;
 @Transactional
 public class UserService {
 
+    private final static String USER_NOT_FOUND = "존재하지 않는 회원입니다.";
+
     private final UserRepository userRepository;
 
     @Autowired
@@ -31,7 +33,7 @@ public class UserService {
 
     public User findUser(Long seq) {
         return userRepository.findBySeq(seq).orElseThrow(
-                () -> new NoSuchElementException("존재하지 않는 회원입니다.")
+                () -> new NoSuchElementException(USER_NOT_FOUND)
         );
     }
     public List<User> findUsers() {
@@ -43,11 +45,13 @@ public class UserService {
         return inputPassword.equals(user.getPassword());
     }
     public User updateUser(User updatedUser) {
+
         User findUser = findUser(updatedUser.getSeq());
 
         if (updatedUser.getPassword().equals(findUser.getPassword())) {
             throw new IllegalArgumentException("새 비밀번호가 현재 비밀번호와 동일합니다. 다른 비밀번호를 입력해주세요.");
         }
+        // 이게 과연 에러 상황일까?
 
         if (!updatedUser.getPassword().isEmpty()) {
             validatePassword(updatedUser.getPassword());
@@ -105,5 +109,11 @@ public class UserService {
         if (!hasSpecialChar) {
             throw new IllegalArgumentException("비밀번호는 최소 하나의 특수 문자를 포함해야 합니다.");
         }
+    }
+
+    public User authenticate(String userId, String password) {
+        return userRepository.findByUserIdAndPassword().orElseThrow(
+                () -> new NoSuchElementException(USER_NOT_FOUND)
+        );
     }
 }
