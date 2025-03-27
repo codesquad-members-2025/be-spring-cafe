@@ -60,14 +60,8 @@ public class AuthController {
     }
 
     @GetMapping("users/sign-out")
-    public String logout(HttpSession httpSession, HttpServletResponse response){
+    public String logout(HttpSession httpSession){
         httpSession.invalidate();
-
-        // 클라이언트 쿠키에서 세션 ID 삭제
-        Cookie cookie = new Cookie(JSESSION_ID, null); // 세션 쿠키 삭제
-        cookie.setMaxAge(ZERO);  // 즉시 만료
-        cookie.setPath(ROOT_DIRECTORY);   // 모든 경로에서 적용
-        response.addCookie(cookie);
 
         return "redirect:/";
     }
