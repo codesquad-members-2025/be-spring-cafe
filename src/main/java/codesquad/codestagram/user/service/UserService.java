@@ -10,12 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @Transactional
 public class UserService {
 
-    private final static String USER_NOT_FOUND = "존재하지 않는 회원입니다.";
+    public static final  String USER_NOT_FOUND = "존재하지 않는 회원입니다.";
 
     private final UserRepository userRepository;
 
@@ -51,7 +52,6 @@ public class UserService {
         if (updatedUser.getPassword().equals(findUser.getPassword())) {
             throw new IllegalArgumentException("새 비밀번호가 현재 비밀번호와 동일합니다. 다른 비밀번호를 입력해주세요.");
         }
-        // 이게 과연 에러 상황일까?
 
         if (!updatedUser.getPassword().isEmpty()) {
             validatePassword(updatedUser.getPassword());
@@ -63,7 +63,7 @@ public class UserService {
         findUser.setName(updatedUser.getName());
         findUser.setEmail(updatedUser.getEmail());
 
-        return userRepository.update(findUser);
+        return userRepository.save(findUser);
     }
 
     private void validatePassword(String password) {
@@ -111,9 +111,7 @@ public class UserService {
         }
     }
 
-    public User authenticate(String userId, String password) {
-        return userRepository.findByUserIdAndPassword().orElseThrow(
-                () -> new NoSuchElementException(USER_NOT_FOUND)
-        );
+    public Optional<User> authenticate(String userId, String password) {
+        return userRepository.findByUserIdAndPassword(userId, password);
     }
 }
