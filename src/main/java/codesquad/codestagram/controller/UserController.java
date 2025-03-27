@@ -2,6 +2,9 @@ package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.repository.UserRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -73,13 +76,28 @@ public class UserController {
         }
 
         User findUser = userRepository.findByLoginId(loginId);
-        if (password.equals(findUser.getPassword())) {
-            session.setAttribute("loginUser", findUser);
-            return "redirect:/";
+
+        if (!password.equals(findUser.getPassword())) {
+            redirectAttributes.addFlashAttribute("message", "비밀번호가 일치하지 않습니다.");
+            return "redirect:/users/loginForm";
         }
 
-        redirectAttributes.addFlashAttribute("message", "비밀번호가 일치하지 않습니다.");
+        session.setAttribute("loginUser", findUser);
+        return "redirect:/";
+    }
 
-        return "redirect:/users/loginForm";
+    @PostMapping("/logout")
+    public String logout(HttpSession session, HttpServletResponse response) {
+
+        if (session != null) {
+            session.invalidate();
+        }
+
+        Cookie cookie = new Cookie("JSESSIONID", null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        return "redirect:/";
     }
 }
