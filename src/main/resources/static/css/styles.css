@@ -1361,3 +1361,21 @@ h1 {
     font-size: 0.8rem;
     color: #777;
 }
+.reply-actions {
+    margin-top: 5px;
+    text-align: right;
+}
+
+.reply-actions button {
+    margin-left: 5px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #dc3545; /* Bootstrap danger color */
+    color: white;
+    cursor: pointer;
+}
+
+.reply-actions button:hover {
+    background-color: #c82333;
+}

@@ -109,17 +109,28 @@
     <!-- 댓글 영역 -->
     <div class="reply-container">
         <h3>댓글</h3>
+        <!-- 댓글 작성자만 수정/삭제 버튼 표시 -->
         <div th:each="reply : ${replies}" class="reply-item">
             <p class="reply-content" th:text="${reply.content}"></p>
             <p class="reply-meta">
                 <span th:text="${reply.user.userId}"></span>
                 <span th:text="${#temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
             </p>
-        </div>
-        <div th:if="${#lists.isEmpty(replies)}">
-            <p>아직 댓글이 없습니다.</p>
-        </div>
+
+            <div class="form-actions" th:if="${session.sessionedUser.userId == reply.user.userId}">
+                <form th:action="@{/article/{articleId}/reply/{replyId}(articleId=${article.id}, replyId=${reply.id})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-primary">수정</button>
+                </form>
+                <form th:action="@{/article/{articleId}/reply/{replyId}(articleId=${article.id}, replyId=${reply.id})}" method="post" style="display: inline;">
+                    <input type="hidden" name="_method" value="delete"> <!-- DELETE 요청으로 변환 -->
+                    <button type="submit" class="btn btn-danger">삭제</button>
+                </form>
+            </div>
     </div>
+    <div th:if="${#lists.isEmpty(replies)}">
+        <p>아직 댓글이 없습니다.</p>
+    </div>
+
     <!-- 댓글 작성 폼 추가 -->
     <div class="reply-form">
         <form th:action="@{/reply/{articleId}(articleId=${article.id})}" method="post">

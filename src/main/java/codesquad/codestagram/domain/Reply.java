@@ -14,6 +14,7 @@ public class Reply {
     private Long id;
     private String content;
     private LocalDateTime createdAt;
+    private boolean isDeleted;
     @ManyToOne
     @JoinColumn(name = "article_id")
     private Article article;
@@ -29,6 +30,7 @@ public class Reply {
         this.createdAt = LocalDateTime.now();
         this.article = article;
         this.user = user;
+        isDeleted = false;
     }
 
     public Long getId() {
@@ -49,5 +51,9 @@ public class Reply {
 
     public User getUser() {
         return user;
+    }
+
+    public void changeDeleteStatus(boolean status){
+        isDeleted = status;
     }
 }
