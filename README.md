@@ -6,7 +6,7 @@
 1. [1단계](#1단계)
 2. [2단계](#2단계)
 3. [3단계](#3단계)
-
+4. [4단계](#4단계)
 # 1단계
 ## 문제해결
 ### 1. 사용자 리스트를 조회할 때 사용자 id가 출력되지 않는 문제
@@ -127,6 +127,12 @@ java -jar codestagram-0.0.1-SNAPSHOT.jar --spring.config.location=file:./config/
 JdbcUserRepository의 findById 메서드에서 User 객체를 생성한 후에 setSeq로 seq 값을 지정해줌으로써 `"users/{userSeq}"`로 요청을 잘 처리할 수 있었다.
 ![img_8.png](img_8.png)  
 ![img_9.png](img_9.png)  
+
+# 4단계
+- 구현
+- 고민
+- 문제 해결
+
 # 학습
 ### PRG 패턴 (POST-REDIRECT-GET)
 - 기본 동작
