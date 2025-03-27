@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QnA 게시판</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .article-list {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .article-card {
+            padding: 15px;
+            border-bottom: 1px solid #dee2e6;
+            transition: background-color 0.2s;
+        }
+        .article-card:hover {
+            background-color: #f8f9fa;
+        }
+        .article-title {
+            font-size: 1.2rem;
+            color: #333;
+            text-decoration: none;
+            margin-bottom: 5px;
+        }
+        .article-title:hover {
+            color: #0d6efd;
+        }
+        .article-meta {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body class="bg-light">
+<div class="container">
+    <div class="article-list">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>QnA 게시판</h2>
+            <a th:href="@{/qna/form}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> 글쓰기
+            </a>
+        </div>
+
+        <div class="article-card" th:each="article : ${articles}">
+            <a th:href="@{/qna/articles/{articleId}(articleId=${article.id})}" class="article-title">
+                <h3 th:text="${article.title}">제목</h3>
+            </a>
+            <div class="article-meta">
+                <span>작성자: <span th:text="${article.user.name}">작성자</span></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
