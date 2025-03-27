@@ -25,6 +25,11 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
+    public Comment findCommentByCommentId(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
+    }
+
     public List<Comment> getCommentsByArticleId(Long articleId) {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));

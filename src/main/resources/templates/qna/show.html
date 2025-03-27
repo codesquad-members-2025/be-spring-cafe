@@ -189,6 +189,10 @@
                         <span class="comment-author" th:text="${comment.user.name}">작성자</span>
                         <span class="comment-date" th:text="${#temporals.format(comment.createdDate, 'yyyy-MM-dd HH:mm')}">작성일</span>
                     </div>
+                    <!-- 댓글이 수정되었으면 "(수정됨)"과 마지막 수정 시간 표시 -->
+                    <span th:if="${comment.modifiedDate != null and comment.createdDate != comment.modifiedDate}">
+                    (수정됨: <span th:text="${#temporals.format(comment.modifiedDate, 'yyyy-MM-dd HH:mm')}"></span>)
+                </span>
                     <div class="comment-content" th:text="${comment.comment}">댓글 내용</div>
                     <div class="comment-actions" th:if="${session.loginUser != null and session.loginUser.id == comment.user.id}">
                         <form th:action="@{/comments/{articleId}/{commentId}/edit(articleId=${article.id}, commentId=${comment.id})}" method="post" style="display: inline;">

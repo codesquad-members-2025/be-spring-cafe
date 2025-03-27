@@ -67,4 +67,8 @@ public class Comment extends BaseEntity{
     public void setUser(User user) {
         this.user = user;
     }
+    //수정사항 인식
+    public boolean isUpdated() {
+        return !getCreatedDate().equals(getModifiedDate());
+    }
 }

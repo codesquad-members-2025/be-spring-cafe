@@ -1,11 +1,11 @@
 package codesquad.codestagram.controller;
 
+import codesquad.codestagram.annotation.Login;
 import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.Comment;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.service.ArticleService;
 import codesquad.codestagram.service.CommentService;
-import codesquad.codestagram.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -26,12 +26,11 @@ public class CommentController {
         this.commentService = commentService;
         this.articleService = articleService;
     }
-
+    //댓글 등록
     @PostMapping("/articles/{articleId}")
-    public String addComment(@PathVariable("articleId") Long articleId,
+    public String addComment(@Login User loginUser, @PathVariable("articleId") Long articleId,
                            @RequestParam("content") String content,
                            HttpSession session) {
-        User loginUser = (User) session.getAttribute("loginUser");
         Article article = articleService.findArticleById(articleId)
                 .orElseThrow();
         
@@ -42,16 +41,19 @@ public class CommentController {
     }
 
     @PostMapping("/{articleId}/{commentId}/edit")
-    public String editComment(@PathVariable("articleId") Long articleId,
-                            @PathVariable("commentId") Long commentId,
-                            @RequestParam("content") String content) {
+    public String editComment(@Login User user, @PathVariable("articleId") Long articleId, @PathVariable("commentId") Long commentId, @RequestParam("content") String content) {
+        if(!user.equals(commentService.findCommentByCommentId(commentId).getUser())){
+            throw new IllegalStateException("댓글 수정 권한이 없습니다.");
+        }
         commentService.updateComment(commentId, content);
         return "redirect:/qna/articles/" + articleId;
     }
 
     @PostMapping("/{articleId}/{commentId}/delete")
-    public String deleteComment(@PathVariable("articleId") Long articleId,
-                                @PathVariable("commentId") Long commentId) {
+    public String deleteComment(@Login User user , @PathVariable("articleId") Long articleId, @PathVariable("commentId") Long commentId) {
+        if(!user.equals(commentService.findCommentByCommentId(commentId).getUser())){
+            throw new IllegalStateException("댓글 삭제 권한이 없습니다.");
+        }
         commentService.deleteComment(commentId);
         return "redirect:/qna/articles/" + articleId;
     }
