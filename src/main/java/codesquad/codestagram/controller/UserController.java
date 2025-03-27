@@ -24,7 +24,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/user/form")
+    @GetMapping("/user/signup-form")
     public String userForm() {
         return "user/form";
     }
@@ -50,7 +50,7 @@ public class UserController {
         return "user/profile";
     }
 
-    @GetMapping("/users/{userId}/form")
+    @GetMapping("/users/{userId}/update-form")
     public String showUpdateForm(@PathVariable String userId, Model model, HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
         if(loginUser == null) {

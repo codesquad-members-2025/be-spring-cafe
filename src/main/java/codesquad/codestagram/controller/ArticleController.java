@@ -4,7 +4,6 @@ import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.ArticleForm;
 import codesquad.codestagram.exception.NotLoggedInException;
-import codesquad.codestagram.exception.UnauthorizedAccessException;
 import codesquad.codestagram.service.ArticleService;
 import codesquad.codestagram.utility.TextUtility;
 import jakarta.servlet.http.HttpSession;
@@ -31,7 +30,7 @@ public class ArticleController {
         return "index";
     }
 
-    @GetMapping("/qna/form")
+    @GetMapping("/qna/write-form")
     public String form(HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
         if(loginUser == null) {
