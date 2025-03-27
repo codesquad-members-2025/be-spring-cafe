@@ -25,11 +25,7 @@ public class UserController {
                          @RequestParam String password,
                          @RequestParam String name,
                          @RequestParam String email) {
-        try {
-            userService.signUp(userId, password, name, email);
-        } catch (UnauthorizedException e) {
-            return "redirect:/users?error=duplicated-user";
-        }
+        userService.signUp(userId, password, name, email);
 
         return "redirect:/users";
     }
@@ -44,24 +40,16 @@ public class UserController {
 
     @GetMapping("{id}")
     public String showUserProfile(@PathVariable Long id, Model model) {
-        try {
-            User user = userService.getUserProfile(id);
-            model.addAttribute("user", user);
-        } catch (UserNotFoundException e) {
-            return "redirect:/users?error=user-not-found";
-        }
+        User user = userService.getUserProfile(id);
+        model.addAttribute("user", user);
 
         return "user/profile";
     }
 
     @GetMapping("{id}/form")
     public String showUpdateForm(@PathVariable Long id, Model model) {
-        try {
-            User user = userService.getUserProfile(id);
-            model.addAttribute("user", user);
-        } catch (UserNotFoundException e) {
-            return "redirect:/users?error=user-not-found";
-        }
+        User user = userService.getUserProfile(id);
+        model.addAttribute("user", user);
 
         return "user/edit";
     }
@@ -75,13 +63,7 @@ public class UserController {
                              @RequestParam String newPassword,
                              HttpSession session) {
         User sessionUser = (User) session.getAttribute(SessionConstants.USER_SESSION_KEY);
-        try {
-            userService.updateUser(id, email, name, currentPassword, newPassword, sessionUser);
-        } catch (UserNotFoundException e) {
-            return "redirect:/users?error=user-not-found";
-        } catch (DuplicatedUserException e) {
-            return "redirect:/users?error=duplicated-user";
-        }
+        userService.updateUser(id, email, name, currentPassword, newPassword, sessionUser);
 
         return "redirect:/users/" + id;
     }
