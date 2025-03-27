@@ -96,6 +96,15 @@
             <button type="submit" class="btn btn-danger">삭제</button>
         </form>
     </div>
+    <!-- 댓글 작성 폼 추가 -->
+    <div class="reply-form">
+        <form th:action="@{/reply/{articleId}(articleId=${article.id})}" method="post">
+            <label for="replyContent">댓글 내용:</label>
+            <textarea id="replyContent" name="content" rows="4" required></textarea>
+            <button type="submit">댓글 작성</button>
+        </form>
+    </div>
+
     <a href="/" class="home-link">홈으로</a>
 </main>
 
