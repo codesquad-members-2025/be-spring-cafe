@@ -32,7 +32,7 @@ public class ArticleController {
     // 모든 게시글 조회
     @GetMapping()
     public String viewQuestions(Model model) {
-        List<Article> articles = articleService.getArticlesV2();
+        List<Article> articles = articleService.getArticles();
         model.addAttribute("articles", articles);
         return "qna/list";
     }
