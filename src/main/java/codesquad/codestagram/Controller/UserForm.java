@@ -1,19 +1,19 @@
 package codesquad.codestagram.Controller;
 
 public class UserForm {
-    private String userId;
+    private String loginId;
     private String name;
     private String email;
     private String password;
 
 
 
-    public String getUserId() {
-        return userId;
+    public String getLoginId() {
+        return loginId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
     }
 
     public String getName() {

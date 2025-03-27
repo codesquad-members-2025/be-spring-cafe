@@ -1,6 +1,11 @@
 package codesquad.codestagram.domain;
 
+import jakarta.persistence.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+@Entity
 public class Board {
+    @Id  @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long boardId;
     private String title;
     private String content;

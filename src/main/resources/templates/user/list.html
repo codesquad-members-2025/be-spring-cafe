@@ -33,9 +33,9 @@
                       <tr th:each="user, iterStat : ${users}">
                           <th scope="row" th:text="${iterStat.count}"></th> <!-- 자동 증가 번호(id 값) -->
                           <td>
-                              <a th:href="@{/users/{userId}(userId=${user.userId})}" th:text="${user.userId}"></a>
+                              <a th:href="@{/users/{loginId}(loginId=${user.loginId})}" th:text="${user.loginId}"></a>
                           </td> <!-- 사용자 이름 (클릭하면 프로필 페이지로 이동) -->
-    <!--                      <td th:text="${user.userId}"></td> &lt;!&ndash; 사용자 아이디 (Userid 값) &ndash;&gt;-->
+    <!--                      <td th:text="${user.loginId}"></td> &lt;!&ndash; 사용자 아이디 (loginId 값) &ndash;&gt;-->
                           <td th:text="${user.name}"></td> <!-- 사용자 이름 -->
                           <td th:text="${user.email}"></td> <!-- 사용자 이메일 -->
                           <td><a th:href="@{/users/edit/{id}(id=${user.id})}" class="btn btn-success" role="button">수정</a></td>

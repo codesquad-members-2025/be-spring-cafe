@@ -2,10 +2,12 @@ package codesquad.codestagram.service;
 
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public class UserService {
     private final UserRepository userRepository;
     //생성자를 통해 외부에서 UserRepository 주입 -> DI 활용 위해
@@ -23,9 +25,9 @@ public class UserService {
 
     private void validateDuplicateUser(User user) {
         //같은 아이디 중복 회원 x
-        userRepository.findByUserId(user.getUserId())
+        userRepository.findByLoginId(user.getLoginId())
                 .ifPresent(u -> {
-                    throw new IllegalStateException("user already exists");
+                    throw new IllegalStateException("User already exists");
                 });
     }
 
@@ -36,12 +38,12 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> findOne(Long userId) {
-        return userRepository.findById(userId);
+    public Optional<User> findOne(Long loginId) {
+        return userRepository.findById(loginId);
     }
 
-    public Optional<User> findByUserId(String userId) {
-        return userRepository.findByUserId(userId);
+    public Optional<User> findByLoginId(String loginId) {
+        return userRepository.findByLoginId(loginId);
     }
 
     /**
