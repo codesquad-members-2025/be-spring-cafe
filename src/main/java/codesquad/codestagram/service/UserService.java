@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-@Transactional
 public class UserService {
     private final UserRepository userRepository;
     //생성자를 통해 외부에서 UserRepository 주입 -> DI 활용 위해
@@ -17,6 +16,7 @@ public class UserService {
     /**
      * 회원가입
      */
+    @Transactional
     public Long join(User user) {
         validateDuplicateUser(user); //중복 회원 검증
         userRepository.save(user);

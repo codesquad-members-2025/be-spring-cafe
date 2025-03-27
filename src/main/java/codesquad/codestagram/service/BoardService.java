@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-@Transactional
 public class BoardService {
     private BoardRepository boardRepository;
 
@@ -20,6 +19,7 @@ public class BoardService {
     /**
      * 게시글 작성
      */
+    @Transactional
     public Board writeBoard(Board board) {
         return boardRepository.save(board);
     }
