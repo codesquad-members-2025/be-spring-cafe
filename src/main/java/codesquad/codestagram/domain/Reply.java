@@ -1,5 +1,6 @@
 package codesquad.codestagram.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 public class Reply {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String content;
     private LocalDateTime createdAt;
     private boolean isDeleted;
