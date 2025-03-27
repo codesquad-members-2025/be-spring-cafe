@@ -16,6 +16,8 @@
 
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
+<div th:if="${message}" th:text="${message}" style="color:red;"></div>
+
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="alert alert-danger" role="alert" th:if="${loginError}" th:text="${loginError}"></div>
@@ -29,7 +31,7 @@
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
-                                <span class="time" th:text="${board.uploadDate}"></span>
+                                <span class="time" th:text="${board.date}"></span>
                                 <a th:href="@{/users/{id}(id=${board.writerId})}" class="author" th:text="${board.writerName}"></a>
                             </div>
                             <div class="reply" title="댓글">
