@@ -4,9 +4,11 @@ import static codesquad.codestagram.controller.AuthController.SESSIONED_USER;
 import static codesquad.codestagram.controller.UserController.ERROR_MESSAGE;
 
 import codesquad.codestagram.domain.Article;
+import codesquad.codestagram.domain.Reply;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.ArticleDto;
 import codesquad.codestagram.service.ArticleService;
+import codesquad.codestagram.service.ReplyService;
 import jakarta.servlet.http.HttpSession;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
@@ -24,12 +26,16 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class ArticleController {
     public static final String ARTICLES = "articles";
+    public static final String ARTICLE = "article";
     public static final String AUTHOR = "author";
+    public static final String REPLIES = "replies";
 
     private final ArticleService articleService;
+    private final ReplyService replyService;
 
-    public ArticleController(ArticleService articleService) {
+    public ArticleController(ArticleService articleService, ReplyService replyService) {
         this.articleService = articleService;
+        this.replyService = replyService;
     }
 
     @PostMapping("/articles")
@@ -61,10 +67,12 @@ public class ArticleController {
             redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return "redirect:/";
         }
+        List<Reply> replies = replyService.findReplies(article);
 
         boolean isArticleAuthor = articleService.isArticleAuthor(session, article);
         model.addAttribute(AUTHOR, isArticleAuthor);
-        model.addAttribute(article);
+        model.addAttribute(ARTICLE, article);
+        model.addAttribute(REPLIES, replies);
 
         return "articles/show";
     }
@@ -83,7 +91,7 @@ public class ArticleController {
         }
 
         model.addAttribute(AUTHOR, true);
-        model.addAttribute(article);
+        model.addAttribute(ARTICLE, article);
 
         return "articles/edit";
     }

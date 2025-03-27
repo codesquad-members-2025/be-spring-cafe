@@ -1310,12 +1310,15 @@ h1 {
 
 .reply-form textarea {
     width: 100%;
+    min-height: 30px; /* 기본 높이 */
+    max-height: 150px; /* 최대 높이 */
     padding: 8px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-    resize: vertical;
+    resize: none; /* 사용자가 크기 조정 불가 */
+    overflow: hidden; /* 스크롤바 숨김 */
 }
 
 .reply-form button {
@@ -1329,4 +1332,32 @@ h1 {
 
 .reply-form button:hover {
     background-color: #0056b3;
+}
+.reply-container {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: left;
+}
+
+.reply-item {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.reply-item:last-child {
+    border-bottom: none;
+}
+
+.reply-content {
+    font-size: 1rem;
+    color: #333;
+}
+
+.reply-meta {
+    font-size: 0.8rem;
+    color: #777;
 }
