@@ -3,6 +3,7 @@ package codesquad.codestagram.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "posts")
@@ -24,13 +25,13 @@ public class Post {
     @Column(nullable = false)
     private String date;
 
-    public Post() {}
+    protected Post() {}
 
     public Post(String title, String content, User user) {
         this.title = title;
         this.content = content;
         this.user = user;
-        this.date = LocalDateTime.now().toString();
+        this.date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     public Long getId() {
@@ -59,5 +60,12 @@ public class Post {
     }
     public String getDate() {
         return date;
+    }
+    public Long writerId() {
+        return user.getId();
+    }
+
+    public String writerName(){
+        return user.getName();
     }
 }

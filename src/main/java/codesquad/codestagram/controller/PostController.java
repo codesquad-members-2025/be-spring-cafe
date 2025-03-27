@@ -5,12 +5,13 @@ import codesquad.codestagram.service.PostService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
 @Controller
 public class PostController {
-    private PostService postService;
+    private final PostService postService;
 
     public PostController(PostService postService) {
         this.postService = postService;
@@ -25,5 +26,10 @@ public class PostController {
 
     public void init(){
         postService.initExamplePosts();
+    }
+
+    @GetMapping("/questions")
+    public String questions() {
+        return "qna/form";
     }
 }
