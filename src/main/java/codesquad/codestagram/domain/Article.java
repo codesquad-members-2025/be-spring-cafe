@@ -1,11 +1,18 @@
 package codesquad.codestagram.domain;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "ARTICLES")
 public class Article {
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String writer;
     private String title;
     private String contents;
-    private int id;
+
+    protected Article() {}
 
     public Article(String writer, String title, String contents) {
         this.writer = writer;
@@ -13,11 +20,11 @@ public class Article {
         this.contents = contents;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
