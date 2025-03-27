@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Table(name = "comments")
 @Entity
-public class Comment {
+public class Comment extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,14 +17,6 @@ public class Comment {
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String comment;
-
-    @Column(name = "created_date")
-    @CreatedDate
-    private LocalDateTime createdDate;
-
-    @Column(name = "modified_date")
-    @LastModifiedDate
-    private LocalDateTime modifiedDate;
 
     @ManyToOne
     @JoinColumn(name = "article_id")
@@ -34,9 +26,8 @@ public class Comment {
     @JoinColumn(name = "user_id")
     private User user; // 작성자
 
-    public Comment(String comment, LocalDateTime createdDate, Article article, User user) {
+    public Comment(String comment, Article article, User user) {
         this.comment = comment;
-        this.createdDate = createdDate;
         this.article = article;
         this.user = user;
     }
@@ -60,21 +51,6 @@ public class Comment {
         this.comment = comment;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public LocalDateTime getModifiedDate() {
-        return modifiedDate;
-    }
-
-    public void setModifiedDate(LocalDateTime modifiedDate) {
-        this.modifiedDate = modifiedDate;
-    }
 
     public Article getArticle() {
         return article;

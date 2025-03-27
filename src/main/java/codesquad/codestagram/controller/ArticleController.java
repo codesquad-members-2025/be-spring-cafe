@@ -71,11 +71,11 @@ public class ArticleController {
         }
 
 
-        articleService.addArticleV2(request);
+        articleService.addArticle(request);
         return "redirect:/qna";
     }
 
-
+    //게시글 수정 입력폼노출
     @GetMapping("/articles/{articleId}/edit")
         public String showUpdateArticleForm(@Login User user, @PathVariable("articleId")Long articleId,Model model){
 

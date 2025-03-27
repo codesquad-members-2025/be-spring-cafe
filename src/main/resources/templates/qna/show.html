@@ -95,6 +95,41 @@
             color: white;
             transform: translateY(-2px);
         }
+        .comments-section {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+        .comments-title {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .comment-form {
+            margin-bottom: 30px;
+        }
+        .comment-item {
+            padding: 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .comment-content {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .comment-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .comment-actions button {
+            padding: 4px 8px;
+            font-size: 0.8rem;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -128,6 +163,48 @@
             <a th:href="@{/qna}" class="btn btn-list">
                 <i class="bi bi-list"></i>목록으로
             </a>
+        </div>
+
+        <!-- 댓글 섹션 -->
+        <div class="comments-section">
+            <h3 class="comments-title">댓글</h3>
+            
+            <!-- 댓글 작성 폼 -->
+            <div th:if="${session.loginUser != null}" class="comment-form">
+                <form th:action="@{/comments/articles/{articleId}(articleId=${article.id})}" method="post">
+                    <textarea name="content" class="form-control" rows="3" placeholder="댓글을 입력하세요" required></textarea>
+                    <button type="submit" class="btn btn-primary mt-2">
+                        <i class="bi bi-chat-dots"></i>댓글 작성
+                    </button>
+                </form>
+            </div>
+            <div th:unless="${session.loginUser != null}" class="alert alert-info">
+                댓글을 작성하려면 <a th:href="@{/login}">로그인</a>이 필요합니다.
+            </div>
+
+            <!-- 댓글 목록 -->
+            <div class="comments-list mt-4">
+                <div th:each="comment : ${article.comments}" class="comment-item">
+                    <div class="comment-header">
+                        <span class="comment-author" th:text="${comment.user.name}">작성자</span>
+                        <span class="comment-date" th:text="${#temporals.format(comment.createdDate, 'yyyy-MM-dd HH:mm')}">작성일</span>
+                    </div>
+                    <div class="comment-content" th:text="${comment.comment}">댓글 내용</div>
+                    <div class="comment-actions" th:if="${session.loginUser != null and session.loginUser.id == comment.user.id}">
+                        <form th:action="@{/comments/{articleId}/{commentId}/edit(articleId=${article.id}, commentId=${comment.id})}" method="post" style="display: inline;">
+                            <input type="text" name="content" th:value="${comment.comment}" class="form-control form-control-sm d-inline-block w-auto">
+                            <button type="submit" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i>수정
+                            </button>
+                        </form>
+                        <form th:action="@{/comments/{articleId}/{commentId}/delete(articleId=${article.id}, commentId=${comment.id})}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('댓글을 삭제하시겠습니까?')">
+                                <i class="bi bi-trash"></i>삭제
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

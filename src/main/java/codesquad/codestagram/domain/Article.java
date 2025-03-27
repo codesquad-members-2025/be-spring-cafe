@@ -19,7 +19,7 @@ public class Article {
     private String content; // 게시글 내용
 
     @ManyToOne
-    private User user;  // 작성자 (기존 코드 유지)
+    private User user;
 
     @OneToMany(mappedBy = "article", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @OrderBy("id asc") // 댓글 정렬
@@ -68,5 +68,13 @@ public class Article {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }
