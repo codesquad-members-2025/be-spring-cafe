@@ -54,9 +54,9 @@ public class UserService {
 
     public User userLogin(String userId, String password) {
         User user = findByUserId(userId);
-        if (user.isPasswordValid(password)) {
-            return user;
+        if (!user.isPasswordValid(password)) {
+            throw new InvalidPasswordException();
         }
-        throw new InvalidPasswordException();
+        return user;
     }
 }
