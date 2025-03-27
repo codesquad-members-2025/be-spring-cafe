@@ -1,7 +1,6 @@
 package codesquad.codestagram.domain.user;
 
 import codesquad.codestagram.common.constants.SessionConstants;
-import codesquad.codestagram.domain.auth.UnauthorizedException;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,4 +1,4 @@
-package codesquad.codestagram.domain.user;
+package codesquad.codestagram.domain.user.exception;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(String message) {

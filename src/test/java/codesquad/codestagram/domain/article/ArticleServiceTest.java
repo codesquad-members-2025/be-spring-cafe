@@ -1,6 +1,7 @@
 package codesquad.codestagram.domain.article;
 
-import codesquad.codestagram.domain.auth.UnauthorizedException;
+import codesquad.codestagram.domain.article.exception.ArticleNotFoundException;
+import codesquad.codestagram.domain.auth.exception.UnauthorizedException;
 import codesquad.codestagram.domain.user.User;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;

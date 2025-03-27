@@ -1,6 +1,7 @@
 package codesquad.codestagram.domain.article;
 
-import codesquad.codestagram.domain.auth.UnauthorizedException;
+import codesquad.codestagram.domain.article.exception.ArticleNotFoundException;
+import codesquad.codestagram.domain.auth.exception.UnauthorizedException;
 import codesquad.codestagram.domain.user.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,9 +1,9 @@
 package codesquad.codestagram.common.exception;
 
-import codesquad.codestagram.domain.article.ArticleNotFoundException;
-import codesquad.codestagram.domain.auth.UnauthorizedException;
-import codesquad.codestagram.domain.user.DuplicatedUserException;
-import codesquad.codestagram.domain.user.UserNotFoundException;
+import codesquad.codestagram.domain.article.exception.ArticleNotFoundException;
+import codesquad.codestagram.domain.auth.exception.UnauthorizedException;
+import codesquad.codestagram.domain.user.exception.DuplicatedUserException;
+import codesquad.codestagram.domain.user.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
