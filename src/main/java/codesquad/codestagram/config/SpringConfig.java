@@ -1,23 +1,23 @@
 package codesquad.codestagram.config;
 
-import codesquad.codestagram.repository.JpaUserRepository;
+import codesquad.codestagram.repository.ArticleRepository;
 import codesquad.codestagram.repository.UserRepository;
+import codesquad.codestagram.service.ArticleService;
 import codesquad.codestagram.service.UserService;
-import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.sql.DataSource;
 
 @Configuration
 public class SpringConfig {
 
     private final UserRepository userRepository;
+    private final ArticleRepository articleRepository;
 
     @Autowired
-    public SpringConfig(UserRepository userRepository) {
+    public SpringConfig(UserRepository userRepository, ArticleRepository articleRepository) {
         this.userRepository = userRepository;
+        this.articleRepository = articleRepository;
     }
 
     @Bean
@@ -25,4 +25,8 @@ public class SpringConfig {
         return new UserService(userRepository);
     }
 
+    @Bean
+    public ArticleService articleService() {
+        return new ArticleService(articleRepository);
+    }
 }
