@@ -2,7 +2,6 @@ package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.UserForm;
-import codesquad.codestagram.exception.NotLoggedInException;
 import codesquad.codestagram.exception.UnauthorizedAccessException;
 import codesquad.codestagram.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -53,9 +52,6 @@ public class UserController {
     @GetMapping("/users/{userId}/update-form")
     public String showUpdateForm(@PathVariable String userId, Model model, HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
-        if(loginUser == null) {
-            throw new NotLoggedInException();
-        }
         User user = userService.findByUserId(userId);
         if(!loginUser.equals(user)){
             throw new UnauthorizedAccessException("다른 유저의 정보는 수정할 수 없습니다.");
@@ -67,9 +63,6 @@ public class UserController {
     @PutMapping("/users/{userId}/update")
     public String updateForm(UserForm userForm, HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
-        if(loginUser == null) {
-            throw new NotLoggedInException();
-        }
         userService.updateUser(loginUser, userForm);
         return "redirect:/users/" + loginUser.getUserId();
     }

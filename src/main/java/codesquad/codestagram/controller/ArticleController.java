@@ -3,7 +3,6 @@ package codesquad.codestagram.controller;
 import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.ArticleForm;
-import codesquad.codestagram.exception.NotLoggedInException;
 import codesquad.codestagram.service.ArticleService;
 import codesquad.codestagram.utility.TextUtility;
 import jakarta.servlet.http.HttpSession;
@@ -32,37 +31,18 @@ public class ArticleController {
 
     @GetMapping("/qna/write-form")
     public String form(HttpSession session) {
-        User loginUser = (User) session.getAttribute("loginUser");
-        if(loginUser == null) {
-            throw new NotLoggedInException();
-        }
-
         return "qna/form";
     }
 
     @PostMapping("/qna/create")
     public String create(ArticleForm articleForm, HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
-        if(loginUser == null) {
-            throw new NotLoggedInException();
-        }
-
         articleService.createArticleAndSave(loginUser, articleForm);
         return "redirect:/";
     }
 
-    @GetMapping("/qna/show")
-    public String show() {
-        return "qna/show";
-    }
-
     @GetMapping("/articles/{index}")
     public String viewArticle(@PathVariable int index, Model model, HttpSession session) {
-        User loginUser = (User) session.getAttribute("loginUser");
-        if(loginUser == null) {
-            throw new NotLoggedInException();
-        }
-
         Article article = articleService.findArticleById(index);
         model.addAttribute("article", article);
         model.addAttribute("parsedContent", TextUtility.escapeAndConvertNewlines(article.getContent()));
@@ -72,10 +52,6 @@ public class ArticleController {
     @DeleteMapping("/articles/{index}")
     public String delete(@PathVariable int index, HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
-        if(loginUser == null) {
-            throw new NotLoggedInException();
-        }
-
         Article article = articleService.findArticleIfOwner(loginUser, index);
         articleService.delete(article);
         return "redirect:/";
@@ -84,10 +60,6 @@ public class ArticleController {
     @GetMapping("/articles/{index}/update-form")
     public String updateForm(@PathVariable int index, Model model, HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
-        if(loginUser == null) {
-            throw new NotLoggedInException();
-        }
-
         Article article = articleService.findArticleIfOwner(loginUser, index);
 
         model.addAttribute("article", article);
@@ -99,9 +71,6 @@ public class ArticleController {
     @PutMapping("/articles/{index}/update")
     public String update(@PathVariable int index, ArticleForm articleForm, HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
-        if(loginUser == null) {
-            throw new NotLoggedInException();
-        }
         articleService.update(loginUser, index, articleForm);
 
         return "redirect:/articles/" + index;
