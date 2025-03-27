@@ -18,11 +18,36 @@ public class Reply {
     @JoinColumn(name = "article_id")
     private Article article;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public Reply() {}
 
-    public Reply(String content, Article article) {
+    public Reply(String content, Article article, User user) {
         this.content = content;
         this.createdAt = LocalDateTime.now();
         this.article = article;
+        this.user = user;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public Article getArticle() {
+        return article;
+    }
+
+    public User getUser() {
+        return user;
     }
 }
