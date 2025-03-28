@@ -31,7 +31,7 @@ public class ArticleService {
         return articleRepository.findByUser(user);
     }
 
-    public Article findArticleById(int id) {
+    public Article findArticleById(Long id) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new ArticleNotFoundException("해당하는 ID("+ id +")의 게시글을 찾을 수 없습니다."));
         return article;
@@ -47,7 +47,7 @@ public class ArticleService {
     }
 
     @Transactional
-    public void update(User user, int id, ArticleForm articleForm) {
+    public void update(User user, Long id, ArticleForm articleForm) {
         Article article = findArticleById(id);
         if(!article.isAuthor(user)){
             throw new UnauthorizedAccessException("게시물을 수정할 권한이 없습니다.");
@@ -55,7 +55,7 @@ public class ArticleService {
         article.update(articleForm);
     }
 
-    public Article findArticleIfOwner(User user, int id) {
+    public Article findArticleIfOwner(User user, Long id) {
         Article article = findArticleById(id);
         if(!article.isAuthor(user)){
             throw new UnauthorizedAccessException("해당 게시물의 작성자가 아닙니다.");

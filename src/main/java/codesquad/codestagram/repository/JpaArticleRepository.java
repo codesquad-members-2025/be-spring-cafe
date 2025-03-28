@@ -19,7 +19,7 @@ public interface JpaArticleRepository extends ArticleRepository, JpaRepository<A
     List<Article> findByTitle(String title);
 
     @Override
-    Optional<Article> findById(int id);
+    Optional<Article> findById(Long id);
 
     @Override
     List<Article> findAll();
