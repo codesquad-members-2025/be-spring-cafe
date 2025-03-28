@@ -7,8 +7,7 @@ public class Article {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Long articleId;
+    private Long id;
     private String writer;
     private String title;
     private String content;
@@ -23,8 +22,8 @@ public class Article {
 
     }
 
-    public Long getArticleId() {
-        return articleId;
+    public Long getId() {
+        return id;
     }
 
     public String getWriter() {
@@ -39,8 +38,8 @@ public class Article {
         return content;
     }
 
-    public void setArticleId(Long articleId) {
-        this.articleId = articleId;
+    public void setId(Long id) {
+        this.id = id;
     }
 }
 
