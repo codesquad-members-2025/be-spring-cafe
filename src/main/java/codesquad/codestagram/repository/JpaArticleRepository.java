@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface JpaArticleRepository extends ArticleRepository, JpaRepository<Article, Integer> {
+public interface JpaArticleRepository extends ArticleRepository, JpaRepository<Article, Long> {
 
     @Override
     Article save(Article article);
