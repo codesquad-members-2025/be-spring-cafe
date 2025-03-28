@@ -99,20 +99,23 @@ public class UserController {
     @PostMapping("/login")
     public String login(@RequestParam String loginId, @RequestParam String password, HttpSession session
         , RedirectAttributes redirectAttributes) {
-        try {
-            boolean loginResult = userService.login(loginId, password, session);
 
-            if (!loginResult) {
+        try {
+            User findUser = userService.authenticate(loginId, password);
+
+            if (findUser == null) {
                 redirectAttributes.addFlashAttribute("message", "비밀번호가 틀렸습니다.");
                 return "redirect:/users/loginForm";
             }
+
+            session.setAttribute(SESSION_LOGIN_USER, findUser);
+            return "redirect:/";
 
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
             return "redirect:/users/loginForm";
         }
 
-        return "redirect:/";
     }
 
     @PostMapping("/logout")

@@ -2,7 +2,6 @@ package codesquad.codestagram.service;
 
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.repository.UserRepository;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,17 +39,15 @@ public class UserService {
         return true;
     }
 
-    public boolean login(String loginId, String password, HttpSession session) {
+    public User authenticate(String loginId, String password) {
         User findUser = userRepository.findByLoginId(loginId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이디입니다."));
 
         if (!password.equals(findUser.getPassword())) { //비밀번호가 틀릴 경우
-            return false;
+            return null;
         }
 
-        session.setAttribute("loginUser", findUser);
-
-        return true;
+        return findUser;
     }
 
 }
