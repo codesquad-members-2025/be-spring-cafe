@@ -14,11 +14,13 @@ public class Reply {
     private Long userId;
     private Long articleId;
     private String content;
+    private boolean deleted;
 
     public Reply(Long userId, Long articleId, String content) {
         this.userId = userId;
         this.articleId = articleId;
         this.content = content;
+        this.deleted = false;
     }
 
     public Reply() {
@@ -42,6 +44,14 @@ public class Reply {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public void delete() {
+        this.deleted = true;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
     }
 
     public boolean isSameWriter(Long userId) {
