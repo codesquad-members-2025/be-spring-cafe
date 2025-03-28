@@ -29,7 +29,7 @@ public class LoginController {
             @RequestParam String password,
             HttpSession session
     ){
-        User user = loginService.validate(userId, password);
+        User user = loginService.validateLogin(userId, password);
         if(user == null){
             return "user/login_failed";
         }
@@ -48,7 +48,7 @@ public class LoginController {
         //세션에서 로그인 된 사용자 정보 가져오기
         User loginUser = (User) session.getAttribute(SESSION_USER_KEY); //getAttribute가 Object 객체를 반환하기 때문에 User로 캐스팅 해줘야함
 
-        boolean updatePossible = loginService.validateUpdate(loginUser, userId); //
+        boolean updatePossible = loginService.validateUserOwnership(loginUser, userId); //
 
         if(updatePossible){
             loginService.updateUserInfo(loginUser, password, name, email, session);

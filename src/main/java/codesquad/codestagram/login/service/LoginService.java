@@ -16,7 +16,7 @@ public class LoginService {
     }
 
     //로그인 검증
-    public User validate(String userId, String password) {
+    public User validateLogin(String userId, String password) {
         User user = userRepository.findByUserId(userId);
         //1. 피드백 : equals -> matchPassword 메서드로 구현
         if(user != null && user.matchPassword(password)){
@@ -25,7 +25,9 @@ public class LoginService {
         return null;
     }
 
-    public boolean validateUpdate(User loginUser, String userId) {
+    //validateUpdate -> validateUserOwnership로 메서드 이름 fix
+    // loginUser가 본인의 정보에 대한 권한을 가지고 있는지 검증한다
+    public boolean validateUserOwnership(User loginUser, String userId) {
         return loginUser != null && loginUser.getUserId().equals(userId);
     }
 
