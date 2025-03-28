@@ -24,7 +24,7 @@ public class Reply {
 
     protected Reply() {}
 
-    public Reply(Article article, User user, String text) {
+    public Reply(User user, Article article, String text) {
         this.article = article;
         this.user = user;
         this.text = text;
