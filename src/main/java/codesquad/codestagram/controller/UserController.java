@@ -60,11 +60,12 @@ public class UserController {
     public String viewUpdateForm(@PathVariable("id") Long id, Model model, HttpSession session
         , RedirectAttributes redirectAttributes) {
 
-        if (session.getAttribute(SESSION_LOGIN_USER) == null) { //로그인 상태인지 확인
-            return "redirect:/users/loginForm";
-        }
 
         User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
+
+        if (loginUser == null) { //로그인 상태인지 확인
+            return "redirect:/users/loginForm";
+        }
 
         try {
             User findUser = userService.getUser(id);
