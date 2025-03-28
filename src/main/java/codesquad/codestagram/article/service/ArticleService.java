@@ -21,15 +21,15 @@ public class ArticleService {
     }
 
     public Long create(Article article) {
-        return articleRepository.save(article).getArticleId();
+        return articleRepository.save(article).getId();
     }
 
     public List<Article> findArticles() {
         return articleRepository.findAll();
     }
 
-    public Article findArticle(Long articleId) {
-        return articleRepository.findById(articleId).orElseThrow(
+    public Article findArticle(Long id) {
+        return articleRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("존재하지 않는 질문입니다.")
         );
     }
