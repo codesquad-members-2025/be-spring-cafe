@@ -1,7 +1,9 @@
 package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.Article;
+import codesquad.codestagram.domain.User;
 import codesquad.codestagram.service.ArticleService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,14 +20,27 @@ public class ArticleController {
         this.articleService = articleService;
     }
 
+    @GetMapping("/qna/form")
+    public String verifyMember(HttpSession session) {
+        User loginUser = (User) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            return "redirect:/user/login";
+        }
+        return "qna/form";
+    }
+
     @PostMapping("/questions")
     public String ask(
-            @RequestParam("writer") String writer,
             @RequestParam("title") String title,
-            @RequestParam("contents") String contents) {
-        Article article = new Article(writer, title, contents);
+            @RequestParam("contents") String contents,
+            HttpSession session) {
+        User loginUser = (User) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            return "redirect:/user/login";
+        }
+        Article article = new Article(loginUser.getUserId(), title, contents);
 
-        articleService.ask(article);
+        articleService.save(article);
 
         return "redirect:/";
     }
