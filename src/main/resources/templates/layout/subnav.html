@@ -24,13 +24,17 @@
                 <li th:if="${session.user == null}">
                     <a th:href="@{/users/login}" role="button">로그인</a>
                 </li>
+                <li th:if="${session.user == null}">
+                    <a th:href="@{/users/new}" role="button">회원가입</a>
+                </li>
+
                 <!-- 사용자가 로그인했을 때 -->
                 <li th:if="${session.user != null}">
                     <a th:href="@{/users/logout}" role="button">로그아웃</a>
                 </li>
-                <li><a th:href="@{/users/new}" role="button">회원가입</a></li>
-                <li><a href="#" role="button">로그아웃</a></li>
-                <li><a href="#" role="button">개인정보수정</a></li>
+                <li th:if="${session.user != null}">
+                    <a href="#" role="button">개인정보수정</a>
+                </li>
             </ul>
         </div>
     </div>

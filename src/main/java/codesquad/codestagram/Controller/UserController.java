@@ -49,6 +49,13 @@ public class UserController {
         return "user/login"; // login.html 뷰 템플릿을 반환
     }
 
+    // 로그아웃 처리
+    @GetMapping("/users/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();  // 세션 무효화
+        return "redirect:/";   // 메인 페이지로 리다이렉트
+    }
+
 
     @PostMapping("/users/login")
     public String login(@RequestParam("loginId") String loginId, @RequestParam("password") String password, HttpSession session) {
