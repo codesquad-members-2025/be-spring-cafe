@@ -4,11 +4,13 @@ import codesquad.codestagram.article.domain.Article;
 import codesquad.codestagram.article.repository.ArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
+@Transactional
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
@@ -18,8 +20,8 @@ public class ArticleService {
         this.articleRepository = articleRepository;
     }
 
-    public void create(Article article) {
-        articleRepository.save(article);
+    public Long create(Article article) {
+        return articleRepository.save(article).getArticleId();
     }
 
     public List<Article> findArticles() {

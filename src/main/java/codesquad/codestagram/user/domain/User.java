@@ -1,8 +1,16 @@
 package codesquad.codestagram.user.domain;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "member")
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
+
+    @Column(name = "USERID")
     private String userId;
     private String password;
     private String name;
@@ -13,6 +21,10 @@ public class User {
         this.password = password;
         this.name = name;
         this.email = email;
+    }
+
+    public User() {
+
     }
 
     public Long getSeq() {
@@ -49,5 +61,9 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

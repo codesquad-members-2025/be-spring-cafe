@@ -6,11 +6,13 @@ import codesquad.codestagram.user.dto.UserUpdateRequest;
 import codesquad.codestagram.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
@@ -20,17 +22,11 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public void join(SignUpRequest request) {
+    public User join(User user) {
 
-        validatePassword(request.password());
+//        validatePassword(user.getPassword());
         //todo: 중복 회원에 대한 검증 필요
-        User user = new User(
-                request.userId(),
-                request.password(),
-                request.name(),
-                request.email()
-        );
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     public User findUser(Long seq) {
@@ -46,24 +42,24 @@ public class UserService {
         User user = findUser(userSeq);
         return inputPassword.equals(user.getPassword());
     }
-    public void updateUser(Long userSeq, UserUpdateRequest request) {
-        User findUser = findUser(userSeq);
+    public User updateUser(User updatedUser) {
+        User findUser = findUser(updatedUser.getSeq());
 
-        if (request.password().equals(findUser.getPassword())) {
+        if (updatedUser.getPassword().equals(findUser.getPassword())) {
             throw new IllegalArgumentException("새 비밀번호가 현재 비밀번호와 동일합니다. 다른 비밀번호를 입력해주세요.");
         }
 
-        if (!request.password().isEmpty()) {
-            validatePassword(request.password());
+        if (!updatedUser.getPassword().isEmpty()) {
+            validatePassword(updatedUser.getPassword());
         }
 
-        String newPassword = request.password().isEmpty() ? findUser.getPassword() : request.password();
+        String newPassword = updatedUser.getPassword().isEmpty() ? findUser.getPassword() : updatedUser.getPassword();
 
         findUser.setPassword(newPassword);
-        findUser.setName(request.name());
-        findUser.setEmail(request.email());
+        findUser.setName(updatedUser.getName());
+        findUser.setEmail(updatedUser.getEmail());
 
-        userRepository.update(findUser);
+        return userRepository.update(findUser);
     }
 
     private void validatePassword(String password) {
