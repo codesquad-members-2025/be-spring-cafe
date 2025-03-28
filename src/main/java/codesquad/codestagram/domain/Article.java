@@ -1,7 +1,7 @@
 package codesquad.codestagram.domain;
 
+import codesquad.codestagram.dto.ArticleForm;
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -49,6 +49,15 @@ public class Article {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         return createdAt.format(dateFormatter)+" "+createdAt.format(timeFormatter);
+    }
+
+    public boolean isAuthor(User user) {
+        return this.user.equals(user);
+    }
+
+    public void update(ArticleForm articleForm) {
+        title = articleForm.getTitle();
+        content = articleForm.getContent();
     }
 
     @Override

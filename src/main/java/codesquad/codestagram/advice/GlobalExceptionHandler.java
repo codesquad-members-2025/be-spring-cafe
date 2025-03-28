@@ -1,26 +1,13 @@
-package codesquad.codestagram.controller;
+package codesquad.codestagram.advice;
 
-import codesquad.codestagram.domain.User;
 import codesquad.codestagram.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @ControllerAdvice
-public class GlobalModelControllerAdvice {
-
-    @ModelAttribute
-    public void addLoginUser(Model model, HttpSession session) {
-        User user = (User) session.getAttribute("loginUser");
-        if(user != null) {
-            model.addAttribute("loginUser", user);
-        }
-    }
-
+public class GlobalExceptionHandler {
     @ExceptionHandler({
             UserNotFoundException.class,
             InvalidPasswordException.class,

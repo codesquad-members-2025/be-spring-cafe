@@ -2,8 +2,6 @@ package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.UserForm;
-import codesquad.codestagram.exception.InvalidPasswordException;
-import codesquad.codestagram.exception.NotLoggedInException;
 import codesquad.codestagram.exception.UnauthorizedAccessException;
 import codesquad.codestagram.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -26,15 +23,16 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/user/form")
+    @GetMapping("/user/signup-form")
     public String userForm() {
         return "user/form";
     }
 
     @PostMapping("/user/create")
-    public String create(UserForm userForm, RedirectAttributes redirectAttributes) {
-        userService.join(userForm);
-        return "redirect:/user/list";
+    public String create(UserForm userForm, HttpSession session) {
+        User user = userService.join(userForm);
+        session.setAttribute("loginUser", user);
+        return "redirect:/";
     }
 
     @GetMapping("/user/list")
@@ -51,35 +49,26 @@ public class UserController {
         return "user/profile";
     }
 
-    @GetMapping("/users/{userId}/form")
+    @GetMapping("/users/{userId}/update-form")
     public String showUpdateForm(@PathVariable String userId, Model model, HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
-        if(loginUser == null) {
-            throw new NotLoggedInException();
-        }
         User user = userService.findByUserId(userId);
-        if(loginUser.equals(user)){
-            model.addAttribute("user", user);
-            return "user/update-form";
+        if(!loginUser.equals(user)){
+            throw new UnauthorizedAccessException("다른 유저의 정보는 수정할 수 없습니다.");
         }
-        throw new UnauthorizedAccessException("다른 유저의 정보는 수정할 수 없습니다.");
+        model.addAttribute("user", user);
+        return "user/update-form";
     }
 
     @PutMapping("/users/{userId}/update")
-    public String updateForm(UserForm userForm, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
+    public String updateForm(UserForm userForm, HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
-        if(loginUser == null) {
-            throw new NotLoggedInException();
-        }
-        boolean isUpdated = userService.updateUser(loginUser, userForm);
-        if(isUpdated) {
-            return "redirect:/users/" + userForm.getUserId();
-        }
-        throw new InvalidPasswordException();
+        userService.updateUser(loginUser, userForm);
+        return "redirect:/users/" + loginUser.getUserId();
     }
 
     @GetMapping("/user/login")
-    public String showLoginPage(Model model) {
+    public String showLoginPage() {
         return "user/login";
     }
 
