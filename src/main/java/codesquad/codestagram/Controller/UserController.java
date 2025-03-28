@@ -1,6 +1,7 @@
 package codesquad.codestagram.Controller;
 
 import codesquad.codestagram.domain.User;
+import codesquad.codestagram.dto.UserForm;
 import codesquad.codestagram.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +25,8 @@ public class UserController {
 
     @PostMapping("/users/create")
     public String create(@ModelAttribute UserForm form, RedirectAttributes redirectAttributes) {
-        User user = new User();
-        user.setLoginId(form.getLoginId());
+        User user = new User(); //Entity 생성
+        user.setLoginId(form.getLoginId()); //DTO -> Entity 변환
         user.setName(form.getName());
         user.setPassword(form.getPassword());
         user.setEmail(form.getEmail());

@@ -1,6 +1,7 @@
 package codesquad.codestagram.Controller;
 
 import codesquad.codestagram.domain.Board;
+import codesquad.codestagram.dto.BoardForm;
 import codesquad.codestagram.service.BoardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

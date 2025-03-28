@@ -20,7 +20,7 @@ public class UserService {
      */
     @Transactional
     public  boolean join(User user) {
-        // 중복 아이디 존재하면 false 반환
+        // Entity를 저장
         if (userRepository.findByLoginId(user.getLoginId()).isPresent()) {
             return false;
         }

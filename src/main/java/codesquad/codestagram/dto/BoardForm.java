@@ -1,4 +1,4 @@
-package codesquad.codestagram.Controller;
+package codesquad.codestagram.dto;
 
 public class BoardForm {
     private String title;
