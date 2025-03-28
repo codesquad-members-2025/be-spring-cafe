@@ -43,8 +43,15 @@ public class UserController {
         return "redirect:/users/list";
     }
 
+    // UserController.java
+    @GetMapping("/users/login")
+    public String loginForm() {
+        return "user/login"; // login.html 뷰 템플릿을 반환
+    }
+
+
     @PostMapping("/users/login")
-    public String login(@RequestParam String loginId, @RequestParam String password, HttpSession session) {
+    public String login(@RequestParam("loginId") String loginId, @RequestParam("password") String password, HttpSession session) {
         Optional<User> user = userService.findByLoginId(loginId);
         if (user.isPresent() && user.get().getPassword().equals(password)) {
             session.setAttribute("user", user.get());
@@ -54,6 +61,7 @@ public class UserController {
         }
 
     }
+
 
     @GetMapping("/users/list")
     public String userlist(Model model) {
