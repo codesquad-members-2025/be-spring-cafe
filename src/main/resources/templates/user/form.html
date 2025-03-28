@@ -42,6 +42,9 @@
         </div>
         <div class="card">
             <div class="card-body">
+                <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                    <span th:if="${param.error == 'duplicated-user'}">이미 사용중인 ID 입니다.</span>
+                </div>
                 <form th:action="@{/users}" method="post">
                     <div class="mb-3">
                         <label for="userId" class="form-label">아이디</label>

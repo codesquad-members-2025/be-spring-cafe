@@ -24,8 +24,7 @@
     <div class="container">
         <div class="error-container">
             <div class="error-icon">⚠️</div>
-            <h1 class="mb-4">접근 권한이 없습니다</h1>
-            <p class="lead mb-4">다른 사용자의 정보를 수정할 수 없습니다.</p>
+            <h1 class="mb-4" th:text="${errorMessage}">에러 발생</h1>
             <div class="d-grid gap-2">
                 <a href="/" class="btn btn-primary">홈으로 돌아가기</a>
             </div>
