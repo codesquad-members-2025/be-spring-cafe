@@ -44,11 +44,8 @@ public class UserService {
     }
 
     public boolean login(String loginId, String password, HttpSession session) {
-        User findUser = userRepository.findByLoginId(loginId);
-
-        if (!userRepository.existsUserByLoginId(loginId)) {
-            throw new IllegalArgumentException("존재하지 않는 아이디입니다.");
-        }
+        User findUser = userRepository.findByLoginId(loginId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이디입니다."));
 
         if (!password.equals(findUser.getPassword())) { //비밀번호가 틀릴 경우
             return false;
