@@ -51,5 +51,9 @@ public class Reply {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return createdAt.format(formatter);
     }
+
+    public boolean isAuthor(User user) {
+        return this.user.equals(user);
+    }
 }
 

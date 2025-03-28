@@ -4,6 +4,8 @@ import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.Reply;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.ReplyViewDto;
+import codesquad.codestagram.exception.ReplyNotFoundException;
+import codesquad.codestagram.exception.UnauthorizedAccessException;
 import codesquad.codestagram.repository.ReplyRepository;
 import codesquad.codestagram.utility.TextUtility;
 import org.springframework.stereotype.Service;
@@ -41,5 +43,13 @@ public class ReplyService {
             replyDtoList.add(replyDto);
         }
         return replyDtoList;
+    }
+
+    public void deleteReply(User user, Long replyId) {
+        Reply reply = replyRepository.findById(replyId).orElseThrow(() -> new ReplyNotFoundException());
+        if(!reply.isAuthor(user)){
+            throw new UnauthorizedAccessException("이 댓글을 지울 권한이 없습니다.");
+        };
+        replyRepository.delete(reply);
     }
 }
