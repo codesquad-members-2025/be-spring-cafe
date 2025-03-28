@@ -21,7 +21,7 @@
                     <td>
                         <a th:href="@{/users/{id}(id=${user.id})}" th:text="${user.name}"></a>
                     </td>
-                    <td th:text="${user.userId}"></td>
+                    <td th:text="${user.loginId}"></td>
                     <td>
                         <a class="btn btn-success" th:href="@{/users/{id}/form(id=${user.id})}">수정</a>
                     </td>

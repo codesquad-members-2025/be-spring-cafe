@@ -31,7 +31,7 @@ public class UserRepositoryTest {
     void save() {
         //Given
         User user = new User();
-        user.setUserId("testId");
+        user.setLoginId("testId");
         user.setName("tester");
         user.setPassword("1234");
 
@@ -40,8 +40,8 @@ public class UserRepositoryTest {
         User expectedUser = userRepository.findById(actualUser.getId()).orElseThrow();
 
         //Then
-        softly.assertThat(user.getUserId()).isNotNull();
-        softly.assertThat(user.getUserId()).isEqualTo(expectedUser.getUserId());
+        softly.assertThat(user.getLoginId()).isNotNull();
+        softly.assertThat(user.getLoginId()).isEqualTo(expectedUser.getLoginId());
         softly.assertAll();
     }
 
@@ -50,13 +50,13 @@ public class UserRepositoryTest {
     void findById() {
         //Given
         User user1 = new User();
-        user1.setUserId("testId1");
+        user1.setLoginId("testId1");
         user1.setName("tester2");
         user1.setPassword("1234");
         userRepository.save(user1);
 
         User user2 = new User();
-        user2.setUserId("testId2");
+        user2.setLoginId("testId2");
         user2.setName("tester2");
         user2.setPassword("1234");
         userRepository.save(user2);
@@ -73,7 +73,7 @@ public class UserRepositoryTest {
     void update() {
         //Given
         User user = new User();
-        user.setUserId("testerId");
+        user.setLoginId("testerId");
         user.setName("tester");
         user.setPassword("1234");
         User actualUser = userRepository.save(user);
