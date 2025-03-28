@@ -21,6 +21,7 @@ public class Reply {
     private User user;
     private String text;
     private LocalDateTime createdAt;
+    private boolean deleted = false;
 
     protected Reply() {}
 
@@ -45,6 +46,10 @@ public class Reply {
 
     public String getText() {
         return text;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
     }
 
     public String getCreatedAt() {

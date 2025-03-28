@@ -2,11 +2,14 @@ package codesquad.codestagram.domain;
 
 import codesquad.codestagram.dto.ArticleForm;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Where;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @Entity
+@Where(clause = "deleted = false")
 public class Article {
 
     @Id
@@ -19,6 +22,7 @@ public class Article {
     @JoinColumn(name = "user_id", nullable = false)  // ✅ 외래 키 설정
     private User user;
     private LocalDateTime createdAt;
+    private boolean deleted = false;
 
     protected Article() {}
 
@@ -45,6 +49,10 @@ public class Article {
         return id;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
     public String getCreatedAt() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return createdAt.format(formatter);
@@ -57,6 +65,10 @@ public class Article {
     public void update(ArticleForm articleForm) {
         title = articleForm.getTitle();
         content = articleForm.getContent();
+    }
+
+    public void delete() {
+        deleted = true;
     }
 
     @Override
