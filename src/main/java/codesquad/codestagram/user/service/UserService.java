@@ -25,11 +25,20 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User join(User user) {
-
-//        validatePassword(user.getPassword());
+    public User join(SignUpRequest request) {
+        validateDuplicateUserId(request.userId());
+//        validatePassword(request.password());
         //todo: 중복 회원에 대한 검증 필요
-        return userRepository.save(user);
+        return userRepository.save(request.toEntity());
+    }
+
+    private void validateDuplicateUserId(String userId) {
+        userRepository.findByUserId(userId).ifPresent(user ->
+                {
+                    throw new IllegalArgumentException("이미 존재하는 사용자 아이디입니다.");
+                }
+        );
+
     }
 
     public User findUser(Long seq) {
@@ -111,7 +120,13 @@ public class UserService {
         }
     }
 
-    public Optional<User> authenticate(String userId, String password) {
-        return userRepository.findByUserIdAndPassword(userId, password);
+    public User authenticate(String userId, String password) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 사용자입니다."));
+        if (!user.getPassword().equals(password)) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        return user;
     }
 }

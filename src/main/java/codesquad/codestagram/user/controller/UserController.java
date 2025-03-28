@@ -3,7 +3,9 @@ package codesquad.codestagram.user.controller;
 import codesquad.codestagram.user.domain.User;
 import codesquad.codestagram.user.dto.SignUpRequest;
 import codesquad.codestagram.user.dto.UserUpdateRequest;
+import codesquad.codestagram.user.service.SessionService;
 import codesquad.codestagram.user.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,21 +15,23 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @Controller
-//@RequestMapping("/users")
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
+    private final SessionService sessionService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, SessionService sessionService) {
         this.userService = userService;
+        this.sessionService = sessionService;
     }
 
-    @PostMapping("/users/signUp")
+    @PostMapping("/signUp")
     public String signUp(@ModelAttribute SignUpRequest request,
                          RedirectAttributes redirectAttributes) { // @ModelAttribute 공부,
         try {
-            userService.join(request.toEntity());
+            userService.join(request);
             return "redirect:/users";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
@@ -36,21 +40,22 @@ public class UserController {
         }
     }
 
-    @GetMapping("/users")
+    @GetMapping
     public String showUserList(Model model) {
+
         List<User> users = userService.findUsers();
         model.addAttribute("users", users);
         return "user/list";
     }
 
-    @GetMapping("/users/{userSeq}")
+    @GetMapping("/{userSeq}")
     public String showUserProfile(@PathVariable Long userSeq, Model model) {
         User user = userService.findUser(userSeq);
         model.addAttribute("user", user);
         return "user/profile";
     }
 
-    @GetMapping("/users/{userSeq}/verify")
+    @GetMapping("/{userSeq}/verify")
     public String verifyPasswordForm(@PathVariable Long userSeq, Model model) {
         userService.findUser(userSeq);
 
@@ -58,7 +63,7 @@ public class UserController {
         return "user/passwordVerifyForm";
     }
 
-    @PostMapping("/users/{userSeq}/verify-password")
+    @PostMapping("/{userSeq}/verify-password")
     public String verifyPassword(@PathVariable Long userSeq,
                                  @RequestParam String password,
                                  RedirectAttributes redirectAttributes) {
@@ -75,10 +80,9 @@ public class UserController {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/users/" + userSeq + "/verify";
         }
-
     }
 
-    @GetMapping("/users/{userSeq}/form")
+    @GetMapping("/{userSeq}/form")
     public String updateUserProfileForm(@PathVariable Long userSeq, Model model) {
         User user = userService.findUser(userSeq);
         model.addAttribute("user", user);
@@ -86,7 +90,7 @@ public class UserController {
     }
 
 
-    @PutMapping("/users/{userSeq}")
+    @PutMapping("/{userSeq}")
     public String update(@PathVariable Long userSeq,
                          @ModelAttribute UserUpdateRequest request,
                          RedirectAttributes redirectAttributes) {
