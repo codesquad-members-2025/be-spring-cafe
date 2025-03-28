@@ -8,13 +8,13 @@ public class Article {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String writer;
+    private User writer;
     private String title;
     private String contents;
 
     protected Article() {}
 
-    public Article(String writer, String title, String contents) {
+    public Article(User writer, String title, String contents) {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
@@ -36,7 +36,7 @@ public class Article {
         this.title = title;
     }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 

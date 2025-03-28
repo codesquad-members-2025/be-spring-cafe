@@ -38,7 +38,7 @@ public class ArticleController {
         if (loginUser == null) {
             return "redirect:/user/login";
         }
-        Article article = new Article(loginUser.getUserId(), title, contents);
+        Article article = new Article(loginUser, title, contents);
 
         articleService.save(article);
 
