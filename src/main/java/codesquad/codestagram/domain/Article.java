@@ -46,9 +46,8 @@ public class Article {
     }
 
     public String getCreatedAt() {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        return createdAt.format(dateFormatter)+" "+createdAt.format(timeFormatter);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return createdAt.format(formatter);
     }
 
     public boolean isAuthor(User user) {
