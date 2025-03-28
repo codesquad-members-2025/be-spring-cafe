@@ -20,7 +20,7 @@ public class Article {
     private User user;
     private LocalDateTime createdAt;
 
-    public Article() {}
+    protected Article() {}
 
     public Article(User user, String title, String content) {
         this.user = user;
