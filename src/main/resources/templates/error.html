@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- 공통 헤더 사용 -->
+<head th:replace="~{fragments :: head('오류')}"></head>
+
+<body>
+<!-- 공통 상단 내비게이션 바 사용 -->
+<nav th:replace="~{fragments :: navbar}"></nav>
+
+<!-- 공통 서브 내비게이션 바 사용 -->
+<div th:replace="~{fragments :: subnav}"></div>
+
+<div class="container" id="main">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-default content-main">
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">오류가 발생했습니다!</h4>
+                <p th:text="${errorMessage}">오류 메시지</p>
+                <hr>
+                <p class="mb-0">
+                    <a href="/" class="btn btn-primary">홈으로 돌아가기</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 공통 스크립트 사용 -->
+<div th:replace="~{fragments :: scripts}"></div>
+</body>
+</html>
