@@ -2,6 +2,7 @@ package codesquad.codestagram.domain.article;
 
 import codesquad.codestagram.common.constants.SessionConstants;
 import codesquad.codestagram.domain.auth.exception.UnauthorizedException;
+import codesquad.codestagram.domain.reply.ReplyService;
 import codesquad.codestagram.domain.user.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.*;
 public class ArticleController {
 
     private final ArticleService articleService;
+    private final ReplyService replyService;
 
-    public ArticleController(ArticleService articleService) {
+    public ArticleController(ArticleService articleService, ReplyService replyService) {
         this.articleService = articleService;
+        this.replyService = replyService;
     }
 
     // 게시물 생성
@@ -45,6 +48,7 @@ public class ArticleController {
 
         Article article = articleService.findArticle(id);
         model.addAttribute("article", article);
+        model.addAttribute("replies", replyService.findRepliesByArticle(id));
 
         return "article/view";
     }
