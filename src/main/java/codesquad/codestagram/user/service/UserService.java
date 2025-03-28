@@ -28,7 +28,6 @@ public class UserService {
     public User join(SignUpRequest request) {
         validateDuplicateUserId(request.userId());
 //        validatePassword(request.password());
-        //todo: 중복 회원에 대한 검증 필요
         return userRepository.save(request.toEntity());
     }
 
@@ -38,7 +37,6 @@ public class UserService {
                     throw new IllegalArgumentException("이미 존재하는 사용자 아이디입니다.");
                 }
         );
-
     }
 
     public User findUser(Long seq) {
