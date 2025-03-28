@@ -39,13 +39,13 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUser(User loginUser, UserForm userForm) {
+    public User updateUser(User loginUser, UserForm userForm) {
         String userId = userForm.getUserId();
         User user = findByUserId(userId);
         if (!user.equals(loginUser)) {
             throw new UnauthorizedAccessException("해당 사용자가 아닙니다.");
         }
-        user.updateIfPasswordValid(
+        return user.updateIfPasswordValid(
                 userForm.getPassword(),
                 userForm.getChangedPassword(),
                 userForm.getName(),

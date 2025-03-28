@@ -42,13 +42,14 @@ public class User {
         return this.password.equals(password);
     }
 
-    public void updateIfPasswordValid(String password,String changedPassword, String name, String email) {
+    public User updateIfPasswordValid(String password,String changedPassword, String name, String email) {
         if(!isPasswordValid(password)){
             throw new InvalidPasswordException();
         }
         this.name = name;
         this.email = email;
         this.password = changedPassword;
+        return this;
     }
 
     @Override
