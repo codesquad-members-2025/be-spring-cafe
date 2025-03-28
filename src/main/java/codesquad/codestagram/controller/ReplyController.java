@@ -9,7 +9,6 @@ import codesquad.codestagram.domain.Reply;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.service.ArticleService;
 import codesquad.codestagram.service.ReplyService;
-import codesquad.codestagram.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,12 +21,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class ReplyController {
     private final ReplyService replyService;
     private final ArticleService articleService;
-    private final UserService userService;
 
-    public ReplyController(ReplyService replyService, ArticleService articleService, UserService userService) {
+    public ReplyController(ReplyService replyService, ArticleService articleService) {
         this.replyService = replyService;
         this.articleService = articleService;
-        this.userService = userService;
     }
 
     @PostMapping("/reply/{articleId}")
@@ -55,7 +52,7 @@ public class ReplyController {
         Reply reply;
 
         try{
-            reply = replyService.findReplyById(replyId);
+            reply = replyService.findReplyByIdAndNotDeleted(replyId);
         }catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return "redirect:/articles/" + articleId;

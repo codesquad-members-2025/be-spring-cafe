@@ -27,8 +27,8 @@ public class ReplyService {
         return replyRepository.findAllByArticleNotDeleted(article);
     }
 
-    public Reply findReplyById(Long replyId) {
-        return replyRepository.findById(replyId)
+    public Reply findReplyByIdAndNotDeleted(Long replyId) {
+        return replyRepository.findByIdAndNotDeleted(replyId)
                 .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
     }
 
