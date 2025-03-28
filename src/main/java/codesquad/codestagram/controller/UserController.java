@@ -15,6 +15,8 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
+    private static final String SESSION_LOGIN_USER = "loginUser";
+
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -58,11 +60,11 @@ public class UserController {
     public String viewUpdateForm(@PathVariable("id") Long id, Model model, HttpSession session
         , RedirectAttributes redirectAttributes) {
 
-        if (session.getAttribute("loginUser") == null) { //로그인 상태인지 확인
+        if (session.getAttribute(SESSION_LOGIN_USER) == null) { //로그인 상태인지 확인
             return "redirect:/users/loginForm";
         }
 
-        User loginUser = (User) session.getAttribute("loginUser");
+        User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
 
         try {
             User findUser = userService.getUser(id);
