@@ -14,11 +14,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
-import static codesquad.codestagram.user.service.UserService.USER_NOT_FOUND;
 
 @Controller
 @RequestMapping("/users")
 public class LoginController {
+
 
     private final UserService userService;
     private final SessionService sessionService;
@@ -39,15 +39,16 @@ public class LoginController {
                         HttpSession session,
                         RedirectAttributes redirectAttributes) {
 
-        Optional<User> userOptional = userService.authenticate(request.userId(), request.password());
-        if (userOptional.isEmpty()) {
-            redirectAttributes.addFlashAttribute("errorMessage", USER_NOT_FOUND);
+        try {
+            User user = userService.authenticate(request.userId(), request.password());
+            sessionService.login(session, user);
+            return "redirect:/";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/users/login";
         }
-        sessionService.login(session, userOptional.get());
-        return "redirect:/";
     }
-    
+
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         sessionService.logout(session);
