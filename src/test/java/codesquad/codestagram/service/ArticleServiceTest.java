@@ -1,6 +1,7 @@
 package codesquad.codestagram.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -10,12 +11,15 @@ import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.ArticleDto.ArticleRequestDto;
 import codesquad.codestagram.repository.ArticleRepository;
 import codesquad.codestagram.repository.UserRepository;
+import jakarta.servlet.http.HttpSession;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @SpringBootTest
@@ -99,5 +103,22 @@ class ArticleServiceTest {
         Article deletedArticle = articleService.findArticleById(1L);
         //then
         assertThat(deletedArticle.isDeleted()).isTrue();
+    }
+
+    @Test
+    @DisplayName("세션의 유저와 게시글의 작성자가 다르면 에러가 발생한다.")
+    void matchArticleAuthorErrorTest() {
+        //given
+        HttpSession mockHttpSession = new MockHttpSession();
+        User user1 = new User("testUser1", "password123", "test", "test@example.com");
+        User user2 = new User("testUser2", "password123", "test", "test@example.com");
+        Article article = new Article("test", "testContent", user1);
+
+        mockHttpSession.setAttribute("sessionedUser", user2);
+
+        //when && then
+        assertThatThrownBy(() -> articleService.matchArticleAuthor(mockHttpSession, article))
+                .isInstanceOf(AccessDeniedException.class)
+                .hasMessage("글의 작성자가 아닙니다.");
     }
 }

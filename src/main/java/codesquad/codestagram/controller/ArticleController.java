@@ -69,7 +69,12 @@ public class ArticleController {
         }
         List<Reply> replies = replyService.findReplies(article);
 
-        boolean isArticleAuthor = articleService.isArticleAuthor(session, article);
+        boolean isArticleAuthor = true;
+        try{
+            articleService.matchArticleAuthor(session, article);
+        } catch (AccessDeniedException e) {
+            isArticleAuthor = false;
+        }
         model.addAttribute(AUTHOR, isArticleAuthor);
         model.addAttribute(ARTICLE, article);
         model.addAttribute(REPLIES, replies);

@@ -60,8 +60,4 @@ public class ArticleService {
             throw new AccessDeniedException(NOT_AUTHOR);
         }
     }
-    public boolean isArticleAuthor(HttpSession session, Article article){
-        User sessionedUser = (User) session.getAttribute(SESSIONED_USER);
-        return sessionedUser.getUserId().equals(article.getUser().getUserId());
-    }
 }
