@@ -17,7 +17,7 @@ public class ArticleService {
     }
 
     // 게시글 등록
-    public Long ask(Article article) {
+    public Long save(Article article) {
         articleRepository.save(article);
         return article.getId();
     }

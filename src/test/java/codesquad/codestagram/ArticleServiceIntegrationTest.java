@@ -27,7 +27,7 @@ public class ArticleServiceIntegrationTest {
         Article newArticle = new Article("writer", "title", "contents");
 
         // when
-        Long articleId = articleService.ask(newArticle);
+        Long articleId = articleService.save(newArticle);
 
         // then
         Article findArticle = articleRepository.findById(articleId).get();
