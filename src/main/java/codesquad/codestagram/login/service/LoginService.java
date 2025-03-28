@@ -18,7 +18,8 @@ public class LoginService {
     //로그인 검증
     public User validate(String userId, String password) {
         User user = userRepository.findByUserId(userId);
-        if(user != null && user.getPassword().equals(password)){
+        //1. 피드백 : equals -> matchPassword 메서드로 구현
+        if(user != null && user.matchPassword(password)){
             return user;
         }
         return null;
