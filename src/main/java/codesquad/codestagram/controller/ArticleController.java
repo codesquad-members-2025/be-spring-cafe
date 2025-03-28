@@ -31,10 +31,10 @@ public class ArticleController {
     }
 
     @GetMapping("/articles/{id}")
-    public String show(@PathVariable int id, Model model) {
+    public String show(@PathVariable Long id, Model model) {
         Article article = articleService.findOneArticle(id).get();
         model.addAttribute("article", article);
-        return "/qna/show";
+        return "qna/show";
     }
 }
 

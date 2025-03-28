@@ -35,7 +35,7 @@ public class UserController {
     public String list(Model model) {
         List<User> users = userService.findAllUsers();
         model.addAttribute("users", users);
-        return "/user/list";
+        return "user/list";
     }
 
     @GetMapping("/user/{userId}")
@@ -43,7 +43,7 @@ public class UserController {
         User user = userService.findOneUser(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
         model.addAttribute("user", user);
-        return "/user/profile";
+        return "user/profile";
     }
 
     @GetMapping("/users/{userId}/form")

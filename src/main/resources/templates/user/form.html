@@ -13,9 +13,9 @@
 </head>
 <body>
 
-<div th:replace="fragments/header :: header"></div>
+<div th:replace="~{fragments/header :: header}"></div>
 
-<div th:replace="fragments/navbar :: navbar"></div>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
@@ -44,7 +44,7 @@
     </div>
 </div>
 
-<div th:replace="fragments/scripts :: scripts"></div>
+<div th:replace="~{fragments/scripts :: scripts}"></div>
 
 </body>
 </html>

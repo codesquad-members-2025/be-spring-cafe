@@ -1,7 +1,13 @@
 package codesquad.codestagram.domain;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "USERS")
 public class User {
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String userId;
     private String name;
     private String password;
@@ -13,6 +19,9 @@ public class User {
         this.password = password;
         this.email = email;
     }
+
+    // JPA 용 기본 생성자
+    protected User() {}
 
     public String getUserId() {
         return userId;
