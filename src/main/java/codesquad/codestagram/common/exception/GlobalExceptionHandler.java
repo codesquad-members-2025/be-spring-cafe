@@ -2,6 +2,7 @@ package codesquad.codestagram.common.exception;
 
 import codesquad.codestagram.domain.article.exception.ArticleNotFoundException;
 import codesquad.codestagram.domain.auth.exception.UnauthorizedException;
+import codesquad.codestagram.domain.reply.exception.ReplyNotFoundException;
 import codesquad.codestagram.domain.user.exception.DuplicatedUserException;
 import codesquad.codestagram.domain.user.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -52,6 +53,12 @@ public class GlobalExceptionHandler {
         model.addAttribute("errorMessage", ex.getMessage());
 
         return "redirect:/users?error=duplicated-user";
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ReplyNotFoundException.class)
+    public String handleReplyNotFoundException(ReplyNotFoundException ex) {
+        return "redirect:/";
     }
 
 }
