@@ -70,7 +70,7 @@ public class UserController {
             User findUser = userService.getUser(id);
 
             if (loginUser.getId() != findUser.getId()) { //URL을 직접 입력해서 타인의 회원정보를 수정할 경우
-                throw new IllegalArgumentException("잘못된 접근입니다.");
+                throw new IllegalArgumentException("사용자 ID가 일치하지 않습니다.");
             }
             model.addAttribute("user", findUser);
 
