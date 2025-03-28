@@ -48,7 +48,7 @@ public class ReplyService {
     public void deleteReply(User user, Long replyId) {
         Reply reply = replyRepository.findById(replyId).orElseThrow(() -> new ReplyNotFoundException());
         if(!reply.isAuthor(user)){
-            throw new UnauthorizedAccessException("이 댓글을 지울 권한이 없습니다.");
+            throw new UnauthorizedAccessException("이 댓글을 지울 수 있는 권한이 없습니다.");
         };
         replyRepository.delete(reply);
     }
