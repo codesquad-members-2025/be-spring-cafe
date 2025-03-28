@@ -3,8 +3,13 @@ package codesquad.codestagram.service;
 import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.Reply;
 import codesquad.codestagram.domain.User;
+import codesquad.codestagram.dto.ReplyViewDto;
 import codesquad.codestagram.repository.ReplyRepository;
+import codesquad.codestagram.utility.TextUtility;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ReplyService {
@@ -20,7 +25,21 @@ public class ReplyService {
     public Reply addReply(User user, Long index, String text) {
         Article article = articleService.findArticleById(index);
         Reply reply = new Reply(user,article,text);
-        replyRepository.save(reply);
-        return reply;
+        return replyRepository.save(reply);
+    }
+
+    public List<ReplyViewDto> findRepliesByArticle(Article article) {
+        List<Reply> replyList = replyRepository.findByArticle(article);
+        List<ReplyViewDto> replyDtoList = new ArrayList<>();
+        for (Reply reply : replyList) {
+            ReplyViewDto replyDto = new ReplyViewDto(
+                    reply.getId(),
+                    reply.getUser().getUserId(),
+                    reply.getUser().getName(),
+                    TextUtility.escapeAndConvertNewlines(reply.getText()),
+                    reply.getCreatedAt());
+            replyDtoList.add(replyDto);
+        }
+        return replyDtoList;
     }
 }
