@@ -67,7 +67,6 @@ public class ArticleController {
         return "qna/update-form";
     }
 
-    @Transactional
     @PutMapping("/articles/{index}/update")
     public String update(@PathVariable int index, ArticleForm articleForm, HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
