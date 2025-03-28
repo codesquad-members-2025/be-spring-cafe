@@ -17,9 +17,6 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        if (userRepository.existsUserByLoginId(user.getLoginId())) {
-            throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
-        }
         return userRepository.save(user);
     }
 

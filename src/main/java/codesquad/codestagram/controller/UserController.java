@@ -4,11 +4,13 @@ import codesquad.codestagram.domain.User;
 import codesquad.codestagram.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,8 +29,8 @@ public class UserController {
 
         try {
             userService.createUser(user);
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", e.getMessage());
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("message", "이미 사용중인 아이디입니다.");
             return "redirect:/users/form";
         }
 
