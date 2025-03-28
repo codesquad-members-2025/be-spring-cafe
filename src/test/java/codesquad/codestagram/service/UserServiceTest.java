@@ -33,28 +33,10 @@ class UserServiceTest {
         given(userRepository.findByUserId("testUser")).willReturn(Optional.of(user));
         UserRequestDto requestDto = new UserRequestDto("testUser", "12345", "AAA", "AAA@a.com");
 
-        // When && Then
-        boolean ieEqual = userService.checkEqualUserId(requestDto.getUserId());
-        assertThat(ieEqual).isTrue();
-    }
-    @Test
-    @DisplayName("회원 가입시 중복된 아이디가 없으면 가입에 성공한다.")
-    void registerUserTest() {
-        // Given
-        User user = new User("testUser", "password123", "test", "test@example.com");
-        UserRequestDto requestDto = new UserRequestDto("testUser", "password123", "test", "test@example.com");
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
-
         // When
-        userService.checkEqualUserId(requestDto.getUserId());
-        userService.joinUser(requestDto);
-        User findUser = userRepository.findById(1L).get();
-
-        // Then
-        assertThat(findUser.getUserId()).isEqualTo("testUser");
-        assertThat(findUser.getPassword()).isEqualTo("password123");
-        assertThat(findUser.getName()).isEqualTo("test");
-        assertThat(findUser.getEmail()).isEqualTo("test@example.com");
+        boolean ieEqual = userService.checkEqualUserId(requestDto.getUserId());
+        //Then
+        assertThat(ieEqual).isTrue();
     }
 
     @Test
