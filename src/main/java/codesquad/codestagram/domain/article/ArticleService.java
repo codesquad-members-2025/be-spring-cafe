@@ -17,11 +17,8 @@ public class ArticleService {
     }
 
     public Article createArticle(String title, String content, User currentUser) {
-        if (currentUser == null) {
-            throw new UnauthorizedException("로그인이 필요합니다.");
-        }
-
         Article article = new Article(currentUser.getId(), title, content);
+
         return articleRepository.save(article);
     }
 
@@ -32,10 +29,6 @@ public class ArticleService {
 
     // 로그인 여부, 게시물 존재, 작성자 일치 여부를 검증 후 게시물 반환
     public Article getAuthorizedArticle(Long id, User currentUser) {
-        if (currentUser == null) {
-            throw new UnauthorizedException("로그인이 필요합니다.");
-        }
-
         Article article = findArticle(id);
         if (!article.isSameWriter(currentUser.getId())) {
             throw new UnauthorizedException("본인이 작성한 글만 수정할 수 있습니다.");
