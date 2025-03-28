@@ -14,7 +14,8 @@ public class GlobalExceptionHandler {
             ArticleNotFoundException.class,
             DuplicateUserIdException.class,
             NotLoggedInException.class,
-            UnauthorizedAccessException.class
+            UnauthorizedAccessException.class,
+            ReplyNotFoundException.class
     })
     public String handleCommonExceptions(RuntimeException  e, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
