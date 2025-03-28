@@ -2,6 +2,7 @@ package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.repository.ArticleRepository;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,8 @@ import java.util.List;
 
 @Controller
 public class ArticleController {
+
+    private static final String SESSION_LOGIN_USER = "loginUser";
 
     private final ArticleRepository articleRepository;
 
@@ -34,7 +37,11 @@ public class ArticleController {
     }
 
     @GetMapping("/article/{id}")
-    public String viewArticle(@PathVariable("id") Long index, Model model) {
+    public String viewArticle(@PathVariable("id") Long index, Model model, HttpSession session) {
+        if (session.getAttribute(SESSION_LOGIN_USER) == null) {
+            return "redirect:/users/loginForm";
+        }
+
         Article article = articleRepository.findById(index).orElseThrow();
         model.addAttribute("article", article);
         return "article/detail";
