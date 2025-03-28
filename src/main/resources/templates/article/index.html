@@ -64,15 +64,24 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="index.html">Posts</a></li>
-                <li><a href="user/login.html" role="button">로그인</a></li>
-                <li><a href="user/form.html" role="button">회원가입</a></li>
-                <!--
-                <li><a href="#loginModal" role="button" data-toggle="modal">로그인</a></li>
-                <li><a href="#registerModal" role="button" data-toggle="modal">회원가입</a></li>
-                -->
-                <li><a href="#" role="button">로그아웃</a></li>
-                <li><a href="#" role="button">개인정보수정</a></li>
+                <!-- 🔹 로그인 상태가 아닐 때 -->
+                <li th:if="${session.loginUser == null}"><a href="user/login.html">로그인</a></li>
+                <li th:if="${session.loginUser == null}"><a href="user/form.html">회원가입</a></li>
+
+                <!-- 🔹 로그인 상태일 때 -->
+<!--                <li th:if="${session.loginUser != null}"><a href="/users/logout">로그아웃</a></li>-->
+                <li th:if="${session.loginUser != null}">
+                    <form th:action="@{/users/logout}" method="post">
+                        <button type="submit" class="btn btn-link">로그아웃</button>
+                    </form>
+                </li>
+                <li th:if="${session.loginUser != null}"><a th:href="@{'/users/' + ${session.loginUser.id} + '/form'}">개인정보수정</a></li>
+                <li th:if="${session.loginUser != null}">
+                    <span>환영합니다, <b th:text="${session.loginUser.userId}"></b> 님!</span>
+                </li>
+
+
+
             </ul>
         </div>
     </div>
