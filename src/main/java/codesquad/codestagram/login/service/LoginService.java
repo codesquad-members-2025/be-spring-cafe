@@ -31,8 +31,7 @@ public class LoginService {
         return loginUser != null && loginUser.getUserId().equals(userId);
     }
 
-    //회원 정보 수정
-    @Transactional
+    //회원 정보 수정 -> @Transactional 제거
     public void updateUserInfo(User loginUser, String password, String name, String email, HttpSession session) throws Exception {
         if(loginUser.getPassword().equals(password)){
             loginUser.setName(name);
