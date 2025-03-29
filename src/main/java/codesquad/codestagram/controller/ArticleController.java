@@ -43,11 +43,13 @@ public class ArticleController {
     @PostMapping("/article")
     public String writeArticle(@ModelAttribute Article article, HttpSession session) {
         User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
+
         if (session.getAttribute(SESSION_LOGIN_USER) == null) {
             return "redirect:/users/loginForm";
         }
 
         article.setUser(loginUser);
+
         articleRepository.save(article);
         return "redirect:/";
     }
@@ -62,4 +64,25 @@ public class ArticleController {
         model.addAttribute("article", article);
         return "article/detail";
     }
+
+    @GetMapping("/article/{id}/form")
+    public String viewUpdateForm(@PathVariable("id") Long id, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
+
+        if (loginUser == null) { //로그인 상태인지 확인
+            return "redirect:/users/loginForm";
+        }
+
+        Article article = articleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+
+        if (loginUser.getId() != article.getUser().getId()) {
+            redirectAttributes.addFlashAttribute("alertMessage", "작성자 ID와 사용자 ID가 일치하지 않습니다.");
+            return "redirect:/";
+        }
+
+        model.addAttribute("article", article);
+
+        return "article/updateForm";
+    }
+
 }
