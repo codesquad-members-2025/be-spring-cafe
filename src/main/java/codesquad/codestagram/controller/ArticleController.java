@@ -85,4 +85,23 @@ public class ArticleController {
         return "article/updateForm";
     }
 
+    @PostMapping("/article/{id}/update")
+    public String updateArticle(@PathVariable("id") Long id, @ModelAttribute Article article, HttpSession session
+        , RedirectAttributes redirectAttributes) {
+        User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
+
+        if (loginUser == null) { //로그인 상태인지 확인
+            return "redirect:/users/loginForm";
+        }
+
+        Article findArticle = articleRepository.findById(id).orElseThrow();
+
+        if (loginUser.getId() != findArticle.getUser().getId()) {
+            redirectAttributes.addFlashAttribute("alertMessage", "작성자 ID와 사용자 ID가 일치하지 않습니다.");
+            return "redirect:/";
+        }
+
+        articleRepository.save(article);
+        return "redirect:/article/" + id;
+    }
 }
