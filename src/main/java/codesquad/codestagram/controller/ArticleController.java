@@ -30,8 +30,19 @@ public class ArticleController {
         return "main";
     }
 
+    @GetMapping("/article")
+    public String viewArticleForm(HttpSession session) {
+        if (session.getAttribute(SESSION_LOGIN_USER) == null) {
+            return "redirect:/users/loginForm";
+        }
+        return "article/write";
+    }
+
     @PostMapping("/article")
-    public String writeArticle(@ModelAttribute Article article) {
+    public String writeArticle(@ModelAttribute Article article, HttpSession session) {
+        if (session.getAttribute(SESSION_LOGIN_USER) == null) {
+            return "redirect:/users/loginForm";
+        }
         articleRepository.save(article);
         return "redirect:/";
     }
