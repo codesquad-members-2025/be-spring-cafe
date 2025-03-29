@@ -1,6 +1,7 @@
 package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.Article;
+import codesquad.codestagram.domain.User;
 import codesquad.codestagram.repository.ArticleRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -40,20 +42,23 @@ public class ArticleController {
 
     @PostMapping("/article")
     public String writeArticle(@ModelAttribute Article article, HttpSession session) {
+        User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
         if (session.getAttribute(SESSION_LOGIN_USER) == null) {
             return "redirect:/users/loginForm";
         }
+
+        article.setUser(loginUser);
         articleRepository.save(article);
         return "redirect:/";
     }
 
     @GetMapping("/article/{id}")
-    public String viewArticle(@PathVariable("id") Long index, Model model, HttpSession session) {
+    public String viewArticle(@PathVariable("id") Long id, Model model, HttpSession session) {
         if (session.getAttribute(SESSION_LOGIN_USER) == null) {
             return "redirect:/users/loginForm";
         }
 
-        Article article = articleRepository.findById(index).orElseThrow();
+        Article article = articleRepository.findById(id).orElseThrow();
         model.addAttribute("article", article);
         return "article/detail";
     }
