@@ -22,10 +22,6 @@ public class ReplyController {
                            @RequestParam String content,
                            HttpSession session) {
         User user = (User) session.getAttribute(SessionConstants.USER_SESSION_KEY);
-        if (user == null) {
-            throw new UnauthorizedException("로그인이 필요합니다.");
-        }
-
         replyService.addReply(articleId, user, content);
 
         return "redirect:/articles/" + articleId;
@@ -36,10 +32,6 @@ public class ReplyController {
                               @PathVariable Long replyId,
                               HttpSession session) {
         User user = (User) session.getAttribute(SessionConstants.USER_SESSION_KEY);
-        if (user == null) {
-            throw new UnauthorizedException("로그인이 필요합니다.");
-        }
-
         replyService.deleteReply(replyId, user);
 
         return "redirect:/articles/" + articleId;

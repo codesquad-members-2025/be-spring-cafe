@@ -27,10 +27,6 @@ public class ArticleController {
                              @RequestParam String content,
                              HttpSession session) {
         User user = (User) session.getAttribute(SessionConstants.USER_SESSION_KEY);
-        if (user == null) {
-            throw new UnauthorizedException("로그인이 필요합니다.");
-        }
-
         articleService.createArticle(title, content, user);
 
         return "redirect:/";
@@ -41,11 +37,6 @@ public class ArticleController {
     public String viewArticle(@PathVariable Long id,
                               Model model,
                               HttpSession session) {
-        User user = (User) session.getAttribute(SessionConstants.USER_SESSION_KEY);
-        if (user == null) {
-            throw new UnauthorizedException("로그인이 필요합니다.");
-        }
-
         Article article = articleService.findArticle(id);
         model.addAttribute("article", article);
         model.addAttribute("replies", replyService.findRepliesByArticle(id));
@@ -56,12 +47,6 @@ public class ArticleController {
     // 게시물 작성 폼
     @GetMapping("write")
     public String writeArticle(HttpSession session) {
-        User user = (User) session.getAttribute(SessionConstants.USER_SESSION_KEY);
-        if (user == null) {
-            // 로그인 폼으로 이동
-            return "redirect:/auth/login";
-        }
-
         return "article/form";
     }
 
@@ -94,10 +79,6 @@ public class ArticleController {
     public String deleteArticle(@PathVariable Long id,
                                 HttpSession session) {
         User user = (User) session.getAttribute(SessionConstants.USER_SESSION_KEY);
-        if (user == null) {
-            throw new UnauthorizedException("로그인이 필요합니다.");
-        }
-
         articleService.deleteArticle(id, user);
 
         return "redirect:/";

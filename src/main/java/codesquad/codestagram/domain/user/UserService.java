@@ -42,9 +42,6 @@ public class UserService {
 
     // 사용자 수정: 로그인 여부, 대상 존재, 작성자 일치 및 비밀번호 확인
     public User updateUser(Long id, String email, String name, String currentPassword, String newPassword, User sessionUser) {
-        if (sessionUser == null) {
-            throw new UnauthorizedException("로그인이 필요합니다.");
-        }
         User userEntity = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
 
