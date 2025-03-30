@@ -1,8 +1,6 @@
 package codesquad.codestagram.domain.reply;
 
-import codesquad.codestagram.domain.article.Article;
 import codesquad.codestagram.domain.article.ArticleRepository;
-import codesquad.codestagram.domain.article.ArticleService;
 import codesquad.codestagram.domain.auth.exception.UnauthorizedException;
 import codesquad.codestagram.domain.reply.exception.ReplyNotFoundException;
 import codesquad.codestagram.domain.user.User;

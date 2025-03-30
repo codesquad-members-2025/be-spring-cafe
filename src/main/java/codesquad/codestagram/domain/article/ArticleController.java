@@ -1,7 +1,6 @@
 package codesquad.codestagram.domain.article;
 
 import codesquad.codestagram.common.constants.SessionConstants;
-import codesquad.codestagram.domain.auth.exception.UnauthorizedException;
 import codesquad.codestagram.domain.reply.ReplyService;
 import codesquad.codestagram.domain.user.User;
 import jakarta.servlet.http.HttpSession;
@@ -35,8 +34,7 @@ public class ArticleController {
     // 게시물 상세 조회
     @GetMapping("{id}")
     public String viewArticle(@PathVariable Long id,
-                              Model model,
-                              HttpSession session) {
+                              Model model) {
         Article article = articleService.findArticle(id);
         model.addAttribute("article", article);
         model.addAttribute("replies", replyService.findRepliesByArticle(id));
@@ -46,7 +44,7 @@ public class ArticleController {
 
     // 게시물 작성 폼
     @GetMapping("write")
-    public String writeArticle(HttpSession session) {
+    public String writeArticle() {
         return "article/form";
     }
 
