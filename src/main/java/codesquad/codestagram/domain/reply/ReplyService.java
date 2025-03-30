@@ -25,7 +25,7 @@ public class ReplyService {
         if (!articleRepository.existsById(articleId)) {
             throw new ReplyNotFoundException("게시물이 존재하지 않습니다.");
         }
-        Reply reply = new Reply(articleId, user.getId(), content);
+        Reply reply = new Reply(user.getId(), articleId, content);
 
         return replyRepository.save(reply);
     }
