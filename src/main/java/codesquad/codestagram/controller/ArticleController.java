@@ -101,6 +101,7 @@ public class ArticleController {
             return "redirect:/";
         }
 
+        article.setUser(loginUser);
         articleRepository.save(article);
         return "redirect:/article/" + id;
     }
