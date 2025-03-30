@@ -1,6 +1,7 @@
 package codesquad.codestagram.domain.reply;
 
 import codesquad.codestagram.domain.article.Article;
+import codesquad.codestagram.domain.article.ArticleRepository;
 import codesquad.codestagram.domain.article.ArticleService;
 import codesquad.codestagram.domain.auth.exception.UnauthorizedException;
 import codesquad.codestagram.domain.reply.exception.ReplyNotFoundException;
@@ -11,30 +12,32 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
 public class ReplyService {
 
     private final ReplyRepository replyRepository;
-    private final ArticleService articleService;
+    private final ArticleRepository articleRepository;
 
-    public ReplyService(ReplyRepository replyRepository, ArticleService articleService) {
+    public ReplyService(ReplyRepository replyRepository, ArticleRepository articleRepository) {
         this.replyRepository = replyRepository;
-        this.articleService = articleService;
+        this.articleRepository = articleRepository;
     }
 
+    @Transactional
     public Reply addReply(Long articleId, User user, String content) {
-        Article article = articleService.findArticle(articleId);
-        Reply reply = new Reply(article.getId(), user.getId(), content);
+        if (!articleRepository.existsById(articleId)) {
+            throw new ReplyNotFoundException("게시물이 존재하지 않습니다.");
+        }
+        Reply reply = new Reply(articleId, user.getId(), content);
 
         return replyRepository.save(reply);
     }
 
+    @Transactional(readOnly = true)
     public List<Reply> findRepliesByArticle(Long articleId) {
-        Article article = articleService.findArticle(articleId);
-
-        return replyRepository.findByArticleIdAndDeletedFalse(article.getId());
+        return replyRepository.findByArticleIdAndDeletedFalse(articleId);
     }
 
+    @Transactional
     public void deleteReply(Long replyId, User user) {
         Reply reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new ReplyNotFoundException("댓글을 찾을 수 없습니다."));
