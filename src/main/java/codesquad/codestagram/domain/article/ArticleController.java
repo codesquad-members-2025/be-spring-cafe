@@ -27,9 +27,9 @@ public class ArticleController {
                              @RequestParam String content,
                              HttpSession session) {
         User user = (User) session.getAttribute(SessionConstants.USER_SESSION_KEY);
-        articleService.createArticle(title, content, user);
+        Article savedArticle = articleService.createArticle(title, content, user);
 
-        return "redirect:/";
+        return "redirect:/articles/" + savedArticle.getId();
     }
 
     // 게시물 상세 조회
