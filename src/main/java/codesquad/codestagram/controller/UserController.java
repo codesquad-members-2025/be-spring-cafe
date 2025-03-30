@@ -33,7 +33,7 @@ public class UserController {
             return "redirect:/users/form";
         }
 
-        return "redirect:/users";
+        return "redirect:/";
     }
 
     @GetMapping
