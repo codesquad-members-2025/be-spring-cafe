@@ -43,6 +43,10 @@ public class Article {
         return user;
     }
 
+    public List<Reply> getReplies() {
+        return replies;
+    }
+
     public String getTitle() {
         return title;
     }

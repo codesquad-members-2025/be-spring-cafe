@@ -1,14 +1,17 @@
 package codesquad.codestagram.service;
 
 import codesquad.codestagram.domain.Article;
+import codesquad.codestagram.domain.Reply;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.ArticleForm;
+import codesquad.codestagram.dto.ReplyViewDto;
 import codesquad.codestagram.exception.ArticleNotFoundException;
 import codesquad.codestagram.exception.UnauthorizedAccessException;
 import codesquad.codestagram.repository.ArticleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -61,5 +64,16 @@ public class ArticleService {
             throw new UnauthorizedAccessException("해당 게시물의 작성자가 아닙니다.");
         }
         return article;
+    }
+
+    // n+1 문제
+    public List<ReplyViewDto> findRepliesByArticle(Article article) {
+        List<Reply> replies = article.getReplies();
+        List<ReplyViewDto> replyViewDtoList = new ArrayList<>();
+        for(Reply reply : replies){
+            ReplyViewDto replyViewDto = new ReplyViewDto(reply);
+            replyViewDtoList.add(replyViewDto);
+        }
+        return replyViewDtoList;
     }
 }

@@ -5,7 +5,6 @@ import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.ArticleForm;
 import codesquad.codestagram.dto.ReplyViewDto;
 import codesquad.codestagram.service.ArticleService;
-import codesquad.codestagram.service.ReplyService;
 import codesquad.codestagram.utility.TextUtility;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -18,11 +17,9 @@ import java.util.List;
 public class ArticleController {
 
     private final ArticleService articleService;
-    private final ReplyService replyService;
 
-    public ArticleController(ArticleService articleService, ReplyService replyService) {
+    public ArticleController(ArticleService articleService) {
         this.articleService = articleService;
-        this.replyService = replyService;
     }
 
     @GetMapping("/")
@@ -47,7 +44,7 @@ public class ArticleController {
     @GetMapping("/articles/{index}")
     public String viewArticle(@PathVariable Long index, Model model, HttpSession session) {
         Article article = articleService.findArticleById(index);
-        List<ReplyViewDto> replyViewDtoList = replyService.findRepliesByArticle(article);
+        List<ReplyViewDto> replyViewDtoList = articleService.findRepliesByArticle(article);
 
         model.addAttribute("article", article);
         model.addAttribute("parsedContent", TextUtility.escapeAndConvertNewlines(article.getContent()));

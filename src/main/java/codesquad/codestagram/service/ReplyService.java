@@ -32,21 +32,6 @@ public class ReplyService {
         return replyRepository.save(reply);
     }
 
-    public List<ReplyViewDto> findRepliesByArticle(Article article) {
-        List<Reply> replyList = replyRepository.findByArticle(article);
-        List<ReplyViewDto> replyDtoList = new ArrayList<>();
-        for (Reply reply : replyList) {
-            ReplyViewDto replyDto = new ReplyViewDto(
-                    reply.getId(),
-                    reply.getUser().getUserId(),
-                    reply.getUser().getName(),
-                    TextUtility.escapeAndConvertNewlines(reply.getText()),
-                    reply.getCreatedAt());
-            replyDtoList.add(replyDto);
-        }
-        return replyDtoList;
-    }
-
     @Transactional
     public void deleteReply(Reply reply) {
         reply.softDelete();
