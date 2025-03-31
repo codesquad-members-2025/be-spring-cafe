@@ -2,17 +2,23 @@ package codesquad.codestagram.domain.article;
 
 import codesquad.codestagram.domain.article.exception.ArticleNotFoundException;
 import codesquad.codestagram.domain.auth.exception.UnauthorizedException;
+import codesquad.codestagram.domain.reply.Reply;
+import codesquad.codestagram.domain.reply.ReplyRepository;
 import codesquad.codestagram.domain.user.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
+    private final ReplyRepository replyRepository;
 
-    public ArticleService(ArticleRepository articleRepository) {
+    public ArticleService(ArticleRepository articleRepository, ReplyRepository replyRepository) {
         this.articleRepository = articleRepository;
+        this.replyRepository = replyRepository;
     }
 
     @Transactional
@@ -51,7 +57,27 @@ public class ArticleService {
     @Transactional
     public void deleteArticle(Long id, User currentUser) {
         Article article = getAuthorizedArticle(id, currentUser);
-        articleRepository.delete(article);
+        List<Reply> replies = replyRepository.findByArticleIdAndDeletedFalse(id);
+
+        // 댓글이 존재하는 경우
+        if (!replies.isEmpty()) {
+            boolean allRepliesBySameAuthor = replies.stream()
+                    .allMatch(reply -> reply.isSameWriter(currentUser.getId()));
+
+            if (!allRepliesBySameAuthor) {
+                throw new UnauthorizedException("작성자 외 댓글이 있어 삭제할 수 없습니다.");
+            }
+
+            // 댓글 삭제 처리
+            for (Reply reply : replies) {
+                reply.delete();
+            }
+
+            replyRepository.saveAll(replies);
+        }
+
+        // 게시글 삭제 처리
+        article.delete();
     }
 
 }
