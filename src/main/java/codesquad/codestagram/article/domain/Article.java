@@ -1,5 +1,6 @@
 package codesquad.codestagram.article.domain;
 
+import codesquad.codestagram.user.domain.User;
 import jakarta.persistence.*;
 
 @Entity
@@ -8,11 +9,14 @@ public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
     private User writer;
     private String title;
     private String content;
 
-    public Article(String writer, String title, String content) {
+    public Article(User writer, String title, String content) {
         this.writer = writer;
         this.title = title;
         this.content = content;
@@ -26,7 +30,7 @@ public class Article {
         return id;
     }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 
