@@ -78,10 +78,6 @@ public class ArticleController {
             return "redirect:/users/login";
         }
 
-        if (!loggedInUser.getId().equals(id)) {
-            return "error";
-        }
-
         try {
             Article article = articleService.findArticle(id);
             model.addAttribute("article", article);
