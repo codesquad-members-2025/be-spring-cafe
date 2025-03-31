@@ -130,8 +130,10 @@ JdbcUserRepository의 findById 메서드에서 User 객체를 생성한 후에 s
 
 # 4단계
 - 구현
-- 고민
-- 문제 해결
+  - User와 Article 간의 1 : N 매핑
+  - 로그인
+  - 로그아웃
+  - 개인정보 수정(본인의 것만)
 
 # 학습
 ### PRG 패턴 (POST-REDIRECT-GET)
