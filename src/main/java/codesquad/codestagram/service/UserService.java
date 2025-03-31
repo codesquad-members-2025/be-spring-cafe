@@ -32,6 +32,12 @@ public class UserService {
                 });
     }
 
+    // 회원정보수정
+    public String update(User user) {
+        userRepository.save(user);
+        return user.getUserId();
+    }
+
     public List<User> findAllUsers() {
         return userRepository.findAll();
     }
