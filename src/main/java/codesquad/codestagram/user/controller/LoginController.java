@@ -51,7 +51,7 @@ public class LoginController {
 
     //@PostMapping이 맞나?
     //회원가입 후 바로 로그인 되게끔하자
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public String logout(HttpSession session) {
         sessionService.logout(session);
         return "redirect:/";

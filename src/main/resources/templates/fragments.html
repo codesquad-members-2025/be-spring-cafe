@@ -77,7 +77,11 @@
                 <li><a href="/">Posts</a></li>
                 <li th:if="${session.LOGGED_IN_USER == null}"><a href="/users/login" role="button">로그인</a></li>
                 <li th:if="${session.LOGGED_IN_USER == null}"><a href="/users/join" role="button">회원가입</a></li>
-                <li th:if="${session.LOGGED_IN_USER != null}"><a href="/users/logout" role="button">로그아웃</a></li>
+                <li th:if="${session.LOGGED_IN_USER != null}">
+                    <form action="/users/logout" method="post" style="margin: 0; padding: 0;">
+                        <button type="submit" class="btn btn-link" style="text-decoration: none; color: #777; padding: 15px; border: none; background: none;">로그아웃</button>
+                    </form>
+                </li>
                 <li th:if="${session.LOGGED_IN_USER != null}">
                     <a th:href="@{/users/{id}/verify(id=${session.LOGGED_IN_USER.id})}" role="button">개인정보수정</a>
                 </li>
