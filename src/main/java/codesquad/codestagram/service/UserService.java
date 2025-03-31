@@ -2,6 +2,7 @@ package codesquad.codestagram.service;
 
 import codesquad.codestagram.controller.User;
 import codesquad.codestagram.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
-@Transactional
+@Transactional()
 public class UserService {
 
     private final UserRepository userRepository;
@@ -29,7 +30,7 @@ public class UserService {
 
     public User findById(Long id){
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("해당 유저를 찾을 수 없습니다."));
     }
 
     public void update(User user, String name, String email){
