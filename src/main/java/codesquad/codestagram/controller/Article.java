@@ -10,6 +10,10 @@ public class Article {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "USER_ID")
+    private User user;
+
     @Column(nullable = false)
     private String writer;
 
@@ -19,15 +23,18 @@ public class Article {
     @Column(nullable = false)
     private String contents;
 
-    public Article(String writer, String title, String contents) {
+    public Article(String writer, String title, String contents, User user) {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
+        this.user = user;
     }
 
     protected Article() {}
 
     public Long getId() {return id;}
+
+    public void setUser(User user) {this.user = user;}
 
     public String getWriter() {
         return writer;

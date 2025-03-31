@@ -1,15 +1,13 @@
 package codesquad.codestagram.controller;
 
 
+import codesquad.codestagram.dto.RequestArticleDto;
 import codesquad.codestagram.service.ArticleService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,8 +22,8 @@ public class ArticleController {
     }
 
     @PostMapping("/articles")
-    public String writeArticle(@ModelAttribute Article article){
-        articleService.save(article);
+    public String writeArticle(@ModelAttribute RequestArticleDto requestArticle) {
+        articleService.save(requestArticle);
         return "redirect:/";
     }
 
