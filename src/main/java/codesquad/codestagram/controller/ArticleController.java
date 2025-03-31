@@ -1,13 +1,12 @@
 package codesquad.codestagram.controller;
 
-import static codesquad.codestagram.controller.AuthController.SESSIONED_USER;
 import static codesquad.codestagram.controller.UserController.ERROR_MESSAGE;
 
 import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.Reply;
-import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.ArticleDto;
 import codesquad.codestagram.service.ArticleService;
+import codesquad.codestagram.service.AuthService;
 import codesquad.codestagram.service.ReplyService;
 import jakarta.servlet.http.HttpSession;
 import java.nio.file.AccessDeniedException;
@@ -32,15 +31,17 @@ public class ArticleController {
 
     private final ArticleService articleService;
     private final ReplyService replyService;
+    private final AuthService authService;
 
-    public ArticleController(ArticleService articleService, ReplyService replyService) {
+    public ArticleController(ArticleService articleService, ReplyService replyService, AuthService authService) {
         this.articleService = articleService;
         this.replyService = replyService;
+        this.authService = authService;
     }
 
     @PostMapping("/articles")
     public String writeArticle(@ModelAttribute ArticleDto.ArticleRequestDto requestDto, Model model, HttpSession session) {
-        if (checkLogin(session)) return "redirect:/login";
+        if (authService.checkLogin(session)) return "redirect:/login";
         try {
             articleService.saveArticle(requestDto);
         }catch (IllegalArgumentException e){
@@ -59,7 +60,7 @@ public class ArticleController {
 
     @GetMapping("articles/{articleId}")
     public String showArticleDetail(@PathVariable Long articleId, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
-        if (checkLogin(session)) return "redirect:/login";
+        if (authService.checkLogin(session)) return "redirect:/login";
         Article article;
         try {
             article = articleService.findArticleById(articleId);
@@ -84,7 +85,7 @@ public class ArticleController {
 
     @GetMapping("articles/{articleId}/edit")
     public String editArticleForm(@PathVariable Long articleId, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
-        if (checkLogin(session)) return "redirect:/login";
+        if (authService.checkLogin(session)) return "redirect:/login";
         Article article;
         try {
             article = articleService.findArticleById(articleId);
@@ -104,7 +105,7 @@ public class ArticleController {
     @PutMapping("articles/{articleId}")
     public String updateArticle(@PathVariable Long articleId, @RequestParam String title, @RequestParam String content,
                                 HttpSession session, Model model, RedirectAttributes redirectAttributes) {
-        if (checkLogin(session)) return "redirect:/login";
+        if (authService.checkLogin(session)) return "redirect:/login";
 
         Article article;
         try {
@@ -124,7 +125,7 @@ public class ArticleController {
 
     @DeleteMapping("articles/{articleId}")
     public String deleteArticle(@PathVariable Long articleId, HttpSession session, RedirectAttributes redirectAttributes) {
-        if (checkLogin(session)) return "redirect:/login";
+        if (authService.checkLogin(session)) return "redirect:/login";
 
         Article article;
         try {
@@ -141,11 +142,5 @@ public class ArticleController {
         }
         articleService.delete(articleId);
         return "redirect:/";
-    }
-
-
-    public static boolean checkLogin(HttpSession session) {
-        User sessionedUser = (User) session.getAttribute(SESSIONED_USER);
-        return sessionedUser == null;
     }
 }

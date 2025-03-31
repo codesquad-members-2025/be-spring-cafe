@@ -3,6 +3,7 @@ package codesquad.codestagram.controller;
 import static codesquad.codestagram.controller.AuthController.SESSIONED_USER;
 
 import codesquad.codestagram.domain.User;
+import codesquad.codestagram.service.AuthService;
 import codesquad.codestagram.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
@@ -21,9 +22,11 @@ public class UserController {
     public static final String ERROR_MESSAGE = "errorMessage";
     public static final String NOT_EQUAL_ID = "아이디가 일치하지 않습니다.";
     private final UserService userService;
+    private final AuthService authService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthService authService) {
         this.userService = userService;
+        this.authService = authService;
     }
 
     @GetMapping("/users")
@@ -34,12 +37,12 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public String showUserProfile(@PathVariable Long id, Model model) {
+    public String showUserProfile(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         User user = null;
         try{
             user = userService.getUserById(id);
         }catch (IllegalArgumentException e){
-            model.addAttribute(ERROR_MESSAGE, e.getMessage());
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
         }
 
         if (user == null) return "redirect:/users";
@@ -49,7 +52,7 @@ public class UserController {
 
     @GetMapping("/users/{id}/update")
     public String editUser(Model model, @PathVariable Long id, HttpSession httpSession, RedirectAttributes redirectAttributes) {
-        if (ArticleController.checkLogin(httpSession)) return "redirect:/login";
+        if (authService.checkLogin(httpSession)) return "redirect:/login";
         User user = (User) httpSession.getAttribute(SESSIONED_USER);
 
         if(!user.matchId(id)){

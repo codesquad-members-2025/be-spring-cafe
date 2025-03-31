@@ -1,6 +1,5 @@
 package codesquad.codestagram.controller;
 
-import static codesquad.codestagram.controller.ArticleController.checkLogin;
 import static codesquad.codestagram.controller.AuthController.SESSIONED_USER;
 import static codesquad.codestagram.controller.UserController.ERROR_MESSAGE;
 
@@ -8,6 +7,7 @@ import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.Reply;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.service.ArticleService;
+import codesquad.codestagram.service.AuthService;
 import codesquad.codestagram.service.ReplyService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -21,15 +21,16 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class ReplyController {
     private final ReplyService replyService;
     private final ArticleService articleService;
-
-    public ReplyController(ReplyService replyService, ArticleService articleService) {
+    private final AuthService authService;
+    public ReplyController(ReplyService replyService, ArticleService articleService, AuthService authService) {
         this.replyService = replyService;
         this.articleService = articleService;
+        this.authService = authService;
     }
 
     @PostMapping("/reply/{articleId}")
     public String addReply(@RequestParam String content, @PathVariable Long articleId, HttpSession session, RedirectAttributes redirectAttributes) {
-        if (checkLogin(session)) return "redirect:/login";
+        if (authService.checkLogin(session)) return "redirect:/login";
         Article findArticle;
         User user = (User) session.getAttribute(SESSIONED_USER);
 
@@ -47,7 +48,7 @@ public class ReplyController {
     @DeleteMapping("article/{articleId}/reply/{replyId}")
     public String deleteReply(@PathVariable Long articleId, @PathVariable Long replyId,
                               HttpSession session, RedirectAttributes redirectAttributes){
-        if (checkLogin(session)) return "redirect:/login";
+        if (authService.checkLogin(session)) return "redirect:/login";
         User user = (User) session.getAttribute(SESSIONED_USER);
         Reply reply;
 
