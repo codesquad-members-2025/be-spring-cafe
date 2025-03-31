@@ -19,7 +19,7 @@ public class ViewController {
 
     @GetMapping("")
     public String index(Model model) {
-        List<Article> articles = articleRepository.findAll();
+        List<Article> articles = articleRepository.findAllByDeleted(false);
         model.addAttribute("articles", articles);
 
         return "index";
