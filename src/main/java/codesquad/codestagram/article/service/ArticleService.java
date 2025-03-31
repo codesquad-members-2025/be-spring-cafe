@@ -15,7 +15,6 @@ import java.util.NoSuchElementException;
 import static codesquad.codestagram.user.service.UserService.USER_NOT_FOUND;
 
 @Service
-@Transactional
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
@@ -27,6 +26,7 @@ public class ArticleService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     public Long create(ArticleRequest request) {
         User foundWriter = userRepository.findByUserId(request.writerId()).orElseThrow(
                 () -> new NoSuchElementException(USER_NOT_FOUND)
