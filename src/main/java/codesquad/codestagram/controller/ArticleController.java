@@ -28,6 +28,7 @@ public class ArticleController {
     public static final String ARTICLE = "article";
     public static final String AUTHOR = "author";
     public static final String REPLIES = "replies";
+    public static final String CAN_NOT_DELETE = "글을 삭제 할 수 없습니다.";
 
     private final ArticleService articleService;
     private final ReplyService replyService;
@@ -40,13 +41,13 @@ public class ArticleController {
     }
 
     @PostMapping("/articles")
-    public String writeArticle(@ModelAttribute ArticleDto.ArticleRequestDto requestDto, Model model, HttpSession session) {
+    public String writeArticle(@ModelAttribute ArticleDto.ArticleRequestDto requestDto, RedirectAttributes redirectAttributes, HttpSession session) {
         if (authService.checkLogin(session)) return "redirect:/login";
         try {
             articleService.saveArticle(requestDto);
         }catch (IllegalArgumentException e){
-            model.addAttribute(ERROR_MESSAGE, e.getMessage());
-            return "articles/form";
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
+            return "redirect:/articles/form";
         }
         return "redirect:/";
     }
@@ -137,7 +138,7 @@ public class ArticleController {
         }
 
         if(!replyService.checkCanDelete(article, session)){
-            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "글을 삭제 할 수 없습니다.");
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, CAN_NOT_DELETE);
             return "redirect:/articles/" + articleId;
         }
         articleService.delete(articleId);
