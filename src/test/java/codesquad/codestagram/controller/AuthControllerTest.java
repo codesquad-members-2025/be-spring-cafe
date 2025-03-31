@@ -55,7 +55,7 @@ class AuthControllerTest {
     @DisplayName("회원가입시 같은아이디가 없는 경우 회원가입 성공한다.")
     void registerTest() throws Exception {
         //given
-        given(userService.checkEqualUserId("existingUser")).willReturn(true);
+        given(userService.checkEqualUserId("testUser")).willReturn(false);
         //when
         ResultActions result = mockMvc.perform(post("/users")
                 .param("userId", "testUser")
