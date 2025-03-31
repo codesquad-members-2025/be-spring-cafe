@@ -53,10 +53,6 @@ public class ArticleController {
 
     @GetMapping("/article/{id}")
     public String viewArticle(@PathVariable("id") Long id, Model model, HttpSession session) {
-        if (session.getAttribute(SESSION_LOGIN_USER) == null) {
-            return "redirect:/users/loginForm";
-        }
-
         Article article = articleRepository.findById(id).orElseThrow();
         model.addAttribute("article", article);
         return "article/detail";
@@ -65,10 +61,6 @@ public class ArticleController {
     @GetMapping("/article/{id}/form")
     public String viewUpdateForm(@PathVariable("id") Long id, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
-
-        if (loginUser == null) { //로그인 상태인지 확인
-            return "redirect:/users/loginForm";
-        }
 
         Article article = articleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
@@ -87,10 +79,6 @@ public class ArticleController {
         , RedirectAttributes redirectAttributes) {
         User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
 
-        if (loginUser == null) { //로그인 상태인지 확인
-            return "redirect:/users/loginForm";
-        }
-
         Article findArticle = articleRepository.findById(id).orElseThrow();
 
         if (loginUser.getId() != findArticle.getUser().getId()) {
@@ -106,10 +94,6 @@ public class ArticleController {
     @DeleteMapping("/article/{id}/delete")
     public String deleteArticle(@PathVariable("id") Long id, HttpSession session, RedirectAttributes redirectAttributes) {
         User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
-
-        if (loginUser == null) { //로그인 상태인지 확인
-            return "redirect:/users/loginForm";
-        }
 
         Article findArticle = articleRepository.findById(id).orElseThrow();
 
