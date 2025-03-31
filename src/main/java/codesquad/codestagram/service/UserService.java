@@ -55,6 +55,7 @@ public class UserService {
      * 회원 정보 수정
      */
 
+    @Transactional
     public boolean updateUser(Long id, String currentPassword, String newPassword, String name, String email ) {
         Optional<User> optionalUser = userRepository.findById(id);
         //실행 흐름상 유저가 없을 수는 없지만 . 사이에 누군가가 삭제했을 수도 있으니 넣어주기.
