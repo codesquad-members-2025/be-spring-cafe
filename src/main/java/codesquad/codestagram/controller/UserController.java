@@ -26,15 +26,20 @@ public class UserController {
             @RequestParam("userId") String userId,
             @RequestParam("password") String password,
             @RequestParam("name") String name,
-            @RequestParam("email") String email) {
+            @RequestParam("email") String email,
+            HttpSession session) {
         User user = new User(userId, name, password, email);
-
         userService.join(user);
+        session.setAttribute("loginUser", user);
         return "redirect:/users";
     }
 
     @GetMapping("/users")
-    public String list(Model model) {
+    public String list(HttpSession session, Model model) {
+        User loginUser = (User) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            return "redirect:/user/login";
+        }
         List<User> users = userService.findAllUsers();
         model.addAttribute("users", users);
         return "user/list";
@@ -60,14 +65,25 @@ public class UserController {
             @PathVariable String userId,
             @RequestParam("password") String password,
             @RequestParam("name") String name,
-            @RequestParam("email") String email) {
-        User user = userService.findOneUser(userId).get();
-        user.setPassword(password);
-        user.setName(name);
-        user.setEmail(email);
+            @RequestParam("email") String email,
+            HttpSession session, Model model) {
+        User sessionUser = (User) session.getAttribute("loginUser");
+        if (!password.equals(sessionUser.getPassword())) {
+            model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
+            model.addAttribute("user", sessionUser);
+            return "user/updateForm";
+        }
 
-        userService.join(user);
+        sessionUser.setName(name);
+        sessionUser.setEmail(email);
+
+        userService.update(sessionUser);
         return "redirect:/users";
+    }
+
+    @GetMapping("/user/login")
+    public String showLoginForm() {
+        return "user/login";
     }
 
     @PostMapping("/user/login")
@@ -75,12 +91,16 @@ public class UserController {
                         @RequestParam("password") String password,
                         HttpSession session) {
         Optional<User> user = userService.findOneUser(userId);
-        if(user.isPresent() && user.get().getPassword().equals(password)) {
+        if (user.isPresent() && user.get().getPassword().equals(password)) {
             session.setAttribute("loginUser", user.get());  // 세션에 로그인 사용자 저장, setAttribute 는 세션에 데이터 저장할 때 사용
             return "redirect:/";
         }
         return "user/login_failed";  // 로그인 실패 시 어떤 걸 리턴할 것인가?
     }
 
-
+    @PostMapping("/user/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
+    }
 }
