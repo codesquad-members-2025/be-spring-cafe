@@ -1,7 +1,7 @@
 package codesquad.codestagram;
 
 import codesquad.codestagram.domain.User;
-import codesquad.codestagram.repository.UserRepository;
+import codesquad.codestagram.repository.SpringDataJpaUserRepository;
 import codesquad.codestagram.service.UserService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +19,7 @@ public class UserServiceIntegrationTest {
     @Autowired
     UserService userService;
     @Autowired
-    UserRepository userRepository;
+    SpringDataJpaUserRepository userRepository;
 
     @Test
     @DisplayName("생성한 회원과 찾은 회원이 동일한 이름을 가지고 있는지 테스트")
