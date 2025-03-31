@@ -14,11 +14,11 @@ public class Reply {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id", nullable = false)
     private Article article;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
     private String text;
@@ -48,10 +48,6 @@ public class Reply {
 
     public String getText() {
         return text;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
     }
 
     public void softDelete() {

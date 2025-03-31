@@ -22,7 +22,7 @@ public class ReplyController {
     @PostMapping("/articles/{index}/answers")
     public String addAnswer(@PathVariable Long index, @RequestParam String text, HttpSession session) {
         User user = (User) session.getAttribute("loginUser");
-        replyService.addReply(user, index, text);
+        replyService.addReplyToArticle(user, index, text);
         return "redirect:/articles/{index}";
     }
 

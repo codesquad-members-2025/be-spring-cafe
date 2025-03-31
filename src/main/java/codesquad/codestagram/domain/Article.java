@@ -6,6 +6,8 @@ import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -18,9 +20,13 @@ public class Article {
     private String title;
     private String content;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)  // ✅ 외래 키 설정
     private User user;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "article")
+    @Where(clause = "deleted = false")
+    private List<Reply> replies = new ArrayList<>();
     private LocalDateTime createdAt;
     private boolean deleted = false;
 
@@ -49,8 +55,15 @@ public class Article {
         return id;
     }
 
-    public boolean isDeleted() {
-        return deleted;
+    public Reply addReply(User user, String text) {
+        Reply reply = new Reply(user, this, text);
+        replies.add(reply);
+        return reply;
+    }
+
+    public void softDelete() {
+        deleted = true;
+        replies.forEach(Reply::softDelete);
     }
 
     public String getCreatedAt() {
@@ -65,10 +78,6 @@ public class Article {
     public void update(ArticleForm articleForm) {
         title = articleForm.getTitle();
         content = articleForm.getContent();
-    }
-
-    public void softDelete() {
-        deleted = true;
     }
 
     @Override

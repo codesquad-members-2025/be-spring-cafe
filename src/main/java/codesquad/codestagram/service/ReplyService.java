@@ -25,9 +25,10 @@ public class ReplyService {
         this.articleService = articleService;
     }
 
-    public Reply addReply(User user, Long index, String text) {
+    @Transactional
+    public Reply addReplyToArticle(User user, Long index, String text) {
         Article article = articleService.findArticleById(index);
-        Reply reply = new Reply(user,article,text);
+        Reply reply = article.addReply(user, text);
         return replyRepository.save(reply);
     }
 
