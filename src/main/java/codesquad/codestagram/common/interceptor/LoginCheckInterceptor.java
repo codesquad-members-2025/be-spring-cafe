@@ -19,8 +19,11 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             @NonNull HttpServletResponse response,
             @NonNull Object handler) throws IOException {
 
-        HttpSession session = request.getSession(false);
+        if ("/users".equals(request.getRequestURI()) && "POST".equalsIgnoreCase(request.getMethod())) {
+            return true;
+        }
 
+        HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute(SessionConstants.USER_SESSION_KEY) == null) {
             response.sendRedirect("/auth/login");
             return false;
