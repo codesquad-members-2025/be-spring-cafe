@@ -1,11 +1,16 @@
 package codesquad.codestagram.domain;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 
 import java.util.List;
 
 @Entity
 @Table(name = "Articles")
+@SQLDelete(sql = "UPDATE articles SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class Article {
 
     @Id
@@ -25,6 +30,9 @@ public class Article {
     @OrderBy("id asc") // 댓글 정렬
     private List<Comment> comments;
 
+    @Column(nullable = false)
+    private Boolean deleted = false; // Soft Delete 여부
+
     protected Article() {
     }
 
@@ -33,9 +41,8 @@ public class Article {
         this.title = title;
         this.content = content;
         this.user = user;
+        this.deleted = false; // 기본값 설정
     }
-
-
 
     // Getter & Setter
     public Long getId() {
@@ -78,5 +85,11 @@ public class Article {
         this.comments = comments;
     }
 
+    public Boolean getDeleted() {
+        return deleted;
+    }
 
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
 }

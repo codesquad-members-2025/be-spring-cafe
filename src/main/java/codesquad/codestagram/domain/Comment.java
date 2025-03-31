@@ -1,14 +1,14 @@
 package codesquad.codestagram.domain;
 
 import jakarta.persistence.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import java.time.LocalDateTime;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 
 @Table(name = "comments")
 @Entity
+@SQLDelete(sql = "UPDATE comments SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class Comment extends BaseEntity{
 
     @Id
@@ -26,10 +26,22 @@ public class Comment extends BaseEntity{
     @JoinColumn(name = "user_id")
     private User user; // 작성자
 
+    @Column(nullable = false)
+    private Boolean deleted = false;
+
     public Comment(String comment, Article article, User user) {
         this.comment = comment;
         this.article = article;
         this.user = user;
+        this.deleted = false;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     protected Comment() {
@@ -67,8 +79,5 @@ public class Comment extends BaseEntity{
     public void setUser(User user) {
         this.user = user;
     }
-    //수정사항 인식
-    public boolean isUpdated() {
-        return !getCreatedDate().equals(getModifiedDate());
-    }
+
 }
