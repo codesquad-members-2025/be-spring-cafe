@@ -9,21 +9,34 @@
   <div class="container d-flex justify-content-center" id="main">
     <div class="col-md-10 col-md-offset-1">
       <div class="panel panel-default">
-        <h1 class="text-center">커뮤니티</h1>
-        <div class="text-end">
-          <a class="btn btn-primary f" th:href="@{/article}">글 작성</a>
+        <div class="form-header">
+          <h3 class="form-title">전체 글</h3>
+          <p class="form-subtitle">당신의 일상을 공유해보세요.</p>
         </div>
-        <table class="table table-hover">
+        <div class="text-end">
+          <a class="btn btn-primary f" th:href="@{/article}">작성</a>
+        </div>
+        <table class="post-table">
+          <thead>
           <tr>
-            <th>번호</th>
+            <th class="text-center">번호</th>
             <th>제목</th>
+            <th class="text-center">작성자</th>
+            <th class="text-center">작성일</th>
           </tr>
-          <tr th:each="article, stat : ${articles}">
-            <td th:text="${stat.count}"></td>
-            <td>
-              <a th:text="${article.title}" th:href="@{/article/{id}(id=${article.id})}"></a>
-            </td>
-          </tr>
+          </thead>
+          <tbody>
+            <tr th:each="article, stat : ${articles}">
+              <td class="number-column text-center" th:text="${stat.count}"></td>
+              <td>
+                <a th:href="@{/article/{id}(id=${article.id})}">
+                  <span th:text="${article.title}"></span>
+                </a>
+              </td>
+              <td class="author-column text-center" th:text="${article.user.name}"></td>
+              <td class="number-column text-center">2025.03.31</td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>

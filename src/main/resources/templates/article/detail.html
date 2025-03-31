@@ -13,13 +13,13 @@
                 <span>작성일</span>
                 <span>•</span>
                 <span>
-                    <p th:text="${article.user}"></p>
+                    <p th:text="${article.user.name}"></p>
                 </span>
             </div>
         </div>
 
         <div class="post-content">
-            <textarea th:text="${article.content}"></textarea>
+            <textarea th:text="${article.content}" readonly></textarea>
         </div>
 
         <div class="flex justify-between mt-8">
@@ -27,6 +27,10 @@
             <div class="space-x-4">
                 <a th:href="@{/article/{id}/form(id=${article.id})}" class="btn btn-primary">수정</a>
             </div>
+            <form th:action="@{/article/{id}/delete(id=${article.id})}" method="post">
+                <input type="hidden" name="_method" value="DELETE"/>
+                <button type="submit" class="btn btn-primary">삭제</button>
+            </form>
         </div>
     </div>
 </main>

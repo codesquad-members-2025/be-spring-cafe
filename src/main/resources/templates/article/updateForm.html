@@ -4,10 +4,15 @@
 <head>
     <title>게시글 작성</title>
 </head>
-<body class="bg-gray-50">
+<body>
 <main layout:fragment="content">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <div class="form-header">
+            <h1 class="form-title">게시글 수정</h1>
+        </div>
         <div class="form-container">
             <form th:action="@{/article/{id}/update(id=${article.id})}" method="post">
+                <input type="hidden" name="_method" value="PUT"/>
                 <div class="form-group">
                     <label for="title" class="form-label">제목</label>
                     <input type="text" id="title" name="title" class="form-input" th:value="${article.title}" placeholder="게시글의 제목을 입력하세요">
@@ -15,7 +20,7 @@
 
                 <div class="form-group">
                     <label for="content" class="form-label">내용</label>
-                    <textarea id="content" name="content" class="form-input form-textarea" th:value="${article.content}" placeholder="게시글의 내용을 입력하세요"></textarea>
+                    <textarea id="content" name="content" class="form-input form-textarea" th:text="${article.content}" placeholder="게시글의 내용을 입력하세요"></textarea>
                 </div>
 
                 <div class="flex justify-between mt-8">
