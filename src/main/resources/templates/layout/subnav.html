@@ -6,7 +6,7 @@
                 <small><i class="glyphicon glyphicon-chevron-down"></i></small>
             </a>
             <ul class="nav dropdown-menu">
-                <li><a href="profile.html"><i class="glyphicon glyphicon-user" style="color:#1111dd;"></i> Profile</a></li>
+                <li><a th:href="@{/users/profile}"><i class="glyphicon glyphicon-user" style="color:#1111dd;"></i> Profile</a></li>
                 <li class="nav-divider"></li>
                 <li><a href="#"><i class="glyphicon glyphicon-cog" style="color:#dd1111;"></i> Settings</a></li>
             </ul>
@@ -30,8 +30,9 @@
 
                 <!-- 사용자가 로그인했을 때 -->
                 <li th:if="${session.user != null}">
-                    <a th:href="@{/users/logout}" role="button">로그아웃</a>
+                    <a href="#" onclick="document.getElementById('logoutForm').submit(); return false;">로그아웃</a>
                 </li>
+                <form id="logoutForm" th:action="@{/users/logout}" method="post" style="display:none;"></form>
                 <li th:if="${session.user != null}">
                     <a th:href="@{/users/edit/{id}(id=${session.user.id})}" role="button">개인정보수정</a>
                 </li>
