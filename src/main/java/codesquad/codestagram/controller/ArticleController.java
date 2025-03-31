@@ -102,4 +102,25 @@ public class ArticleController {
         articleRepository.save(article);
         return "redirect:/article/" + id;
     }
+
+    @DeleteMapping("/article/{id}/delete")
+    public String deleteArticle(@PathVariable("id") Long id, HttpSession session, RedirectAttributes redirectAttributes) {
+        User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
+
+        if (loginUser == null) { //로그인 상태인지 확인
+            return "redirect:/users/loginForm";
+        }
+
+        Article findArticle = articleRepository.findById(id).orElseThrow();
+
+        if (loginUser.getId() != findArticle.getUser().getId()) {
+            redirectAttributes.addFlashAttribute("alertMessage", "작성자 ID와 사용자 ID가 일치하지 않습니다.");
+            return "redirect:/article/" + id;
+        }
+
+        articleRepository.deleteById(id);
+
+        redirectAttributes.addFlashAttribute("alertMessage", "게시글이 정상적으로 삭제되었습니다.");
+        return "redirect:/";
+    }
 }
