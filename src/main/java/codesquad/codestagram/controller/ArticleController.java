@@ -6,10 +6,7 @@ import codesquad.codestagram.repository.ArticleRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -85,7 +82,7 @@ public class ArticleController {
         return "article/updateForm";
     }
 
-    @PostMapping("/article/{id}/update")
+    @PutMapping("/article/{id}/update")
     public String updateArticle(@PathVariable("id") Long id, @ModelAttribute Article article, HttpSession session
         , RedirectAttributes redirectAttributes) {
         User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
