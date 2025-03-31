@@ -27,13 +27,14 @@ public class ArticleService {
     }
 
     @Transactional
-    public Long create(ArticleRequest request) {
-        User foundWriter = userRepository.findByUserId(request.writerId()).orElseThrow(
+    public Long create(ArticleRequest request, Long id) {
+
+        User foundUser = userRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException(USER_NOT_FOUND)
         );
 
         Article article = new Article(
-                foundWriter,
+                foundUser,
                 request.title(),
                 request.contents()
         );

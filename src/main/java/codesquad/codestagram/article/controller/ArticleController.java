@@ -53,7 +53,7 @@ public class ArticleController {
         }
 
         try {
-            articleService.create(request);
+            articleService.create(request, loggedInUser.getId());
             return "redirect:/";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
