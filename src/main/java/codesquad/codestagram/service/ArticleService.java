@@ -32,12 +32,8 @@ public class ArticleService {
     }
 
     public Article findArticleById(Long id) {
-        Article article = articleRepository.findById(id)
+        return articleRepository.findById(id)
                 .orElseThrow(() -> new ArticleNotFoundException("해당하는 ID("+ id +")의 게시글을 찾을 수 없습니다."));
-        if(article.isDeleted()){
-            throw new ArticleNotFoundException("이미 지워진 게시물입니다.");
-        }
-        return article;
     }
 
     public Article createArticleAndSave(User user, ArticleForm articleForm) {
