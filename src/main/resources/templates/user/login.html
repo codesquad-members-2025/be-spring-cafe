@@ -65,7 +65,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="../index.html">Posts</a></li>
                 <li><a href="../user/login.html" role="button">로그인</a></li>
-                <li><a href="form.html" role="button">회원가입</a></li>
+                <li><a href="user/form.html" role="button">회원가입</a></li>
                 <li><a href="#" role="button">로그아웃</a></li>
                 <li><a href="#" role="button">개인정보수정</a></li>
             </ul>
@@ -78,7 +78,7 @@
       <div class="panel panel-default content-main">
           <form name="question" method="post" action="/users/login" th:object="${loginForm}">
               <!-- 🔹 글로벌 에러 메시지 출력 -->
-              <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger">
+              <div th:if="${session.loginUser != null and #fields.hasGlobalErrors()}" class="alert alert-danger">
                   <p th:each="error : ${#fields.globalErrors()}" th:text="${error}"></p>
               </div>
 

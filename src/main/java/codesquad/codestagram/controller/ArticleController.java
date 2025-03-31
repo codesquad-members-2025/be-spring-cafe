@@ -2,6 +2,8 @@ package codesquad.codestagram.controller;
 
 
 import codesquad.codestagram.service.ArticleService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +27,15 @@ public class ArticleController {
     public String writeArticle(@ModelAttribute Article article){
         articleService.save(article);
         return "redirect:/";
+    }
+
+    @GetMapping("/articles")
+    public String getArticleForm(HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        if(session == null){
+            return "user/login";
+        }
+        return "qna/form.html";
     }
 
     @GetMapping("/")
