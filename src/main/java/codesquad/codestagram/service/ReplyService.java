@@ -8,6 +8,7 @@ import codesquad.codestagram.exception.ReplyNotFoundException;
 import codesquad.codestagram.exception.UnauthorizedAccessException;
 import codesquad.codestagram.repository.ReplyRepository;
 import codesquad.codestagram.utility.TextUtility;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -45,11 +46,16 @@ public class ReplyService {
         return replyDtoList;
     }
 
-    public void deleteReply(User user, Long replyId) {
+    @Transactional
+    public void deleteReply(Reply reply) {
+        reply.softDelete();
+    }
+
+    public Reply findReplyIfOwner(User user, Long replyId) {
         Reply reply = replyRepository.findById(replyId).orElseThrow(() -> new ReplyNotFoundException());
         if(!reply.isAuthor(user)){
-            throw new UnauthorizedAccessException("이 댓글을 지울 수 있는 권한이 없습니다.");
-        };
-        replyRepository.delete(reply);
+            throw new UnauthorizedAccessException("댓글의 작성자가 아닙니다.");
+        }
+        return reply;
     }
 }

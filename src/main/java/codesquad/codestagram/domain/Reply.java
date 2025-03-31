@@ -1,11 +1,13 @@
 package codesquad.codestagram.domain;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Entity
+@Where(clause = "deleted = false")
 public class Reply {
 
     @Id
@@ -50,6 +52,10 @@ public class Reply {
 
     public boolean isDeleted() {
         return deleted;
+    }
+
+    public void softDelete() {
+        this.deleted = true;
     }
 
     public String getCreatedAt() {

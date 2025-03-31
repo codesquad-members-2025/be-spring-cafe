@@ -1,5 +1,6 @@
 package codesquad.codestagram.controller;
 
+import codesquad.codestagram.domain.Reply;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.service.ReplyService;
 import jakarta.servlet.http.HttpSession;
@@ -28,7 +29,8 @@ public class ReplyController {
     @DeleteMapping("/articles/{articleId}/answers/{replyId}")
     public String addAnswer(@PathVariable Long articleId, @PathVariable Long replyId, HttpSession session) {
         User user = (User) session.getAttribute("loginUser");
-        replyService.deleteReply(user, replyId);
+        Reply reply = replyService.findReplyIfOwner(user,replyId);
+        replyService.deleteReply(reply);
         return "redirect:/articles/" + articleId;
     }
 }
