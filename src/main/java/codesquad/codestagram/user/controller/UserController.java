@@ -29,10 +29,14 @@ public class UserController {
 
     @PostMapping("/signUp")
     public String signUp(@ModelAttribute SignUpRequest request,
+                         HttpSession session,
                          RedirectAttributes redirectAttributes) { // @ModelAttribute 공부,
         try {
-            userService.join(request);
-            return "redirect:/users";
+            User newUser = userService.join(request);
+
+            sessionService.login(session, newUser);
+
+            return "redirect:/";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 
