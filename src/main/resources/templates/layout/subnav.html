@@ -33,7 +33,7 @@
                     <a th:href="@{/users/logout}" role="button">로그아웃</a>
                 </li>
                 <li th:if="${session.user != null}">
-                    <a href="#" role="button">개인정보수정</a>
+                    <a th:href="@{/users/edit/{id}(id=${session.user.id})}" role="button">개인정보수정</a>
                 </li>
             </ul>
         </div>

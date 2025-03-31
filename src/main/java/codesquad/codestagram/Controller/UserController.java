@@ -75,32 +75,31 @@ public class UserController {
         return "user/list";
     }
 
-    @GetMapping("/users/{loginId}")
-    public String userProfile(@PathVariable("loginId") String loginId, Model model, RedirectAttributes redirectAttributes) { //RedirectAttributes: 리다이렉트할 때 데이터를 잠깐 보낼 수 있게 도와주는 객체(팝업에 들어갈 메시지를 전달하는 통로)
-        Optional<User> user = userService.findByLoginId(loginId);
-        if (user.isPresent()) {
-            model.addAttribute("user", user.get());
-            return "user/profile"; //사용자 있으면 프로필로 이동
-        } else {
-            log.warn("사용자 없음: {}", loginId); // 로그 추가
-            redirectAttributes.addFlashAttribute("errorMessage", "존재하지 않는 사용자입니다."); //에러 메시지 사용자에게 보여줌.
-            return "redirect:/users/list";
+    // 프로필 조회
+    @GetMapping("/users/profile")
+    public String profile(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+        User sessionUser = (User) session.getAttribute("user");
+        // isAuthorized 내부에서 null 검증을 하므로 여기서는 바로 targetUserId로 검증 가능
+        //로그인한 사용자가 있다면 그 사용자의 id를, 없다면 null을 전달
+        if (!isAuthorized(session, sessionUser == null ? null : sessionUser.getId(), redirectAttributes)) {
+            return "redirect:/users/login";
         }
+        model.addAttribute("user", sessionUser);
+        return "user/profile";
     }
+
 
     //회원 정보 수정 폼 띄우기
     @GetMapping("/users/edit/{id}")
-    public String updateForm(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
-        Optional<User> userOptional = userService.findOne(id);
-
-        if (userOptional.isPresent()) {
-            model.addAttribute("user", userOptional.get());
-            return "user/updateForm"; // 수정 폼 화면 반환
+    public String updateForm(@PathVariable("id") Long id, HttpSession session,Model model, RedirectAttributes redirectAttributes) {
+        if (!isAuthorized(session, id, redirectAttributes)) {
+            return "redirect:/users/login";
         } else {
-            log.warn("수정하려는 사용자 없음: {}", id);
-            redirectAttributes.addFlashAttribute("errorMessage", "존재하지 않는 사용자입니다.");
-            return "redirect:/users/list";
+            Optional<User> userOptional = userService.findOne(id);
+            model.addAttribute("user", userOptional.get());
+            return "user/updateForm";
         }
+        //실제 사용자 존재 여부 확인 필요? 없을 수 가 있나?
     }
 
     @PutMapping("/users/{id}/update")
@@ -109,7 +108,11 @@ public class UserController {
                              @RequestParam("newPassword") String newPassword,
                              @RequestParam("name") String name,
                              @RequestParam("email") String email,
+                             HttpSession session,
                              RedirectAttributes redirectAttributes) {
+        if (!isAuthorized(session, id, redirectAttributes)) {
+            return "redirect:/users/login";
+        }
 
         boolean result = userService.updateUser(id,currentPassword, newPassword, name,email);
 
@@ -118,9 +121,22 @@ public class UserController {
             redirectAttributes.addFlashAttribute("errorMessage", "❗ 비밀번호가 일치하지 않습니다."); //화면으로 메시지 전달
             return "redirect:/users/edit/" + id;
         }
+        return "redirect:/users/profile";
 
-        return "redirect:/users/list";
+    }
 
+    //인증/인가 로직인 웹 계층(controller)에서 처리하는 것이 좋음
+    private boolean isAuthorized(HttpSession session, Long targetUserId, RedirectAttributes redirectAttributes) {
+        User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "로그인이 필요합니다.");
+            return false;
+        }
+        if (!sessionUser.getId().equals(targetUserId)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "다른 사용자의 정보를 수정할 수 없습니다.");
+            return false;
+        }
+        return true;
     }
 
 }

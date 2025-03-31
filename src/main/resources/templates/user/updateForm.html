@@ -2,7 +2,7 @@
 <html lang="kr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>SLiPP Java Web Programming</title>
+    <title>개인정보 수정 - SLiPP Java Web Programming</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
@@ -23,7 +23,7 @@
 
         <div class="col-md-6 col-md-offset-3">
             <div class="panel panel-default content-main">
-
+                <h3 class="panel-heading">개인정보 수정</h3>
                 <form name="updateUser" method="post" th:action="@{/users/{id}/update(id=${user.id})}">
                     <!-- Hidden으로 PUT 메소드 사용 -->
                     <input type="hidden" name="_method" value="PUT" />
@@ -40,14 +40,22 @@
                         <input type="password" class="form-control" id="newPassword" name="newPassword" required>
                     </div>
 
+                    <!-- 이름 수정 -->
                     <div class="form-group">
                         <label for="name">이름</label>
-                        <input class="form-control" id="name" name="name" th:value="${user.name}" required>
+                        <input type="text" class="form-control" id="name" name="name" th:value="${user.name}" required>
                     </div>
 
+                    <!-- 이메일 수정 -->
                     <div class="form-group">
                         <label for="email">이메일</label>
                         <input type="text" class="form-control" id="email" name="email" th:value="${user.email}" required>
+                    </div>
+
+                    <!-- 사용자 아이디는 수정 불가 (읽기전용으) -->
+                    <div class="form-group">
+                        <label for="loginId">사용자 아이디</label>
+                        <input type="text" class="form-control" id="loginId" name="loginId" th:value="${user.loginId}" readonly>
                     </div>
 
                     <button type="submit" class="btn btn-primary">수정하기</button>
