@@ -8,6 +8,9 @@ public class Article {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User writer;
     private String title;
     private String contents;
