@@ -31,22 +31,13 @@ public class ArticleController {
 
     @GetMapping("/article")
     public String viewArticleForm(HttpSession session) {
-        if (session.getAttribute(SESSION_LOGIN_USER) == null) {
-            return "redirect:/users/loginForm";
-        }
         return "article/write";
     }
 
     @PostMapping("/article")
     public String writeArticle(@ModelAttribute Article article, HttpSession session) {
         User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
-
-        if (session.getAttribute(SESSION_LOGIN_USER) == null) {
-            return "redirect:/users/loginForm";
-        }
-
         article.setUser(loginUser);
-
         articleRepository.save(article);
         return "redirect:/";
     }
