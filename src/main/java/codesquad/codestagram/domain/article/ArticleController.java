@@ -1,12 +1,15 @@
 package codesquad.codestagram.domain.article;
 
 import codesquad.codestagram.common.constants.SessionConstants;
+import codesquad.codestagram.domain.reply.Reply;
 import codesquad.codestagram.domain.reply.ReplyService;
 import codesquad.codestagram.domain.user.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/articles")
@@ -37,7 +40,9 @@ public class ArticleController {
                               Model model) {
         Article article = articleService.findArticle(id);
         model.addAttribute("article", article);
-        model.addAttribute("replies", replyService.findRepliesByArticle(id));
+
+        List<Reply> repliesByArticle = replyService.findRepliesByArticle(id);
+        model.addAttribute("replies", repliesByArticle);
 
         return "article/view";
     }
