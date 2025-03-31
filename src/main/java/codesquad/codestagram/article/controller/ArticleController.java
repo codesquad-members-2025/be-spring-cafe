@@ -25,7 +25,6 @@ public class ArticleController {
 
     @PostMapping("/articles")
     public String create(@ModelAttribute ArticleRequest request) {
-        System.out.println("rrrrrequest" + request.toString());
         articleService.create(request);
         return "redirect:/";
     }
