@@ -67,7 +67,7 @@ public class Article {
         content = articleForm.getContent();
     }
 
-    public void delete() {
+    public void softDelete() {
         deleted = true;
     }
 

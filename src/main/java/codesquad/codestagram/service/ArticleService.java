@@ -47,7 +47,7 @@ public class ArticleService {
 
     @Transactional
     public void delete(Article article) {
-        article.delete();
+        article.softDelete();
     }
 
     @Transactional
