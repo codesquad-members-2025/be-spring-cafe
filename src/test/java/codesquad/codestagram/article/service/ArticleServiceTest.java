@@ -1,9 +1,7 @@
 package codesquad.codestagram.article.service;
 
 import codesquad.codestagram.article.domain.Article;
-import codesquad.codestagram.article.repository.impl.MemoryArticleRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import codesquad.codestagram.article.repository.ArticleRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,18 +15,7 @@ import static org.assertj.core.api.Assertions.*;
 public class ArticleServiceTest {
 
     ArticleService articleService;
-    MemoryArticleRepository repository;
-
-    @BeforeEach
-    void setUp() {
-        this.repository = new MemoryArticleRepository();
-        this.articleService = new ArticleService(repository);
-    }
-
-    @AfterEach
-    void tearDown() {
-        repository.clearStore();
-    }
+    ArticleRepository repository;
 
     @Test
     @DisplayName("질문 등록 후 동일한 id로 조회하면 등록된 질문 정보를 반환해야 한다.")
@@ -39,11 +26,11 @@ public class ArticleServiceTest {
                 "제목",
                 "내용"
         );
-        article.setArticleId(100000L);
+        article.setId(100000L);
 
         // when: Article 객체 등록, 조회
         articleService.create(article);
-        Article findArticle = articleService.findArticle(article.getArticleId());
+        Article findArticle = articleService.findArticle(article.getId());
 
         // then: 테스트용 Article 객체와 조회된 객체는 같아야 한다.
         assertThat(article).isEqualTo(findArticle);
@@ -58,12 +45,12 @@ public class ArticleServiceTest {
                 "제목",
                 "내용"
         );
-        article.setArticleId(100000L);
+        article.setId(100000L);
 
         // when: 저장되지 않은 테스트용 Article의 아이디를 통해 조회할 때
         // then: IllegalStateException이 발생해야 함
         assertThatThrownBy(
-                () -> articleService.findArticle(article.getArticleId())
+                () -> articleService.findArticle(article.getId())
         ).isInstanceOf(NoSuchElementException.class);
     }
     @Test

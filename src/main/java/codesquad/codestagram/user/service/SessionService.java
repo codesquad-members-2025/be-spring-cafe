@@ -14,7 +14,9 @@ public class SessionService {
     }
 
     public void logout(HttpSession session) {
-        session.removeAttribute(USER_SESSION_KEY);
+        // 로그아웃할 때 remove말고 invalide 하자
+//        session.removeAttribute(USER_SESSION_KEY);
+        session.invalidate();
     }
 
     public User getLoggedInUser(HttpSession session) {

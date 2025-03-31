@@ -2,7 +2,6 @@ package codesquad.codestagram.user.service;
 
 import codesquad.codestagram.user.domain.User;
 import codesquad.codestagram.user.dto.SignUpRequest;
-import codesquad.codestagram.user.dto.UserUpdateRequest;
 import codesquad.codestagram.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,10 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
-@Transactional
 public class UserService {
 
     public static final  String USER_NOT_FOUND = "존재하지 않는 회원입니다.";
@@ -25,6 +22,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     public User join(SignUpRequest request) {
         validateDuplicateUserId(request.userId());
 //        validatePassword(request.password());
@@ -39,8 +37,8 @@ public class UserService {
         );
     }
 
-    public User findUser(Long seq) {
-        return userRepository.findBySeq(seq).orElseThrow(
+    public User findUser(Long id) {
+        return userRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException(USER_NOT_FOUND)
         );
     }
@@ -48,13 +46,15 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public boolean verifyPassword(Long userSeq, String inputPassword) {
-        User user = findUser(userSeq);
+    public boolean verifyPassword(Long id, String inputPassword) {
+        User user = findUser(id);
         return inputPassword.equals(user.getPassword());
     }
+
+    @Transactional
     public User updateUser(User updatedUser) {
 
-        User findUser = findUser(updatedUser.getSeq());
+        User findUser = findUser(updatedUser.getId());
 
         if (updatedUser.getPassword().equals(findUser.getPassword())) {
             throw new IllegalArgumentException("새 비밀번호가 현재 비밀번호와 동일합니다. 다른 비밀번호를 입력해주세요.");

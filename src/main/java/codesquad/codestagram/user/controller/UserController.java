@@ -48,15 +48,15 @@ public class UserController {
         return "user/list";
     }
 
-    @GetMapping("/{userSeq}")
-    public String showUserProfile(@PathVariable Long userSeq, Model model) {
-        User user = userService.findUser(userSeq);
+    @GetMapping("/{id}")
+    public String showUserProfile(@PathVariable Long id, Model model) {
+        User user = userService.findUser(id);
         model.addAttribute("user", user);
         return "user/profile";
     }
 
-    @GetMapping("/{userSeq}/verify")
-    public String verifyPasswordForm(@PathVariable Long userSeq,
+    @GetMapping("/{id}/verify")
+    public String verifyPasswordForm(@PathVariable Long id,
                                      HttpSession session,
                                      Model model) {
 
@@ -65,20 +65,20 @@ public class UserController {
             return "redirect:/users/login";
         }
 
-        User findUser = userService.findUser(userSeq);
+        User findUser = userService.findUser(id);
 
-        if (!loggedInUser.getSeq().equals(findUser.getSeq()) || !userSeq.equals(findUser.getSeq())) {
+        if (!loggedInUser.getId().equals(findUser.getId()) || !id.equals(findUser.getId())) {
             model.addAttribute("errorMessage", "다른 사용자의 정보는 수정할 수 없습니다.");
             return "error";
         }
 
-        userService.findUser(userSeq);
-        model.addAttribute("seq", userSeq);
+        userService.findUser(id);
+        model.addAttribute("id", id);
         return "user/passwordVerifyForm";
     }
 
-    @PostMapping("/{userSeq}/verify-password")
-    public String verifyPassword(@PathVariable Long userSeq,
+    @PostMapping("/{id}/verify-password")
+    public String verifyPassword(@PathVariable Long id,
                                  @RequestParam String password,
                                  HttpSession session,
                                  Model model,
@@ -89,28 +89,28 @@ public class UserController {
             return "redirect:/users/login";
         }
 
-        User findUser = userService.findUser(userSeq);
+        User findUser = userService.findUser(id);
 
-        if (!loggedInUser.getSeq().equals(findUser.getSeq()) || !userSeq.equals(findUser.getSeq())) {
+        if (!loggedInUser.getId().equals(findUser.getId()) || !id.equals(findUser.getId())) {
             model.addAttribute("errorMessage", "다른 사용자의 정보는 수정할 수 없습니다.");
             return "error";
         }
         try {
-            boolean isVerified = userService.verifyPassword(userSeq, password);
+            boolean isVerified = userService.verifyPassword(id, password);
 
             if (isVerified) {
-                return "redirect:/users/" + userSeq + "/form";
+                return "redirect:/users/" + id + "/form";
             }
             redirectAttributes.addFlashAttribute("errorMessage", "비밀번호가 일치하지 않습니다.");
-            return "redirect:/users/" + userSeq + "/verify";
+            return "redirect:/users/" + id + "/verify";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/users/" + userSeq + "/verify";
+            return "redirect:/users/" + id + "/verify";
         }
     }
 
-    @GetMapping("/{userSeq}/form")
-    public String updateUserProfileForm(@PathVariable Long userSeq,
+    @GetMapping("/{id}/form")
+    public String updateUserProfileForm(@PathVariable Long id,
                                         Model model,
                                         HttpSession session) {
         User loggedInUser = sessionService.getLoggedInUser(session);
@@ -118,21 +118,21 @@ public class UserController {
             return "redirect:/users/login";
         }
 
-        User findUser = userService.findUser(userSeq);
+        User findUser = userService.findUser(id);
 
-        if (!loggedInUser.getSeq().equals(findUser.getSeq()) || !userSeq.equals(findUser.getSeq())) {
+        if (!loggedInUser.getId().equals(findUser.getId()) || !id.equals(findUser.getId())) {
             model.addAttribute("errorMessage", "다른 사용자의 정보는 수정할 수 없습니다.");
             return "error";
         }
 
-        User user = userService.findUser(userSeq);
+        User user = userService.findUser(id);
         model.addAttribute("user", user);
         return "user/updateForm";
     }
 
 
-    @PutMapping("/{userSeq}")
-    public String update(@PathVariable Long userSeq,
+    @PutMapping("/{id}")
+    public String update(@PathVariable Long id,
                          @ModelAttribute UserUpdateRequest request,
                          HttpSession session,
                          Model model,
@@ -142,26 +142,26 @@ public class UserController {
         if (loggedInUser == null) {
             return "redirect:/users/login";
         }
-        User findUser = userService.findUser(userSeq);
+        User findUser = userService.findUser(id);
 
-        if (!loggedInUser.getSeq().equals(findUser.getSeq()) || !userSeq.equals(findUser.getSeq())) {
+        if (!loggedInUser.getId().equals(findUser.getId()) || !id.equals(findUser.getId())) {
             model.addAttribute("errorMessage", "다른 사용자의 정보는 수정할 수 없습니다.");
             return "error";
         }
 
         try {
-            userService.updateUser(request.toEntity(userSeq));
+            userService.updateUser(request.toEntity(id));
 
-            User updatedUser = userService.findUser(userSeq);
+            User updatedUser = userService.findUser(id);
             sessionService.login(session, updatedUser);
 
             return "redirect:/users";
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/users/" + userSeq + "/form";
+            return "redirect:/users/" + id + "/form";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "회원정보 수정 중 오류가 발생했습니다: " + e.getMessage());
-            return "redirect:/users/" + userSeq + "/form";
+            return "redirect:/users/" + id + "/form";
         }
     }
 }

@@ -1,9 +1,6 @@
 package codesquad.codestagram.article.repository;
 
 import codesquad.codestagram.article.domain.Article;
-import codesquad.codestagram.article.repository.impl.MemoryArticleRepository;
-import codesquad.codestagram.user.domain.User;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,12 +14,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DisplayName("MemoryArticleRepository: 질문 관리 기능 테스트")
 public class MemoryArticleRepositoryTest {
 
-    MemoryArticleRepository repository = new MemoryArticleRepository();
-
-    @AfterEach
-    void tearDown() {
-        repository.clearStore();
-    }
+    ArticleRepository repository;
 
     @Test
     @DisplayName("새로운 Article 객체가 저장되면 동일한 객체를 조회할 수 있어야 한다.")
@@ -33,13 +25,13 @@ public class MemoryArticleRepositoryTest {
                 "제목",
                 "내용"
         );
-        article.setArticleId(100000L);
+        article.setId(100000L);
 
         // when: Article 객체 저장
         repository.save(article);
 
         // then: 저장된 객체와 조회된 객체가 동일해야 함.
-        Article findArticle = repository.findById(article.getArticleId()).orElseThrow(
+        Article findArticle = repository.findById(article.getId()).orElseThrow(
                 () -> new IllegalStateException("존재하지 않는 질문입니다.")
         );
 
@@ -56,12 +48,12 @@ public class MemoryArticleRepositoryTest {
                 "내용"
         );
 
-        article.setArticleId(100000L);
+        article.setId(100000L);
 
         // when: 저장되지 않은 테스트용 Article의 아이디를 통해 조회할 때
         // then: IllegalStateException이 발생해야 함
         assertThatThrownBy(
-                () -> repository.findById(article.getArticleId()).orElseThrow(
+                () -> repository.findById(article.getId()).orElseThrow(
                     () -> new NoSuchElementException("존재하지 않는 질문입니다.")
                 )
         ).isInstanceOf(NoSuchElementException.class);

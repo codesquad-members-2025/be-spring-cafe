@@ -8,7 +8,7 @@ public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String writer;
+    private User writer;
     private String title;
     private String content;
 

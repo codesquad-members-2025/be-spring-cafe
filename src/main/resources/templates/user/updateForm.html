@@ -20,7 +20,7 @@
                 오류 메시지
             </div>
 
-            <form name="question" method="post" th:action="@{/users/{seq}(seq=${user.seq})}">
+            <form name="question" method="post" th:action="@{/users/{id}(id=${user.id})}">
                 <!-- PUT 메소드 지정을 위한 hidden input -->
                 <input type="hidden" name="_method" value="put" />
 

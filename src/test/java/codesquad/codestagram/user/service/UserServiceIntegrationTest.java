@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.*;
@@ -52,11 +50,11 @@ class UserServiceIntegrationTest {
                 "testName1",
                 "testEmail1"
         );
-        user.setSeq(10000000000L);
+        user.setId(10000000000L);
 
         // when: 저장되지 않은 테스트용 User의 아이디를 통해 조회할 때
         // then: NoSuchElementException 예외가 터져야 함.
-        assertThatThrownBy(() -> userService.findUser(user.getSeq()))
+        assertThatThrownBy(() -> userService.findUser(user.getId()))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("존재하지 않는 회원입니다.");
     }

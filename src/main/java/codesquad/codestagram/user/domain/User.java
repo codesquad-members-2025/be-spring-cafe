@@ -8,12 +8,14 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+    private Long id;
 
     private String userId;
     private String password;
     private String name;
     private String email;
+
+
 
     public User(String userId, String password, String name, String email) {
         this.userId = userId;
@@ -26,8 +28,8 @@ public class User {
 
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
     public String getUserId() {
@@ -46,8 +48,8 @@ public class User {
         return password;
     }
 
-    public void setSeq(Long seq) {
-        this.seq = seq;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setPassword(String password) {

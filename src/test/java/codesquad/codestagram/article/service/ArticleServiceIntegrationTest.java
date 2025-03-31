@@ -2,18 +2,12 @@ package codesquad.codestagram.article.service;
 
 import codesquad.codestagram.article.domain.Article;
 import codesquad.codestagram.article.repository.ArticleRepository;
-import codesquad.codestagram.article.repository.impl.MemoryArticleRepository;
-import codesquad.codestagram.user.domain.User;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,12 +51,12 @@ class ArticleServiceIntegrationTest {
                 "제목",
                 "내용"
         );
-        article.setArticleId(100000L);
+        article.setId(100000L);
 
         // when: 저장되지 않은 테스트용 Article의 아이디를 통해 조회할 때
         // then: NoSuchElementException이 발생해야 함
         assertThatThrownBy(
-                () -> articleService.findArticle(article.getArticleId())
+                () -> articleService.findArticle(article.getId())
         ).isInstanceOf(NoSuchElementException.class);
     }
     /*@Test

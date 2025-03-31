@@ -79,7 +79,7 @@
                 <li th:if="${session.LOGGED_IN_USER == null}"><a href="/users/join" role="button">회원가입</a></li>
                 <li th:if="${session.LOGGED_IN_USER != null}"><a href="/users/logout" role="button">로그아웃</a></li>
                 <li th:if="${session.LOGGED_IN_USER != null}">
-                    <a th:href="@{/users/{seq}/verify(seq=${session.LOGGED_IN_USER.seq})}" role="button">개인정보수정</a>
+                    <a th:href="@{/users/{id}/verify(id=${session.LOGGED_IN_USER.id})}" role="button">개인정보수정</a>
                 </li>
             </ul>
         </div>
