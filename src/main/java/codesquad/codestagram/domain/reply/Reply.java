@@ -1,5 +1,6 @@
 package codesquad.codestagram.domain.reply;
 
+import codesquad.codestagram.domain.user.User;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,13 +11,14 @@ public class Reply {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
     private Long articleId;
     private String content;
     private boolean deleted;
 
-    public Reply(Long userId, Long articleId, String content) {
-        this.userId = userId;
+    public Reply(User user, Long articleId, String content) {
+        this.user = user;
         this.articleId = articleId;
         this.content = content;
         this.deleted = false;
@@ -29,8 +31,8 @@ public class Reply {
         return id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
     public Long getArticleId() {
@@ -54,7 +56,7 @@ public class Reply {
     }
 
     public boolean isSameWriter(Long userId) {
-        return this.userId.equals(userId);
+        return this.user.getId().equals(userId);
     }
 
     public boolean isSameArticle(Long articleId) {

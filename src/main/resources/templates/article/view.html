@@ -52,10 +52,10 @@
                     <li class="list-group-item" th:each="reply : ${replies}">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <strong th:text="${reply.userId}">작성자</strong>
+                                <strong th:text="${reply.user.getName()}">작성자</strong>
 <!--                                <small th:text="${#dates.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</small>-->
                             </div>
-                            <div th:if="${session.sessionedUser.getId() == reply.userId}">
+                            <div th:if="${session.sessionedUser.getId() == reply.user.id}">
                                 <form th:action="@{/articles/{articleId}/replies/{replyId}(articleId=${article.id}, replyId=${reply.id})}"
                                       method="post" style="display: inline;">
                                     <input type="hidden" name="_method" value="DELETE" />

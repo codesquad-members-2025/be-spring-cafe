@@ -25,7 +25,7 @@ public class ReplyService {
         if (!articleRepository.existsById(articleId)) {
             throw new ReplyNotFoundException("게시물이 존재하지 않습니다.");
         }
-        Reply reply = new Reply(user.getId(), articleId, content);
+        Reply reply = new Reply(user, articleId, content);
 
         return replyRepository.save(reply);
     }
@@ -39,7 +39,7 @@ public class ReplyService {
     public void deleteReply(Long replyId, User user) {
         Reply reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new ReplyNotFoundException("댓글을 찾을 수 없습니다."));
-        if (!reply.getUserId().equals(user.getId())) {
+        if (!reply.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException("자신이 작성한 댓글만 삭제할 수 있습니다.");
         }
 
