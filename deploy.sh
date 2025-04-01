@@ -64,7 +64,7 @@ else
 fi
 
 # Search for the built jar file
-JAR_FILE=$(find build/libs -type f -name "*.jar" | head -n 1)
+JAR_FILE=$(find build/libs -type f -name "*.jar" ! -name "*plain.jar" | head -n 1)
 if [ -z "$JAR_FILE" ]; then
   echo "빌드된 jar 파일을 찾을 수 없습니다."
   exit 1
