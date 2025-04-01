@@ -21,6 +21,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/user/form")
+    public String showJoinForm() {
+        return "user/form";
+    }
+
     @PostMapping("/user/create")
     public String create(
             @RequestParam("userId") String userId,
