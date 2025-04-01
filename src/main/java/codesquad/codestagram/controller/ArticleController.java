@@ -3,11 +3,11 @@ package codesquad.codestagram.controller;
 
 import codesquad.codestagram.dto.RequestArticleDto;
 import codesquad.codestagram.service.ArticleService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -21,6 +21,14 @@ public class ArticleController {
         this.articleService = articleService;
     }
 
+    @GetMapping("/articles")
+    public String getArticleForm(HttpSession session){
+        if(session == null){
+            return "user/login";
+        }
+        return "qna/form.html";
+    }
+
     @PostMapping("/articles")
     public String writeArticle(@ModelAttribute RequestArticleDto requestArticle) {
         articleService.save(requestArticle);
@@ -31,14 +39,16 @@ public class ArticleController {
     public String showArticleEditForm(@PathVariable Long userId,
                                       @PathVariable Long articleId,
                                       Model model,
-                                      HttpSession session) {
+                                      HttpSession session,
+                                      RedirectAttributes redirectAttributes) {
         User loginUser = (User) session.getAttribute("loginUser");
         if(loginUser.getId().equals(userId)){
             model.addAttribute("article", articleService.findById(articleId));
             return "article/edit";
         }
 
-        return "redirect:/";
+        redirectAttributes.addFlashAttribute("errorMessage", "본인이 작성한 글만 수정할 수 있습니다.");
+        return "redirect:/articles/" + articleId;
     }
 
     @PutMapping("/articles/{articleId}")
@@ -49,7 +59,9 @@ public class ArticleController {
     }
 
     @DeleteMapping("/articles/{articleId}")
-    public String deleteArticle(@PathVariable Long articleId, HttpSession session){
+    public String deleteArticle(@PathVariable Long articleId,
+                                HttpSession session,
+                                RedirectAttributes redirectAttributes){
         Article article = articleService.findById(articleId);
         User loginUser = (User) session.getAttribute("loginUser");
 
@@ -58,18 +70,10 @@ public class ArticleController {
             return "redirect:/";
         }
 
-        return "redirect:/";
+        redirectAttributes.addFlashAttribute("errorMessage", "본인이 작성한 글만 삭제할 수 있습니다.");
+        return "redirect:/articles/" + articleId;
     }
 
-
-    @GetMapping("/articles")
-    public String getArticleForm(HttpServletRequest request){
-        HttpSession session = request.getSession(false);
-        if(session == null){
-            return "user/login";
-        }
-        return "qna/form.html";
-    }
 
     @GetMapping("/")
     public String showArticles(Model model){
