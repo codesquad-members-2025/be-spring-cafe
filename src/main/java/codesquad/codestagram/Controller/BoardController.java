@@ -40,9 +40,6 @@ public class BoardController {
         List<Board> boards = boardService.getAllBoards();
 
         log.info("현재 저장된 게시글 개수: {}",  boards.size());
-        for (Board b : boards) {
-            log.debug("게시글 제목: {}, 작성자: {}", b.getTitle(), b.getWriter());
-        }
 
         model.addAttribute("boards", boards);
 

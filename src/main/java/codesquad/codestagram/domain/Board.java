@@ -9,20 +9,21 @@ public class Board {
     private Long boardId;
     private String title;
     private String content;
-    private String writer;
-    //아직 로그인 기능 없음 -> writer만 저장
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User writer;
 
     protected Board() { //JPA는 엔티티 클래스를 reflection을 통해 인스턴스화 할때 기본 생성자(파라미터가 없는 생성자) 사용
     }
 
-    public Board(String title, String content, String writer) {
+    public Board(String title, String content) {
         this.title = title;
         this.content = content;
-        this.writer = writer;
     }
 
     public static Board form(BoardForm form) {
-        return new Board(form.getTitle(), form.getContent(), form.getWriter());
+        return new Board(form.getTitle(), form.getContent());
     }
 
     public Long getBoardId() {
@@ -49,11 +50,4 @@ public class Board {
         this.content = content;
     }
 
-    public String getWriter() {
-        return writer;
-    }
-
-    public void setWriter(String writer) {
-        this.writer = writer;
-    }
 }
