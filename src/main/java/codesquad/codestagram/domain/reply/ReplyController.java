@@ -1,12 +1,16 @@
 package codesquad.codestagram.domain.reply;
 
 import codesquad.codestagram.common.constants.SessionConstants;
+import codesquad.codestagram.domain.reply.dto.ReplyResponseDto;
 import codesquad.codestagram.domain.user.User;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestController
 @RequestMapping("/articles/{articleId}/replies")
 public class ReplyController {
 
@@ -14,6 +18,16 @@ public class ReplyController {
 
     public ReplyController(ReplyService replyService) {
         this.replyService = replyService;
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<ReplyResponseDto>> getReplies(@PathVariable Long articleId) {
+        List<ReplyResponseDto> replies = replyService.findRepliesByArticle(articleId)
+                .stream()
+                .map(ReplyResponseDto::of)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(replies);
     }
 
     @PostMapping("")
