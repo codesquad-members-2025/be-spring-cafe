@@ -1,20 +1,26 @@
 package codesquad.codestagram.domain.article;
 
 import codesquad.codestagram.common.constants.SessionConstants;
+import codesquad.codestagram.domain.reply.Reply;
+import codesquad.codestagram.domain.reply.ReplyService;
 import codesquad.codestagram.domain.user.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/articles")
 public class ArticleController {
 
     private final ArticleService articleService;
+    private final ReplyService replyService;
 
-    public ArticleController(ArticleService articleService) {
+    public ArticleController(ArticleService articleService, ReplyService replyService) {
         this.articleService = articleService;
+        this.replyService = replyService;
     }
 
     // 게시물 생성
@@ -23,28 +29,27 @@ public class ArticleController {
                              @RequestParam String content,
                              HttpSession session) {
         User user = (User) session.getAttribute(SessionConstants.USER_SESSION_KEY);
-        articleService.createArticle(title, content, user);
+        Article savedArticle = articleService.createArticle(title, content, user);
 
-        return "redirect:/";
+        return "redirect:/articles/" + savedArticle.getId();
     }
 
     // 게시물 상세 조회
     @GetMapping("{id}")
-    public String viewArticle(@PathVariable Long id, Model model) {
+    public String viewArticle(@PathVariable Long id,
+                              Model model) {
         Article article = articleService.findArticle(id);
         model.addAttribute("article", article);
+
+        List<Reply> repliesByArticle = replyService.findRepliesByArticle(id);
+        model.addAttribute("replies", repliesByArticle);
 
         return "article/view";
     }
 
     // 게시물 작성 폼
     @GetMapping("write")
-    public String writeArticle(HttpSession session) {
-        User user = (User) session.getAttribute(SessionConstants.USER_SESSION_KEY);
-        if (user == null) {
-            return "redirect:/auth/login";
-        }
-
+    public String writeArticle() {
         return "article/form";
     }
 

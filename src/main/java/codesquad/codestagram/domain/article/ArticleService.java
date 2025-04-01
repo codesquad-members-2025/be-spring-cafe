@@ -2,40 +2,41 @@ package codesquad.codestagram.domain.article;
 
 import codesquad.codestagram.domain.article.exception.ArticleNotFoundException;
 import codesquad.codestagram.domain.auth.exception.UnauthorizedException;
+import codesquad.codestagram.domain.reply.Reply;
+import codesquad.codestagram.domain.reply.ReplyRepository;
 import codesquad.codestagram.domain.user.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
-@Transactional
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
+    private final ReplyRepository replyRepository;
 
-    public ArticleService(ArticleRepository articleRepository) {
+    public ArticleService(ArticleRepository articleRepository, ReplyRepository replyRepository) {
         this.articleRepository = articleRepository;
+        this.replyRepository = replyRepository;
     }
 
+    @Transactional
     public Article createArticle(String title, String content, User currentUser) {
-        if (currentUser == null) {
-            throw new UnauthorizedException("로그인이 필요합니다.");
-        }
-
         Article article = new Article(currentUser.getId(), title, content);
+
         return articleRepository.save(article);
     }
 
+    @Transactional(readOnly = true)
     public Article findArticle(Long id) {
         return articleRepository.findById(id)
                 .orElseThrow(() -> new ArticleNotFoundException("게시물을 찾을 수 없습니다."));
     }
 
     // 로그인 여부, 게시물 존재, 작성자 일치 여부를 검증 후 게시물 반환
+    @Transactional(readOnly = true)
     public Article getAuthorizedArticle(Long id, User currentUser) {
-        if (currentUser == null) {
-            throw new UnauthorizedException("로그인이 필요합니다.");
-        }
-
         Article article = findArticle(id);
         if (!article.isSameWriter(currentUser.getId())) {
             throw new UnauthorizedException("본인이 작성한 글만 수정할 수 있습니다.");
@@ -44,6 +45,7 @@ public class ArticleService {
         return article;
     }
 
+    @Transactional
     public Article updateArticle(Long id, String title, String content, User currentUser) {
         Article article = getAuthorizedArticle(id, currentUser);
         article.setTitle(title);
@@ -52,9 +54,30 @@ public class ArticleService {
         return article;
     }
 
+    @Transactional
     public void deleteArticle(Long id, User currentUser) {
         Article article = getAuthorizedArticle(id, currentUser);
-        articleRepository.delete(article);
+        List<Reply> replies = replyRepository.findByArticleIdAndDeletedFalse(id);
+
+        // 댓글이 존재하는 경우
+        if (!replies.isEmpty()) {
+            boolean allRepliesBySameAuthor = replies.stream()
+                    .allMatch(reply -> reply.isSameWriter(currentUser.getId()));
+
+            if (!allRepliesBySameAuthor) {
+                throw new UnauthorizedException("작성자 외 댓글이 있어 삭제할 수 없습니다.");
+            }
+
+            // 댓글 삭제 처리
+            for (Reply reply : replies) {
+                reply.delete();
+            }
+
+            replyRepository.saveAll(replies);
+        }
+
+        // 게시글 삭제 처리
+        article.delete();
     }
 
 }
