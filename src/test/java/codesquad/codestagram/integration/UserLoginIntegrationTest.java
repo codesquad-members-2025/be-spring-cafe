@@ -113,7 +113,7 @@ public class UserLoginIntegrationTest {
 
         mockMvc.perform(get("/users/edit/{id}", user.getId()).session(session2))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/users/login"));
+                .andExpect(redirectedUrl("/users/list"));
     }
 
 
