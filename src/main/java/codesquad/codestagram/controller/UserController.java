@@ -1,6 +1,7 @@
 package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.User;
+import codesquad.codestagram.exception.UserNotFoundException;
 import codesquad.codestagram.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,7 @@ public class UserController {
     @GetMapping("/user/{userId}")
     public String profile(@PathVariable("userId") String userId, Model model) {
         User user = userService.findOneUser(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+                .orElseThrow(() -> new UserNotFoundException(userId));
         model.addAttribute("user", user);
         return "user/profile";
     }
