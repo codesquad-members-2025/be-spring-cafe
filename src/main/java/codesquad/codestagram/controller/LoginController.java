@@ -27,7 +27,7 @@ public class LoginController {
                         BindingResult bindingResult,
                         HttpSession session){
 
-        if(bindingResult.hasErrors()){
+      if(bindingResult.hasErrors()){
             return "user/login";
         }
 
@@ -38,9 +38,8 @@ public class LoginController {
             return "user/login";
         }
 
+
         session.setAttribute(SessionConst.LOGIN_USER, user);
-
-
         return "redirect:/";
     }
 
