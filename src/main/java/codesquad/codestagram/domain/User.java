@@ -26,7 +26,7 @@ public class User {
         return new User(form.getLoginId(), form.getName(), form.getPassword(), form.getEmail());
     }
 
-    public User() {
+    protected User() {
 
     }
 

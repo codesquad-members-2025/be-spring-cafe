@@ -94,11 +94,7 @@ public class UserServiceIntegrationTest {
     @DisplayName("비밀번호 틀리면 회원 수정 실패 테스트")
     void 회원정보_수정_실패_비밀번호틀림() {
         // Given
-        User user = new User();
-        user.setLoginId("brie822");
-        user.setName("브리");
-        user.setPassword("123456");
-        user.setEmail("brie822@email.com");
+        User user = new User("brie822", "브리", "123456", "brie822@email.com");
         userService.join(user);
 
         Optional<User> optional = userService.findByLoginId("brie822");
