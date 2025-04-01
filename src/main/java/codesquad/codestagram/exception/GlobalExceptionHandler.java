@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public String handleNotFound(IllegalArgumentException e, Model model, HttpServletResponse response) {
         response.setStatus(404); // 404 에러
-        log.error("사용자 오류 발생", e);
+        log.error("오류 발생", e);
         model.addAttribute("errorMessage", e.getMessage());
         return "error/404"; // templates/error/404.html 렌더링
     }
@@ -25,6 +25,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     public String handleStaticResourceError(NoResourceFoundException e, Model model, HttpServletResponse response) {
         response.setStatus(404);
+        log.error("오류 발생", e);
         model.addAttribute("errorMessage", "요청하신 리소스를 찾을 수 없습니다.");
         return "error/404";
     }
@@ -32,7 +33,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public String handleGeneric(Exception e, Model model, HttpServletResponse response) {
         response.setStatus(500); // 500 에러
-        log.error("서버 내부 오류 발생", e);
+        log.error("오류 발생", e);
         model.addAttribute("errorMessage", "서버 내부 오류가 발생했습니다.");
         return "error/500";
     }

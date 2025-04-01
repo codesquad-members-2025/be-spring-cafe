@@ -25,11 +25,6 @@ public class BoardController {
         this.boardService = boardService;
     }
 
-    //게시판 폼으로 이동
-    @GetMapping("/boards/new")
-    public String newBoardForm() {
-        return "qna/form";
-    }
 
     @PostMapping("/boards/create")
     public String createBoard(@ModelAttribute BoardForm form) {
@@ -42,8 +37,6 @@ public class BoardController {
 
     @GetMapping("/")
     public String listBoards(Model model) {
-        log.info("/ 요청 도착!");
-
         List<Board> boards = boardService.getAllBoards();
 
         log.info("현재 저장된 게시글 개수: {}",  boards.size());
