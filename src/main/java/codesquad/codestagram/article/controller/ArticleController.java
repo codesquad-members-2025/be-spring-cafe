@@ -150,7 +150,7 @@ public class ArticleController {
         Long loggedInUserId = sessionService.getLoggedInUserId(session);
         if (loggedInUserId == null) {
             return "redirect:/users/login";
-        }   
+        }
 
         try {
             Article article = articleService.findArticle(id);
