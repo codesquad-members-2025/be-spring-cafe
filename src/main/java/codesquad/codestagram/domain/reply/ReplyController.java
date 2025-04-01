@@ -1,6 +1,7 @@
 package codesquad.codestagram.domain.reply;
 
 import codesquad.codestagram.common.constants.SessionConstants;
+import codesquad.codestagram.domain.reply.dto.ReplyRequestDto;
 import codesquad.codestagram.domain.reply.dto.ReplyResponseDto;
 import codesquad.codestagram.domain.user.User;
 import jakarta.servlet.http.HttpSession;
@@ -31,23 +32,22 @@ public class ReplyController {
     }
 
     @PostMapping("")
-    public String addReply(@PathVariable Long articleId,
-                           @RequestParam String content,
-                           HttpSession session) {
+    public ResponseEntity<ReplyResponseDto> addReply(@PathVariable Long articleId,
+                                                     @RequestBody ReplyRequestDto replyRequestDto,
+                                                     HttpSession session) {
         User user = (User) session.getAttribute(SessionConstants.USER_SESSION_KEY);
-        replyService.addReply(articleId, user, content);
+        Reply newReply = replyService.addReply(articleId, user, replyRequestDto.content());
 
-        return "redirect:/articles/" + articleId;
+        return ResponseEntity.ok(ReplyResponseDto.of(newReply));
     }
 
     @DeleteMapping("{replyId}")
-    public String deleteReply(@PathVariable Long articleId,
-                              @PathVariable Long replyId,
-                              HttpSession session) {
+    public ResponseEntity<Void> deleteReply(@PathVariable Long replyId,
+                                            HttpSession session) {
         User user = (User) session.getAttribute(SessionConstants.USER_SESSION_KEY);
         replyService.deleteReply(replyId, user);
 
-        return "redirect:/articles/" + articleId;
+        return ResponseEntity.ok().build();
     }
 
 }
