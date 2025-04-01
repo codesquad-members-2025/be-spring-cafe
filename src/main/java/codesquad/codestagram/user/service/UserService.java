@@ -3,7 +3,6 @@ package codesquad.codestagram.user.service;
 import codesquad.codestagram.user.domain.User;
 import codesquad.codestagram.user.dto.SignUpRequest;
 import codesquad.codestagram.user.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,9 +64,7 @@ public class UserService {
 
         String newPassword = updatedUser.getPassword().isEmpty() ? findUser.getPassword() : updatedUser.getPassword();
 
-        findUser.setPassword(newPassword);
-        findUser.setName(updatedUser.getName());
-        findUser.setEmail(updatedUser.getEmail());
+        findUser.updateUser(newPassword, updatedUser.getName(), updatedUser.getEmail());
 
         return userRepository.save(findUser);
     }

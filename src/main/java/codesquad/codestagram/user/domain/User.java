@@ -52,20 +52,10 @@ public class User {
         this.id = id;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void updateUser(String newPassword, String newName, String newEmail) {
+        this.password = newPassword;
+        this.name = newName;
+        this.email = newEmail;
     }
 
 }
