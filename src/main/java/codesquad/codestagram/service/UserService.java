@@ -19,11 +19,11 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public List<User> getUserList() {
+    public List<User> findUserList() {
         return userRepository.findAll();
     }
 
-    public User getUser(Long id) {
+    public User findUser(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
     }
 
@@ -39,7 +39,7 @@ public class UserService {
         return true;
     }
 
-    public User authenticate(String loginId, String password) {
+    public User authenticateUser(String loginId, String password) {
         User findUser = userRepository.findByLoginId(loginId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이디입니다."));
 

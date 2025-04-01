@@ -24,7 +24,7 @@ public class UserController {
     }
 
     @PostMapping
-    public String signup(@ModelAttribute User user, RedirectAttributes redirectAttributes) {
+    public String registerUser(@ModelAttribute User user, RedirectAttributes redirectAttributes) {
 
         try {
             userService.createUser(user);
@@ -37,17 +37,17 @@ public class UserController {
     }
 
     @GetMapping
-    public String viewUserList(Model model) {
-        List<User> users = userService.getUserList();
+    public String getUserList(Model model) {
+        List<User> users = userService.findUserList();
         model.addAttribute("users", users);
         return "user/list";
     }
 
     @GetMapping("/{id}")
-    public String viewUserProfile(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+    public String getUser(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
 
         try {
-            User user = userService.getUser(id);
+            User user = userService.findUser(id);
             model.addAttribute("user", user);
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
@@ -57,13 +57,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}/form")
-    public String viewUpdateForm(@PathVariable("id") Long id, Model model, HttpSession session
+    public String getUpdateForm(@PathVariable("id") Long id, Model model, HttpSession session
         , RedirectAttributes redirectAttributes) {
 
         User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
 
         try {
-            User findUser = userService.getUser(id);
+            User findUser = userService.findUser(id);
 
             if (loginUser.getId() != findUser.getId()) { //URL을 직접 입력해서 타인의 회원정보를 수정할 경우
                 throw new IllegalArgumentException("사용자 ID가 일치하지 않습니다.");
@@ -93,18 +93,18 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String loginId, @RequestParam String password, HttpSession session
+    public String loginUser(@RequestParam String loginId, @RequestParam String password, HttpSession session
         , RedirectAttributes redirectAttributes) {
 
         try {
-            User findUser = userService.authenticate(loginId, password);
+            User loginUser = userService.authenticateUser(loginId, password);
 
-            if (findUser == null) {
-                redirectAttributes.addFlashAttribute("message", "비밀번호가 틀렸습니다.");
+            if (loginUser == null) {
+                redirectAttributes.addFlashAttribute("message", "비밀번호가 일치하지 않습니다.");
                 return "redirect:/users/loginForm";
             }
 
-            session.setAttribute(SESSION_LOGIN_USER, findUser);
+            session.setAttribute(SESSION_LOGIN_USER, loginUser);
             return "redirect:/";
 
         } catch (IllegalArgumentException e) {
@@ -115,7 +115,7 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public String logout(HttpSession session) {
+    public String logoutUser(HttpSession session) {
         if (session != null) {
             session.invalidate();
         }
