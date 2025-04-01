@@ -31,6 +31,13 @@ public class ArticleService {
         articleRepository.save(article);
     }
 
+    public void edit(Long articleId, RequestArticleDto requestArticleDto) {
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 게시글을 찾을 수 없습니다."));
+        article.setTitle(requestArticleDto.getTitle());
+        article.setContents(requestArticleDto.getContents());
+    }
+
     public List<Article> findAll() {
         return articleRepository.findAll();
     }

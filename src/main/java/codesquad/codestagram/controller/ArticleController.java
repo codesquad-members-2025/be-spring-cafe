@@ -27,6 +27,28 @@ public class ArticleController {
         return "redirect:/";
     }
 
+    @GetMapping("/articles/edit/{userId}/{articleId}")
+    public String showArticleEditForm(@PathVariable Long userId,
+                                      @PathVariable Long articleId,
+                                      Model model,
+                                      HttpSession session) {
+        User loginUser = (User) session.getAttribute("loginUser");
+        if(loginUser.getId().equals(userId)){
+            model.addAttribute("article", articleService.findById(articleId));
+            return "article/edit";
+        }
+
+        return "redirect:/";
+    }
+
+    @PutMapping("/articles/{articleId}")
+    public String editArticle(@ModelAttribute RequestArticleDto editArticleInfo,
+                              @PathVariable Long articleId) {
+        articleService.edit(articleId, editArticleInfo);
+        return "redirect:/";
+    }
+
+
     @GetMapping("/articles")
     public String getArticleForm(HttpServletRequest request){
         HttpSession session = request.getSession(false);
@@ -51,6 +73,8 @@ public class ArticleController {
         model.addAttribute("article", article);
         return "article/show";
     }
+
+
 
 
 }
