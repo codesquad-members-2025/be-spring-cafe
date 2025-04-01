@@ -33,11 +33,7 @@ public class BoardController {
 
     @PostMapping("/boards/create")
     public String createBoard(@ModelAttribute BoardForm form) {
-
-        Board board = new Board();
-        board.setTitle(form.getTitle());
-        board.setContent(form.getContent());
-        board.setWriter(form.getWriter());
+        Board board = Board.form(form);
 
         boardService.writeBoard(board);
         return "redirect:/"; //메인 페이지로 이동

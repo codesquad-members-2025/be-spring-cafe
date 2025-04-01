@@ -1,5 +1,6 @@
 package codesquad.codestagram.domain;
 
+import codesquad.codestagram.dto.BoardForm;
 import jakarta.persistence.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -11,6 +12,16 @@ public class Board {
     private String content;
     private String writer;
     //아직 로그인 기능 없음 -> writer만 저장
+
+    public Board(String title, String content, String writer) {
+        this.title = title;
+        this.content = content;
+        this.writer = writer;
+    }
+
+    public static Board form(BoardForm form) {
+        return new Board(form.getTitle(), form.getContent(), form.getWriter());
+    }
 
     public Long getBoardId() {
         return boardId;

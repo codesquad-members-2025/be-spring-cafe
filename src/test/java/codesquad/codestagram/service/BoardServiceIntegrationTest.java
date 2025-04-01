@@ -29,10 +29,7 @@ public class BoardServiceIntegrationTest {
     @DisplayName("게시글 작성 테스트")
     void 게시글_작성() {
         //given
-        Board board = new Board();
-        board.setTitle("게시글");
-        board.setContent("게시글 작성 테스트");
-        board.setWriter("브리");
+        Board board = new Board("게시글", "게시글 작성 테스트", "브리");
 
         //when
         Board savedBoard = boardService.writeBoard(board);
@@ -47,15 +44,8 @@ public class BoardServiceIntegrationTest {
     @DisplayName("게시글 여러개 생성 테스트 -> ")
     void 게시글_여러개_생성() {
         //given
-        Board board1 = new Board();
-        board1.setTitle("첫 글");
-        board1.setContent("내용1");
-        board1.setWriter("a");
-
-        Board board2 = new Board();
-        board2.setTitle("두 번째 글");
-        board2.setContent("내용2");
-        board2.setWriter("b");
+        Board board1 = new Board("첫 글", "내용1", "a");
+        Board board2 = new Board("두 번째 글", "내용2", "b");
 
         boardService.writeBoard(board1);
         boardService.writeBoard(board2);
@@ -69,10 +59,8 @@ public class BoardServiceIntegrationTest {
     @DisplayName("게시글 조회 테스트")
     void 게시글_ID조회() {
         // Given
-        Board board = new Board();
-        board.setTitle("게시글");
-        board.setContent("게스글 조회 테스트");
-        board.setWriter("브리");
+        Board board = new Board("게시글", "게시글 작성 테스트", "브리");
+
 
         Board saved = boardService.writeBoard(board);
         Long id = saved.getBoardId();

@@ -27,11 +27,7 @@ public class UserServiceIntegrationTest {
     @DisplayName("회원가입이 정삭적으로 되는지 테스트.")
     public void 회원가입() throws Exception {
         //Given
-        User user = new User();
-        user.setLoginId("brie822");
-        user.setName("브리");
-        user.setPassword("123456");
-        user.setEmail("brie822@gmail.com");
+        User user = new User("brie822", "브리", "123456", "brie822@gmail.com");
 
         // When
         boolean success = userService.join(user);
@@ -51,11 +47,8 @@ public class UserServiceIntegrationTest {
     @DisplayName("중복 loginId로 회원가입 하면 예외 발생하는지 테스트.")
     void 죽복_회원_예외() {
         //given
-        User user1 = new User();
-        user1.setLoginId("gyuwon");
-
-        User user2 = new User();
-        user2.setLoginId("gyuwon");
+        User user1 = new User("gyuwon", null, null, null);
+        User user2 = new User("gyuwon", null, null, null);
 
         // When
         boolean firstJoin = userService.join(user1);
@@ -71,11 +64,7 @@ public class UserServiceIntegrationTest {
     @DisplayName("회원 정보 수정 테스트")
     void 회원정보_수정_성공() {
         // Given
-        User user = new User();
-        user.setLoginId("brie822");
-        user.setName("브리");
-        user.setPassword("123456");
-        user.setEmail("brie822@email.com");
+        User user = new User("brie822", "브리", "123456", "brie822@email.com");
         userService.join(user);
 
         Optional<User> optional = userService.findByLoginId("brie822");
