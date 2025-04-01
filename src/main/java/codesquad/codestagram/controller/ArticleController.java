@@ -2,7 +2,7 @@ package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.User;
-import codesquad.codestagram.repository.ArticleRepository;
+import codesquad.codestagram.service.ArticleService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,53 +16,69 @@ public class ArticleController {
 
     private static final String SESSION_LOGIN_USER = "loginUser";
 
-    private final ArticleRepository articleRepository;
+    private final ArticleService articleService;
 
-    public ArticleController(ArticleRepository articleRepository) {
-        this.articleRepository = articleRepository;
+    public ArticleController(ArticleService articleService) {
+        this.articleService = articleService;
     }
 
     @GetMapping("/")
-    public String viewMain(Model model) {
-        List<Article> articles = articleRepository.findAll();
+    public String getArticles(Model model) {
+        List<Article> articles = articleService.findArticleList();
         model.addAttribute("articles", articles);
         return "main";
     }
 
     @GetMapping("/article")
-    public String viewArticleForm(HttpSession session) {
+    public String getArticleForm(HttpSession session) {
         return "article/write";
     }
 
     @PostMapping("/article")
-    public String writeArticle(@ModelAttribute Article article, HttpSession session) {
+    public String createArticle(@ModelAttribute Article article, HttpSession session) {
         User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
         article.setUser(loginUser);
-        articleRepository.save(article);
+        articleService.saveArticle(article);
         return "redirect:/";
     }
 
     @GetMapping("/article/{id}")
-    public String viewArticle(@PathVariable("id") Long id, Model model, HttpSession session) {
-        Article article = articleRepository.findById(id).orElseThrow();
-        model.addAttribute("article", article);
-        return "article/detail";
-    }
+    public String getArticle(@PathVariable("id") Long id, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
 
-    @GetMapping("/article/{id}/form")
-    public String viewUpdateForm(@PathVariable("id") Long id, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
-        User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
+        try {
+            Article article = articleService.findArticle(id);
+            model.addAttribute("article", article);
+            return "article/detail";
 
-        Article article = articleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
-
-        if (loginUser.getId() != article.getUser().getId()) {
-            redirectAttributes.addFlashAttribute("alertMessage", "작성자 ID와 사용자 ID가 일치하지 않습니다.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("alertMessage", e.getMessage());
             return "redirect:/";
         }
 
-        model.addAttribute("article", article);
+    }
 
-        return "article/updateForm";
+    @GetMapping("/article/{id}/form")
+    public String getArticleUpdateForm(@PathVariable("id") Long id, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
+
+        try {
+            Article article = articleService.findArticle(id);
+
+            if (loginUser.getId() != article.getUser().getId()) {
+                redirectAttributes.addFlashAttribute("alertMessage", "작성자 ID와 사용자 ID가 일치하지 않습니다.");
+                return "redirect:/article/" + id;
+            }
+
+            model.addAttribute("article", article);
+            return "article/updateForm";
+
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("alertMessage", e.getMessage());
+            return "redirect:/";
+        }
+
+
+
     }
 
     @PutMapping("/article/{id}/update")
@@ -70,15 +86,13 @@ public class ArticleController {
         , RedirectAttributes redirectAttributes) {
         User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
 
-        Article findArticle = articleRepository.findById(id).orElseThrow();
+        boolean result = articleService.updateArticle(id, article, loginUser);
 
-        if (loginUser.getId() != findArticle.getUser().getId()) {
+        if (!result) {
             redirectAttributes.addFlashAttribute("alertMessage", "작성자 ID와 사용자 ID가 일치하지 않습니다.");
-            return "redirect:/";
+            return "redirect:/article/" + id;
         }
 
-        article.setUser(loginUser);
-        articleRepository.save(article);
         return "redirect:/article/" + id;
     }
 
@@ -86,14 +100,12 @@ public class ArticleController {
     public String deleteArticle(@PathVariable("id") Long id, HttpSession session, RedirectAttributes redirectAttributes) {
         User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
 
-        Article findArticle = articleRepository.findById(id).orElseThrow();
+        boolean result = articleService.removeArticle(id, loginUser);
 
-        if (loginUser.getId() != findArticle.getUser().getId()) {
+        if (!result) {
             redirectAttributes.addFlashAttribute("alertMessage", "작성자 ID와 사용자 ID가 일치하지 않습니다.");
             return "redirect:/article/" + id;
         }
-
-        articleRepository.deleteById(id);
 
         redirectAttributes.addFlashAttribute("alertMessage", "게시글이 정상적으로 삭제되었습니다.");
         return "redirect:/";
