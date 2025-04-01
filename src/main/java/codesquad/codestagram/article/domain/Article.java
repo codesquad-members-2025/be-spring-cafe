@@ -2,6 +2,9 @@ package codesquad.codestagram.article.domain;
 
 import codesquad.codestagram.user.domain.User;
 import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.time.LocalDateTime;
 
 @Entity
 public class Article {
@@ -16,10 +19,14 @@ public class Article {
     private String title;
     private String content;
 
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
     public Article(User writer, String title, String content) {
         this.writer = writer;
         this.title = title;
         this.content = content;
+        this.createdAt = LocalDateTime.now();
     }
 
     public Article() {
@@ -40,6 +47,10 @@ public class Article {
 
     public String getContent() {
         return content;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     public void updateArticle(String title, String content) {
