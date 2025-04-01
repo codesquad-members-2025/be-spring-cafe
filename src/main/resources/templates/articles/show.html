@@ -4,15 +4,78 @@
     <meta charset="UTF-8">
     <title>게시글 상세</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const textarea = document.getElementById("replyContent");
+        $(document).ready(function() {
+            $("#submitReply").click(function() {
+                const content = $("#replyContent").val();
+                const articleId = [[${article.id}]];
 
-            // 입력 이벤트 발생 시 높이 자동 조정
-            textarea.addEventListener("input", function () {
-                this.style.height = "auto"; // 높이를 초기화
-                this.style.height = this.scrollHeight + "px"; // 내용에 맞게 높이 조정
+                if (!content.trim()) {
+                    alert("댓글 내용을 입력해주세요.");
+                    return;
+                }
+
+                $.ajax({
+                    url: `/api/reply/${articleId}`,
+                    type: "POST",
+                    data: { content: content },
+                    success: function(response) {
+                        $("#replyContent").val(''); // 입력 필드 초기화
+                        if (response && response.content) {
+                            updateRepliesUI([response]); // 새 댓글 바로 추가
+                        } else {
+                            alert("댓글 추가에 실패했습니다.");
+                        }
+                    },
+                    error: function(xhr) {
+                        alert("댓글 등록에 실패했습니다.");
+                    }
+                });
             });
+
+            function updateRepliesUI(replies) {
+                const replyContainer = $(".reply-container");
+
+                if (!Array.isArray(replies)) {
+                    replies = [replies]; // 단일 객체도 배열로 변환
+                }
+
+                replies.forEach(function(reply) {
+
+                    const sessionUserId = [[${session.sessionedUser != null ? session.sessionedUser.userId : ''}]];
+                    const isAuthor = String(sessionUserId) === String(reply.userId);
+
+                    let replyHtml = `
+            <div class="reply-item">
+                <p class="reply-content">${reply.content}</p>
+                <p class="reply-meta">
+                    <span>${reply.userId}</span>
+                    <span>${formatDate(reply.createdAt)}</span>
+                </p>`;
+
+                    if (isAuthor) {
+                        replyHtml += `
+                <div class="form-actions">
+                    <form action="/article/${reply.articleId}/reply/${reply.id}" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-primary">수정</button>
+                    </form>
+                    <form action="/article/${reply.articleId}/reply/${reply.id}" method="post" style="display: inline;">
+                        <input type="hidden" name="_method" value="delete">
+                        <button type="submit" class="btn btn-danger">삭제</button>
+                    </form>
+                </div>`;
+                    }
+
+                    replyHtml += `</div>`;
+                    replyContainer.append(replyHtml);
+                });
+            }
+
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toISOString().replace("T", " ").slice(0, 16);
+            }
         });
     </script>
     <style>
@@ -51,37 +114,10 @@
             color: #666;
             text-align: right;
         }
-
-        .article-meta span {
-            margin-left: 15px;
-        }
-
-
-        .form-actions {
-            margin-top: 20px;
-            display: flex;  /* 버튼을 가로로 나열 */
-            justify-content: flex-end;  /* 버튼들을 오른쪽으로 정렬 */
-            gap: 1rem;  /* 버튼들 간의 간격 */
-        }
-
-        .form-actions a, .form-actions button {
-            min-width: 100px;  /* 버튼 최소 너비 설정 */
-        }
-
-        .home-link {
-            background-color: #6c757d;
-            color: white;
-            margin-left: 10px;
-        }
-
-        .home-link:hover {
-            background-color: #5a6268;
-        }
     </style>
 </head>
 <body>
 <div th:replace="~{header.html}"></div>
-
 <main>
     <div class="article-header">
         <h1 class="article-title" th:text="${article.title}"></h1>
@@ -90,59 +126,26 @@
             <span th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
         </div>
     </div>
-
     <div class="form-group">
         <label>내용:</label>
         <div th:text="${article.content}" style="white-space: pre-wrap;"></div>
     </div>
-
-    <!-- 작성자만 수정/삭제 버튼 표시 -->
-    <div th:if="${author}" class="form-actions">
-        <form th:action="@{/articles/{id}/edit(id=${article.id})}" method="get" style="display: inline;">
-            <button type="submit" class="btn btn-primary">수정</button>
-        </form>
-        <form th:action="@{/articles/{id}(id=${article.id})}" method="post" style="display: inline;">
-            <input type="hidden" name="_method" value="delete">
-            <button type="submit" class="btn btn-danger">삭제</button>
-        </form>
-    </div>
-    <!-- 댓글 영역 -->
     <div class="reply-container">
         <h3>댓글</h3>
-        <!-- 댓글 작성자만 수정/삭제 버튼 표시 -->
         <div th:each="reply : ${replies}" class="reply-item">
             <p class="reply-content" th:text="${reply.content}"></p>
             <p class="reply-meta">
                 <span th:text="${reply.user.userId}"></span>
                 <span th:text="${#temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
             </p>
-
-            <div class="form-actions" th:if="${session.sessionedUser.userId == reply.user.userId}">
-                <form th:action="@{/article/{articleId}/reply/{replyId}(articleId=${article.id}, replyId=${reply.id})}" method="post" style="display: inline;">
-                    <button type="submit" class="btn btn-primary">수정</button>
-                </form>
-                <form th:action="@{/article/{articleId}/reply/{replyId}(articleId=${article.id}, replyId=${reply.id})}" method="post" style="display: inline;">
-                    <input type="hidden" name="_method" value="delete"> <!-- DELETE 요청으로 변환 -->
-                    <button type="submit" class="btn btn-danger">삭제</button>
-                </form>
-            </div>
+        </div>
     </div>
-    <div th:if="${#lists.isEmpty(replies)}">
-        <p>아직 댓글이 없습니다.</p>
-    </div>
-
-    <!-- 댓글 작성 폼 추가 -->
     <div class="reply-form">
-        <form th:action="@{/reply/{articleId}(articleId=${article.id})}" method="post">
-            <label for="replyContent">댓글 내용:</label>
-            <textarea id="replyContent" name="content" rows="4" required></textarea>
-            <button type="submit">댓글 작성</button>
-        </form>
+        <textarea id="replyContent" rows="4" required></textarea>
+        <button id="submitReply">댓글 작성</button>
     </div>
-
     <a href="/" class="home-link">홈으로</a>
 </main>
-
 <div th:replace="~{footer.html}"></div>
 </body>
 </html>
