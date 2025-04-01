@@ -96,8 +96,8 @@ public class ArticleController {
             Article article = articleService.findArticle(id);
 
             if (!article.getWriter().getId().equals(loggedInUserId)) {
-                redirectAttributes.addFlashAttribute("errorMessage", "본인의 게시글만 수정할 수 있습니다.");
-                return "redirect:/articles/" + id;
+                model.addAttribute("errorMessage", "본인의 게시글만 수정할 수 있습니다.");
+                return "error";
             }
             model.addAttribute("article", article);
             return "qna/updateForm";
@@ -145,6 +145,7 @@ public class ArticleController {
     @DeleteMapping("/articles/{id}")
     public String delete(@PathVariable Long id,
                          HttpSession session,
+                         Model model,
                          RedirectAttributes redirectAttributes) {
 
         Long loggedInUserId = sessionService.getLoggedInUserId(session);
@@ -156,8 +157,8 @@ public class ArticleController {
             Article article = articleService.findArticle(id);
 
             if (!article.getWriter().getId().equals(loggedInUserId)) {
-                redirectAttributes.addFlashAttribute("errorMessage", "본인의 게시글만 삭제할 수 있습니다.");
-                return "redirect:/articles/" + id;
+                model.addAttribute("errorMessage", "본인의 게시글만 삭제할 수 있습니다.");
+                return "error";
             }
 
             articleService.delete(id);
