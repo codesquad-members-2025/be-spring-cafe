@@ -48,10 +48,6 @@ public class User {
         return password;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public void updateUser(String newPassword, String newName, String newEmail) {
         this.password = newPassword;
         this.name = newName;
