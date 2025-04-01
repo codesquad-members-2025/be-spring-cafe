@@ -22,6 +22,7 @@ public class ArticleController {
     public static final String REDIRECT_JOIN = "redirect:/users/join";
     public static final String REDIRECT_HOME = "redirect:/";
     public static final String ERROR = "error";
+    public static final String ERROR_MESSAGE = "errorMessage";
 
 
 
@@ -58,7 +59,7 @@ public class ArticleController {
             articleService.create(request, loggedInUserId);
             return REDIRECT_HOME;
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return REDIRECT_JOIN;
         }
     }
@@ -103,13 +104,13 @@ public class ArticleController {
             Article article = articleService.findArticle(id);
 
             if (!article.getWriter().getId().equals(loggedInUserId)) {
-                model.addAttribute("errorMessage", "본인의 게시글만 수정할 수 있습니다.");
+                model.addAttribute(ERROR_MESSAGE, "본인의 게시글만 수정할 수 있습니다.");
                 return ERROR;
             }
             model.addAttribute("article", article);
             return "qna/updateForm";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return REDIRECT_HOME;
         }
     }
@@ -130,7 +131,7 @@ public class ArticleController {
             Article article = articleService.findArticle(id);
 
             if (!article.getWriter().getId().equals(loggedInUserId)) {
-                model.addAttribute("errorMessage", "본인의 게시글만 수정할 수 있습니다.");
+                model.addAttribute(ERROR_MESSAGE, "본인의 게시글만 수정할 수 있습니다.");
                 return ERROR;
             }
 
@@ -138,10 +139,10 @@ public class ArticleController {
             return "redirect:/articles/" + id;
 
         } catch (IllegalArgumentException | NoSuchElementException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return "redirect:/articles/" + id + "/form";
         }  catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "질문 수정 중 오류가 발생했습니다: " + e.getMessage());
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "질문 수정 중 오류가 발생했습니다: " + e.getMessage());
             return "redirect:/articles/" + id + "/form";
         }
     }
@@ -161,14 +162,14 @@ public class ArticleController {
             Article article = articleService.findArticle(id);
 
             if (!article.getWriter().getId().equals(loggedInUserId)) {
-                model.addAttribute("errorMessage", "본인의 게시글만 삭제할 수 있습니다.");
+                model.addAttribute(ERROR_MESSAGE, "본인의 게시글만 삭제할 수 있습니다.");
                 return ERROR;
             }
 
             articleService.delete(id);
             return REDIRECT_HOME;
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return REDIRECT_HOME;
         }
     }

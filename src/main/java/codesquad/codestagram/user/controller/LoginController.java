@@ -14,8 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
-import static codesquad.codestagram.article.controller.ArticleController.REDIRECT_HOME;
-import static codesquad.codestagram.article.controller.ArticleController.REDIRECT_LOGIN;
+import static codesquad.codestagram.article.controller.ArticleController.*;
 
 
 @Controller
@@ -46,7 +45,7 @@ public class LoginController {
             sessionService.login(session, user.getId());
             return REDIRECT_HOME;
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return REDIRECT_LOGIN;
         }
     }

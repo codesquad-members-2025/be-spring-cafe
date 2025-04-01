@@ -40,7 +40,7 @@ public class UserController {
 
             return REDIRECT_HOME;
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
 
             return REDIRECT_JOIN;
         }
@@ -74,7 +74,7 @@ public class UserController {
         User findUser = userService.findById(id);
 
         if (!loggedInUserId.equals(findUser.getId()) || !id.equals(findUser.getId())) {
-            model.addAttribute("errorMessage", "다른 사용자의 정보는 수정할 수 없습니다.");
+            model.addAttribute(ERROR_MESSAGE, "다른 사용자의 정보는 수정할 수 없습니다.");
             return ERROR;
         }
 
@@ -98,7 +98,7 @@ public class UserController {
         User findUser = userService.findById(id);
 
         if (!loggedInUserId.equals(findUser.getId()) || !id.equals(findUser.getId())) {
-            model.addAttribute("errorMessage", "다른 사용자의 정보는 수정할 수 없습니다.");
+            model.addAttribute(ERROR_MESSAGE, "다른 사용자의 정보는 수정할 수 없습니다.");
             return ERROR;
         }
         try {
@@ -107,10 +107,10 @@ public class UserController {
             if (isVerified) {
                 return "redirect:/users/" + id + "/form";
             }
-            redirectAttributes.addFlashAttribute("errorMessage", "비밀번호가 일치하지 않습니다.");
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "비밀번호가 일치하지 않습니다.");
             return "redirect:/users/" + id + "/verify";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return "redirect:/users/" + id + "/verify";
         }
     }
@@ -127,7 +127,7 @@ public class UserController {
         User findUser = userService.findById(id);
 
         if (!loggedInUserId.equals(findUser.getId()) || !id.equals(findUser.getId())) {
-            model.addAttribute("errorMessage", "다른 사용자의 정보는 수정할 수 없습니다.");
+            model.addAttribute(ERROR_MESSAGE, "다른 사용자의 정보는 수정할 수 없습니다.");
             return ERROR;
         }
 
@@ -151,7 +151,7 @@ public class UserController {
         User findUser = userService.findById(id);
 
         if (!loggedInUserId.equals(findUser.getId()) || !id.equals(findUser.getId())) {
-            model.addAttribute("errorMessage", "다른 사용자의 정보는 수정할 수 없습니다.");
+            model.addAttribute(ERROR_MESSAGE, "다른 사용자의 정보는 수정할 수 없습니다.");
             return ERROR;
         }
 
@@ -159,14 +159,11 @@ public class UserController {
             userService.updateUser(id, request);
 
             return "redirect:/users";
-        } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/users/" + id + "/form";
-        } catch (NoSuchElementException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (IllegalArgumentException | NoSuchElementException e) {
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return "redirect:/users/" + id + "/form";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "회원정보 수정 중 오류가 발생했습니다: " + e.getMessage());
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "회원정보 수정 중 오류가 발생했습니다: " + e.getMessage());
             return "redirect:/users/" + id + "/form";
         }
     }
