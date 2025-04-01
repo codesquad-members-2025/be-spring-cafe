@@ -4,6 +4,9 @@ IMAGE_NAME=my-app
 CONTAINER_NAME=my-app-container
 H2_DATA_DIR=/home/ec2-user/h2-data
 
+echo "📁 H2 데이터 디렉토리 준비 중..."
+mkdir -p $H2_DATA_DIR
+
 echo "🚀 Docker 이미지 빌드 중..."
 docker build -t $IMAGE_NAME .
 
