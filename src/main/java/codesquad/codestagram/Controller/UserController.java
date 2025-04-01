@@ -2,6 +2,7 @@ package codesquad.codestagram.Controller;
 
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.UserForm;
+import codesquad.codestagram.exception.ResourceNotFoundException;
 import codesquad.codestagram.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,12 +89,12 @@ public class UserController {
     public String updateForm(@PathVariable("id") Long id, HttpSession session,Model model, RedirectAttributes redirectAttributes) {
         if (!isAuthorized(session, id, redirectAttributes)) {
             return "redirect:/users/login";
-        } else {
-            Optional<User> userOptional = userService.findOne(id);
-            model.addAttribute("user", userOptional.get());
-            return "user/updateForm";
         }
-        //실제 사용자 존재 여부 확인 필요? 없을 수 가 있나?
+        User user = userService.findOne(id)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 사용자가 존재하지 않습니다."));
+
+        model.addAttribute("user", user);
+        return "user/updateForm";
     }
 
     @PutMapping("/users/{id}/update")
@@ -117,6 +118,14 @@ public class UserController {
         }
         return "redirect:/users/profile";
 
+    }
+
+    @GetMapping("/users/{loginId}")
+    public String viewUserProfile(@PathVariable("loginId") String loginId, Model model) {
+        User user = userService.findByLoginId(loginId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 사용자가 존재하지 않습니다. loginId=" + loginId));
+        model.addAttribute("user", user);
+        return "user/profile";
     }
 
     //인증/인가 로직인 웹 계층(controller)에서 처리하는 것이 좋음

@@ -2,6 +2,7 @@ package codesquad.codestagram.Controller;
 
 import codesquad.codestagram.domain.Board;
 import codesquad.codestagram.dto.BoardForm;
+import codesquad.codestagram.exception.ResourceNotFoundException;
 import codesquad.codestagram.service.BoardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,8 +63,10 @@ public class BoardController {
      */
     @GetMapping("/boards/{boardId}")
     public String showBoard(@PathVariable("boardId") Long boardId, Model model) {
-        boardService.getBoardById(boardId)
-                .ifPresent(board -> model.addAttribute("board", board));
+        Board board = boardService.getBoardById(boardId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 게시글이 존재하지 않습니다. id=" + boardId));
+
+        model.addAttribute("board", board);
         return "qna/show"; // 게시글 상세 화면 (qna/show.html)
     }
 }
