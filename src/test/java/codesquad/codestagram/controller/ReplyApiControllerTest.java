@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -78,6 +79,7 @@ class ReplyApiControllerTest {
         Article article = new Article("title", "testContent", user);
         Reply mockReply = new Reply("content", article, user);
 
+        ReflectionTestUtils.setField(article, "id", 1L);
         session.setAttribute(SESSIONED_USER, user);
         given(authService.checkLogin(session)).willReturn(false);
         given(articleService.findArticleById(1L)).willReturn(article);
@@ -91,7 +93,7 @@ class ReplyApiControllerTest {
         //then
         result.andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").value("content"))
-                .andExpect(jsonPath("$.article.title").value("title"))
-                .andExpect(jsonPath("$.user.userId").value("testUser"));
+                .andExpect(jsonPath("$.articleId").value("1"))
+                .andExpect(jsonPath("$.userId").value("testUser"));
     }
 }

@@ -1,11 +1,11 @@
 package codesquad.codestagram.controller;
 
 import static codesquad.codestagram.controller.AuthController.SESSIONED_USER;
-import static codesquad.codestagram.controller.UserController.ERROR_MESSAGE;
 
 import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.Reply;
 import codesquad.codestagram.domain.User;
+import codesquad.codestagram.dto.ReplyDto;
 import codesquad.codestagram.service.ArticleService;
 import codesquad.codestagram.service.AuthService;
 import codesquad.codestagram.service.ReplyService;
@@ -42,7 +42,6 @@ public class ReplyApiController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
         Reply savedReply = replyService.addReply(content, findArticle, user);
-
-        return ResponseEntity.ok(savedReply);
+        return ResponseEntity.ok(ReplyDto.AddReplyResponseDto.ReplyToDto(savedReply));
     }
 }
