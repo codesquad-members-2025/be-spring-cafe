@@ -9,13 +9,11 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Controller
 public class ArticleController {
@@ -38,6 +36,7 @@ public class ArticleController {
 
         return "qna/form";
     }
+
     @PostMapping("/articles")
     public String create(@ModelAttribute ArticleRequest request,
                          HttpSession session,
@@ -83,5 +82,63 @@ public class ArticleController {
         }
     }
 
+    @GetMapping("/articles/{id}/form")
+    public String updateForm(@PathVariable Long id,
+                             Model model,
+                             HttpSession session,
+                             RedirectAttributes redirectAttributes) {
+        Long loggedInUserId = sessionService.getLoggedInUserId(session);
+        if (loggedInUserId == null) {
+            return "redirect:/users/login";
+        }
 
+        try {
+            Article article = articleService.findArticle(id);
+
+            if (!article.getWriter().getId().equals(loggedInUserId)) {
+                redirectAttributes.addFlashAttribute("errorMessage", "본인의 게시글만 수정할 수 있습니다.");
+                return "redirect:/articles/" + id;
+            }
+            model.addAttribute("article", article);
+            return "qna/updateForm";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/";
+        }
+    }
+
+    @PutMapping("/articles/{id}")
+    public String updateArticle(@PathVariable Long id,
+                                ArticleRequest request,
+                                Model model,
+                                HttpSession session,
+                                RedirectAttributes redirectAttributes) {
+        Long loggedInUserId = sessionService.getLoggedInUserId(session);
+        if (loggedInUserId == null) {
+            return "redirect:/users/login";
+        }
+
+        try {
+
+            Article article = articleService.findArticle(id);
+
+            if (!article.getWriter().getId().equals(loggedInUserId)) {
+                redirectAttributes.addFlashAttribute("errorMessage", "본인의 게시글만 수정할 수 있습니다.");
+                return "redirect:/article/" + id;
+            }
+
+            articleService.updateArticle(id, request);
+            return "redirect:/articles/" + id;
+
+        } catch (NoSuchElementException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/articles/" + id + "/form";
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/articles/" + id + "/form";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "질문 수정 중 오류가 발생했습니다: " + e.getMessage());
+            return "redirect:/articles/" + id + "/form";
+        }
+    }
 }

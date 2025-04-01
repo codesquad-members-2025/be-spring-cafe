@@ -42,8 +42,9 @@ public class Article {
         return content;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void updateArticle(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 }
 

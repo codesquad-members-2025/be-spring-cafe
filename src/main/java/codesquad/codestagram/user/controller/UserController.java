@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Controller
 @RequestMapping("/users")
@@ -155,11 +156,11 @@ public class UserController {
         try {
             userService.updateUser(request.toEntity(id));
 
-            User updatedUser = userService.findById(id);
-            sessionService.login(session, updatedUser.getId());
-
             return "redirect:/users";
         } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/users/" + id + "/form";
+        } catch (NoSuchElementException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/users/" + id + "/form";
         } catch (Exception e) {

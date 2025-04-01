@@ -17,6 +17,8 @@ import static codesquad.codestagram.user.service.UserService.USER_NOT_FOUND;
 @Service
 public class ArticleService {
 
+    public static final String NOT_FOUND_ARTICLE = "존재하지 않는 게시글입니다.";
+
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
 
@@ -46,8 +48,28 @@ public class ArticleService {
 
     public Article findArticle(Long id) {
         return articleRepository.findById(id).orElseThrow(
-                () -> new NoSuchElementException("존재하지 않는 질문입니다.")
+                () -> new NoSuchElementException(NOT_FOUND_ARTICLE)
         );
     }
 
+    @Transactional
+    public void updateArticle(Long id, ArticleRequest request) {
+        Article article = articleRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException(NOT_FOUND_ARTICLE)
+        );
+
+        validateArticle(request.title(), request.contents());
+
+        article.updateArticle(request.title(), request.contents());
+    }
+
+    private void validateArticle(String title, String contents) {
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("제목을 입력해주세요");
+        }
+
+        if (contents == null || contents.trim().isEmpty()) {
+            throw new IllegalArgumentException("내용을 입력해주세요");
+        }
+    }
 }
