@@ -90,4 +90,54 @@ public class UserController {
         return "redirect:/users/" + userId;
     }
 
+    // 회원 탈퇴 확인 페이지
+    @GetMapping("/{userId}/delete")
+    public String showDeleteConfirmation(@PathVariable("userId") Long userId, Model model, HttpSession session) {
+        User loginUser = (User) session.getAttribute("loginUser");
+
+        // 로그인 확인
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
+
+        // 본인 확인 (본인만 탈퇴 가능)
+        if (!loginUser.getId().equals(userId)) {
+            return "redirect:/users";
+        }
+
+        model.addAttribute("userId", userId);
+        return "user/delete-confirmation";
+    }
+
+    // 회원 탈퇴 처리
+    @PostMapping("/{userId}/delete")
+    public String deleteUser(@PathVariable("userId") Long userId,
+                             @RequestParam("password") String password,
+                             HttpSession session) {
+        User loginUser = (User) session.getAttribute("loginUser");
+
+        // 로그인 확인
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
+
+        // 본인 확인 (본인만 탈퇴 가능)
+        if (!loginUser.getId().equals(userId)) {
+            return "redirect:/users";
+        }
+
+        try {
+            // 비밀번호 확인 후 탈퇴 처리
+            userService.deleteUserWithPasswordCheck(userId, password);
+
+            // 세션 무효화
+            session.invalidate();
+
+            return "redirect:/";
+        } catch (IllegalArgumentException e) {
+            // 비밀번호 불일치 등의 오류 처리
+            return "redirect:/users/" + userId;
+        }
+    }
+
 }

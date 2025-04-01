@@ -23,7 +23,8 @@ public class Article {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content; // 게시글 내용
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "article", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)

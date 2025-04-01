@@ -1,7 +1,10 @@
 package codesquad.codestagram.service;
 
+import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.User;
+import codesquad.codestagram.repository.ArticleRepository;
 import codesquad.codestagram.repository.UserRepositoryV2;
+import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +16,25 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepositoryV2 userRepository;
+    private final ArticleRepository articleRepository;
 
-    public UserService(UserRepositoryV2 userRepository) {
+    private Long defaultUserId;
+
+    public UserService(UserRepositoryV2 userRepository, ArticleRepository articleRepository) {
         this.userRepository = userRepository;
+        this.articleRepository = articleRepository;
+    }
+
+    @PostConstruct
+    public void createDefaultUser() {
+        User defaultUser = new User("탈퇴한 유저", "deleted@example.com", "deleted_user", "deleted_password");
+        userRepository.save(defaultUser);
+        defaultUserId=defaultUser.getId();
+    }
+
+    public User getDefaultUser() {
+        return userRepository.findById(defaultUserId)
+                .orElseThrow(() -> new RuntimeException("Default user not found"));
     }
 
     // 회원 가입
@@ -46,5 +65,24 @@ public class UserService {
         } else {
             throw new IllegalArgumentException("해당 ID의 사용자가 존재하지 않습니다.");
         }
+    }
+
+    public void deleteUserWithPasswordCheck(Long userId, String password) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다. ID: " + userId));
+
+        // 비밀번호 확인
+        if (!user.getPassword().equals(password)) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        User defaultUser = userRepository.findById(defaultUserId).orElseThrow(() -> new IllegalArgumentException(""));
+
+        List<Article> articles = articleRepository.findArticlesByUser(user);
+        for (Article article : articles) {
+            article.setUser(defaultUser);
+        }
+
+        userRepository.delete(user);
     }
 }
