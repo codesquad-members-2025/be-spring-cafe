@@ -10,7 +10,7 @@ public record UserUpdateRequest(
 ) {
     public User toEntity(Long userSeq) {
         User user = new User(userId, password, name, email);
-        user.setSeq(userSeq);
+        user.setId(userSeq);
         return user;
     }
 }

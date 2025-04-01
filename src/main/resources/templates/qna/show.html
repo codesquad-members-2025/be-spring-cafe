@@ -24,7 +24,7 @@
                             <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="#" class="article-author-name" th:text="${article.writer}">kimmunsu</a>
+                            <a href="#" class="article-author-name" th:text="${article.writer.userId}">kimmunsu</a>
                             <a href="#" class="article-header-time" title="퍼머링크">
                                 2015-12-30 01:47
                                 <i class="icon-link"></i>
@@ -38,10 +38,10 @@
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" th:href="@{/articles/{id}/form(id=${article.articleId})}">수정</a>
+                                <a class="link-modify-article" th:href="@{/articles/{id}/form(id=${article.id})}">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" th:action="@{/articles/{id}(id=${article.articleId})}" method="POST">
+                                <form class="form-delete" th:action="@{/articles/{id}(id=${article.id})}" method="POST">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>

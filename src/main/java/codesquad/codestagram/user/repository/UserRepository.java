@@ -1,15 +1,13 @@
 package codesquad.codestagram.user.repository;
 
 import codesquad.codestagram.user.domain.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository {
-    User save(User user);
-    Optional<User> findBySeq(Long seq);
-    List<User> findAll();
-    default User update(User updatedUser){
-        return save(updatedUser);
-    }
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByUserId(String userId);
+
 }

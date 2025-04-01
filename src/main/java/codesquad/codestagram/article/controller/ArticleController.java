@@ -25,8 +25,7 @@ public class ArticleController {
 
     @PostMapping("/articles")
     public String create(@ModelAttribute ArticleRequest request) {
-        articleService.create(request.toEntity());
-
+        articleService.create(request);
         return "redirect:/";
     }
 
@@ -37,9 +36,9 @@ public class ArticleController {
         return "index";
     }
 
-    @GetMapping("/articles/{articleId}")
-    public String showArticle(@PathVariable Long articleId, Model model) {
-        Article article = articleService.findArticle(articleId);
+    @GetMapping("/articles/{id}")
+    public String showArticle(@PathVariable Long id, Model model) {
+        Article article = articleService.findArticle(id);
         model.addAttribute("article", article);
         return "qna/show";
     }

@@ -2,7 +2,6 @@ package codesquad.codestagram.user.service;
 
 import codesquad.codestagram.user.domain.User;
 import codesquad.codestagram.user.dto.SignUpRequest;
-import codesquad.codestagram.user.dto.UserUpdateRequest;
 import codesquad.codestagram.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,8 +11,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
-@Transactional
 public class UserService {
+
+    public static final  String USER_NOT_FOUND = "존재하지 않는 회원입니다.";
 
     private final UserRepository userRepository;
 
@@ -22,28 +22,39 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User join(User user) {
-
-//        validatePassword(user.getPassword());
-        //todo: 중복 회원에 대한 검증 필요
-        return userRepository.save(user);
+    @Transactional
+    public User join(SignUpRequest request) {
+        validateDuplicateUserId(request.userId());
+//        validatePassword(request.password());
+        return userRepository.save(request.toEntity());
     }
 
-    public User findUser(Long seq) {
-        return userRepository.findBySeq(seq).orElseThrow(
-                () -> new NoSuchElementException("존재하지 않는 회원입니다.")
+    private void validateDuplicateUserId(String userId) {
+        userRepository.findByUserId(userId).ifPresent(user ->
+                {
+                    throw new IllegalArgumentException("이미 존재하는 사용자 아이디입니다.");
+                }
+        );
+    }
+
+    public User findUser(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException(USER_NOT_FOUND)
         );
     }
     public List<User> findUsers() {
         return userRepository.findAll();
     }
 
-    public boolean verifyPassword(Long userSeq, String inputPassword) {
-        User user = findUser(userSeq);
+    public boolean verifyPassword(Long id, String inputPassword) {
+        User user = findUser(id);
         return inputPassword.equals(user.getPassword());
     }
+
+    @Transactional
     public User updateUser(User updatedUser) {
-        User findUser = findUser(updatedUser.getSeq());
+
+        User findUser = findUser(updatedUser.getId());
 
         if (updatedUser.getPassword().equals(findUser.getPassword())) {
             throw new IllegalArgumentException("새 비밀번호가 현재 비밀번호와 동일합니다. 다른 비밀번호를 입력해주세요.");
@@ -59,7 +70,7 @@ public class UserService {
         findUser.setName(updatedUser.getName());
         findUser.setEmail(updatedUser.getEmail());
 
-        return userRepository.update(findUser);
+        return userRepository.save(findUser);
     }
 
     private void validatePassword(String password) {
@@ -105,5 +116,15 @@ public class UserService {
         if (!hasSpecialChar) {
             throw new IllegalArgumentException("비밀번호는 최소 하나의 특수 문자를 포함해야 합니다.");
         }
+    }
+
+    public User authenticate(String userId, String password) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 사용자입니다."));
+        if (!user.getPassword().equals(password)) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        return user;
     }
 }

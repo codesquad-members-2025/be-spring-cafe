@@ -22,14 +22,14 @@
                 </thead>
                 <tbody>
                 <tr th:each="user : ${users}">
-                    <th scope="row" th:text="${user.seq}">1</th>
+                    <th scope="row" th:text="${user.id}">1</th>
                     <td>
-                        <a th:href="@{/users/{seq}(seq=${user.seq})}" th:text="${user.userId}"></a>
+                        <a th:href="@{/users/{id}(id=${user.id})}" th:text="${user.userId}"></a>
                     </td>
                     <td th:text="${user.name}">자바지기</td>
                     <td th:text="${user.email}">javajigi@sample.net</td>
                     <td>
-                        <a th:href="@{/users/{seq}/verify(seq=${user.seq})}" class="btn btn-success" role="button">수정</a>
+                        <a th:href="@{/users/{id}/verify(id=${user.id})}" class="btn btn-success" role="button">수정</a>
                     </td>
                 </tr>
                 </tbody>
