@@ -24,7 +24,7 @@
                             <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="#" class="article-author-name" th:text="${article.writer.userId}">kimmunsu</a>
+                            <a href="#" class="article-author-name" th:href="@{/users/{id}(id=${article.writer.id})}" th:text="${article.writer.userId}">kimmunsu</a>
                             <a href="#" class="article-header-time" title="퍼머링크" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}">
                                 2015-12-30 01:47
                                 <i class="icon-link"></i>
