@@ -41,7 +41,7 @@ public class LoginController {
 
         try {
             User user = userService.authenticate(request.userId(), request.password());
-            sessionService.login(session, user);
+            sessionService.login(session, user.getId());
             return "redirect:/";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());

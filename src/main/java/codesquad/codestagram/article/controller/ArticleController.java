@@ -31,8 +31,8 @@ public class ArticleController {
     @GetMapping("/articles/form")
     public String createForm(HttpSession session) {
 
-        User loggedInUser = sessionService.getLoggedInUser(session);
-        if (loggedInUser == null) {
+        Long loggedInUserId = sessionService.getLoggedInUserId(session);
+        if (loggedInUserId == null) {
             return "redirect:/users/login";
         }
 
@@ -43,17 +43,17 @@ public class ArticleController {
                          HttpSession session,
                          RedirectAttributes redirectAttributes) {
 
-        User loggedInUser = sessionService.getLoggedInUser(session);
-        if (loggedInUser == null) {
+        Long loggedInUserId = sessionService.getLoggedInUserId(session);
+        if (loggedInUserId == null) {
             return "redirect:/users/login";
         }
 
-        if (!loggedInUser.getUserId().equals(request.writerId())) {
+        /*if (!loggedInUser.getUserId().equals(request.writerId())) {
             return "error";
-        }
+        }*/
 
         try {
-            articleService.create(request, loggedInUser.getId());
+            articleService.create(request, loggedInUserId);
             return "redirect:/";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
@@ -73,8 +73,8 @@ public class ArticleController {
                               Model model,
                               HttpSession session) {
 
-        User loggedInUser = sessionService.getLoggedInUser(session);
-        if (loggedInUser == null) {
+        Long loggedInUserId = sessionService.getLoggedInUserId(session);
+        if (loggedInUserId == null) {
             return "redirect:/users/login";
         }
 

@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class SessionService {
 
-    private static final String USER_SESSION_KEY = "LOGGED_IN_USER";
+    private static final String USER_ID_SESSION_KEY = "LOGGED_IN_USER_ID";
 
-    public void login(HttpSession session, User user) {
-        session.setAttribute(USER_SESSION_KEY, user);
+    public void login(HttpSession session, Long userId) {
+        session.setAttribute(USER_ID_SESSION_KEY, userId);
     }
 
     public void logout(HttpSession session) {
@@ -19,11 +19,11 @@ public class SessionService {
         session.invalidate();
     }
 
-    public User getLoggedInUser(HttpSession session) {
-        return (User) session.getAttribute(USER_SESSION_KEY);
+    public Long getLoggedInUserId(HttpSession session) {
+        return (Long) session.getAttribute(USER_ID_SESSION_KEY);
     }
 
     public boolean isLoggedIn(HttpSession session) {
-        return session.getAttribute(USER_SESSION_KEY) != null;
+        return session.getAttribute(USER_ID_SESSION_KEY) != null;
     }
 }

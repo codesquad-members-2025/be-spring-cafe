@@ -37,7 +37,7 @@ public class UserService {
         );
     }
 
-    public User findUser(Long id) {
+    public User findById(Long id) {
         return userRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException(USER_NOT_FOUND)
         );
@@ -47,14 +47,14 @@ public class UserService {
     }
 
     public boolean verifyPassword(Long id, String inputPassword) {
-        User user = findUser(id);
+        User user = findById(id);
         return inputPassword.equals(user.getPassword());
     }
 
     @Transactional
     public User updateUser(User updatedUser) {
 
-        User findUser = findUser(updatedUser.getId());
+        User findUser = findById(updatedUser.getId());
 
         if (updatedUser.getPassword().equals(findUser.getPassword())) {
             throw new IllegalArgumentException("새 비밀번호가 현재 비밀번호와 동일합니다. 다른 비밀번호를 입력해주세요.");
