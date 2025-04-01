@@ -14,6 +14,9 @@ public class User {
     private String password;
     private String email; //프로필 페이지에서 필요
 
+    protected User() {
+    }
+
     public User(String loginId, String name, String password, String email) {
         this.loginId = loginId;
         this.name = name;
@@ -26,9 +29,12 @@ public class User {
         return new User(form.getLoginId(), form.getName(), form.getPassword(), form.getEmail());
     }
 
-    protected User() {
-
+    public void updateform(UserForm.UpdateUser update) {
+        this.password = update.getNewPassword();
+        this.name = update.getName();
+        this.email = update.getEmail();
     }
+
 
     public Long getId() {
         return id;

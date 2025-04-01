@@ -1,6 +1,7 @@
 package codesquad.codestagram.service;
 
 import codesquad.codestagram.domain.User;
+import codesquad.codestagram.dto.UserForm;
 import codesquad.codestagram.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -72,13 +73,8 @@ public class UserServiceIntegrationTest {
         Long id = optional.get().getId();
 
         // When
-        boolean result = userService.updateUser(
-                id,
-                "123456", // 현재 비밀번호 일치
-                "abcd",
-                "규원",
-                "brie822@gmail.com"
-        );
+        UserForm.UpdateUser updateDto = new UserForm.UpdateUser("123456", "abcd", "규원", "brie822@gmail.com");
+        boolean result = userService.updateUser(id, updateDto);
 
         // Then
         assertThat(result).isTrue();
@@ -102,7 +98,8 @@ public class UserServiceIntegrationTest {
         Long id = optional.get().getId();
 
         // When
-        boolean result = userService.updateUser(id, "abcd", "abcedf", "브리", "brie822@email.com");
+        UserForm.UpdateUser updateDto = new UserForm.UpdateUser("abcd", "abcedf", "브리", "brie822@email.com");
+        boolean result = userService.updateUser(id, updateDto);
 
         // Then
         assertThat(result).isFalse(); // 수정 실패

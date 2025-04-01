@@ -106,21 +106,16 @@ public class UserController {
 
     @PutMapping("/users/{id}/update")
     public String updateUser(@PathVariable("id") Long id,
-                             @RequestParam("currentPassword") String currentPassword,
-                             @RequestParam("newPassword") String newPassword,
-                             @RequestParam("name") String name,
-                             @RequestParam("email") String email,
+                             @ModelAttribute("updateDto") UserForm.UpdateUser updateDto,
                              HttpSession session,
                              RedirectAttributes redirectAttributes) {
         if (!isAuthorized(session, id, redirectAttributes)) {
             return "redirect:/users/profile";
         }
 
-        boolean result = userService.updateUser(id,currentPassword, newPassword, name,email);
-
-        if (!result) {
+        if (!userService.updateUser(id, updateDto)) {
             log.info("redirecting to /users/edit/{}?error=invalidPassword", id);
-            redirectAttributes.addFlashAttribute("errorMessage", "❗ 비밀번호가 일치하지 않습니다."); //화면으로 메시지 전달
+            redirectAttributes.addFlashAttribute("errorMessage", "❗ 비밀번호가 일치하지 않습니다.");
             return "redirect:/users/edit/" + id;
         }
         return "redirect:/users/profile";
