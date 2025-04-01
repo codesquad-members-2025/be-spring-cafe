@@ -4,7 +4,17 @@
     <meta charset="UTF-8">
     <title>게시글 상세</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const textarea = document.getElementById("replyContent");
 
+            // 입력 이벤트 발생 시 높이 자동 조정
+            textarea.addEventListener("input", function () {
+                this.style.height = "auto"; // 높이를 초기화
+                this.style.height = this.scrollHeight + "px"; // 내용에 맞게 높이 조정
+            });
+        });
+    </script>
     <style>
         .form-group {
             margin-bottom: 15px;
@@ -96,6 +106,40 @@
             <button type="submit" class="btn btn-danger">삭제</button>
         </form>
     </div>
+    <!-- 댓글 영역 -->
+    <div class="reply-container">
+        <h3>댓글</h3>
+        <!-- 댓글 작성자만 수정/삭제 버튼 표시 -->
+        <div th:each="reply : ${replies}" class="reply-item">
+            <p class="reply-content" th:text="${reply.content}"></p>
+            <p class="reply-meta">
+                <span th:text="${reply.user.userId}"></span>
+                <span th:text="${#temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+            </p>
+
+            <div class="form-actions" th:if="${session.sessionedUser.userId == reply.user.userId}">
+                <form th:action="@{/article/{articleId}/reply/{replyId}(articleId=${article.id}, replyId=${reply.id})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-primary">수정</button>
+                </form>
+                <form th:action="@{/article/{articleId}/reply/{replyId}(articleId=${article.id}, replyId=${reply.id})}" method="post" style="display: inline;">
+                    <input type="hidden" name="_method" value="delete"> <!-- DELETE 요청으로 변환 -->
+                    <button type="submit" class="btn btn-danger">삭제</button>
+                </form>
+            </div>
+    </div>
+    <div th:if="${#lists.isEmpty(replies)}">
+        <p>아직 댓글이 없습니다.</p>
+    </div>
+
+    <!-- 댓글 작성 폼 추가 -->
+    <div class="reply-form">
+        <form th:action="@{/reply/{articleId}(articleId=${article.id})}" method="post">
+            <label for="replyContent">댓글 내용:</label>
+            <textarea id="replyContent" name="content" rows="4" required></textarea>
+            <button type="submit">댓글 작성</button>
+        </form>
+    </div>
+
     <a href="/" class="home-link">홈으로</a>
 </main>
 

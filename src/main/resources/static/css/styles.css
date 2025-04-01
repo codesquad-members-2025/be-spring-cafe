@@ -1300,3 +1300,82 @@ h1 {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     animation: fadeIn 0.5s ease-in-out, fadeOut 0.5s ease-in-out 3s forwards;
 }
+.reply-form {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.reply-form textarea {
+    width: 100%;
+    min-height: 30px; /* 기본 높이 */
+    max-height: 150px; /* 최대 높이 */
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    resize: none; /* 사용자가 크기 조정 불가 */
+    overflow: hidden; /* 스크롤바 숨김 */
+}
+
+.reply-form button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.reply-form button:hover {
+    background-color: #0056b3;
+}
+.reply-container {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: left;
+}
+
+.reply-item {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.reply-item:last-child {
+    border-bottom: none;
+}
+
+.reply-content {
+    font-size: 1rem;
+    color: #333;
+}
+
+.reply-meta {
+    font-size: 0.8rem;
+    color: #777;
+}
+.reply-actions {
+    margin-top: 5px;
+    text-align: right;
+}
+
+.reply-actions button {
+    margin-left: 5px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #dc3545; /* Bootstrap danger color */
+    color: white;
+    cursor: pointer;
+}
+
+.reply-actions button:hover {
+    background-color: #c82333;
+}

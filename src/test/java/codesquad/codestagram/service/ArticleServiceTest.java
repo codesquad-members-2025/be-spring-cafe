@@ -1,22 +1,25 @@
 package codesquad.codestagram.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.User;
-import codesquad.codestagram.dto.ArticleDto;
 import codesquad.codestagram.dto.ArticleDto.ArticleRequestDto;
 import codesquad.codestagram.repository.ArticleRepository;
 import codesquad.codestagram.repository.UserRepository;
+import jakarta.servlet.http.HttpSession;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @SpringBootTest
@@ -44,26 +47,6 @@ class ArticleServiceTest {
 
     }
 
-    @Test
-    @DisplayName("글을 작성하면 제목, 내용, 작성자가 저장되어야 한다.")
-    void saveArticleTest() {
-        // Given
-        User user = new User("testUser", "password123", "test", "test@example.com");
-        Article article = new Article("test", "testContent", user);
-
-        given(userRepository.findByUserId("testUser")).willReturn(Optional.of(user));
-        given(articleRepository.findById(1L)).willReturn(Optional.of(article));
-        ArticleDto.ArticleRequestDto requestDto = new ArticleRequestDto("test", "testContent", "testUser");
-
-        // When
-        articleService.saveArticle(requestDto);
-        Article findArticle = articleRepository.findById(1L).get();
-
-        // Then
-        assertThat(findArticle.getTitle()).isEqualTo("test");
-        assertThat(findArticle.getContent()).isEqualTo("testContent");
-        assertThat(findArticle.getUser()).isEqualTo(user);
-    }
 
     @Test
     @DisplayName("게시글 전체 조회시 저장된 모든 글들을 가져와야 한다.")
@@ -76,7 +59,7 @@ class ArticleServiceTest {
         Article article2 = new Article("test2", "content2", user1);
         Article article3 = new Article("test3", "content3", user2);
         List<Article> articleList = List.of(article1, article2, article3);
-        given(articleRepository.findAll()).willReturn(articleList);
+        given(articleRepository.findAllIsNotDeleted()).willReturn(articleList);
 
         //when
         List<Article> articles = articleService.findArticles();
@@ -107,20 +90,7 @@ class ArticleServiceTest {
     }
 
     @Test
-    @DisplayName("게시글 삭제 시 게시글이 존재하지 않는다면 에러가 발생한다.")
-    void deleteArticleErrorTest() {
-        //given
-        given(articleRepository.findById(1L)).willReturn(Optional.empty());
-
-        //when & then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> articleService.delete(1L));
-
-        assertThat(exception.getMessage()).isEqualTo("게시글이 존재하지 않습니다.");
-    }
-
-    @Test
-    @DisplayName("게시글 삭제가 되면 DB에서 조회 되는 경우 에러가 발생한다.")
+    @DisplayName("게시글 삭제가 되면 isDeleted를 true로 바꾼다.")
     void deleteArticleTest() {
         //given
         User user = new User("testUser", "password123", "test", "test@example.com");
@@ -130,13 +100,25 @@ class ArticleServiceTest {
 
         //when
         articleService.delete(1L);
-        given(articleRepository.findById(1L)).willReturn(Optional.empty());
-
+        Article deletedArticle = articleService.findArticleById(1L);
         //then
-        verify(articleRepository).delete(article);
+        assertThat(deletedArticle.isDeleted()).isTrue();
+    }
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> articleService.findArticleById(1L));
-        assertThat(exception.getMessage()).isEqualTo("게시글이 존재하지 않습니다.");
+    @Test
+    @DisplayName("세션의 유저와 게시글의 작성자가 다르면 에러가 발생한다.")
+    void matchArticleAuthorErrorTest() {
+        //given
+        HttpSession mockHttpSession = new MockHttpSession();
+        User user1 = new User("testUser1", "password123", "test", "test@example.com");
+        User user2 = new User("testUser2", "password123", "test", "test@example.com");
+        Article article = new Article("test", "testContent", user1);
+
+        mockHttpSession.setAttribute("sessionedUser", user2);
+
+        //when && then
+        assertThatThrownBy(() -> articleService.matchArticleAuthor(mockHttpSession, article))
+                .isInstanceOf(AccessDeniedException.class)
+                .hasMessage("글의 작성자가 아닙니다.");
     }
 }

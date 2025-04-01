@@ -9,6 +9,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.Optional;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,30 +45,25 @@ public class AuthController {
     }
     @PostMapping("users/sign-in")
     public String signInUser(@RequestParam String userId, @RequestParam String password,
-                             HttpSession httpSession, Model model) {
+                             HttpSession httpSession, Model model, HttpServletResponse response) {
         //아이디와 비밀번호가 일치하는 User가 없으면 에러 출력
         Optional<User> user = userService.getUserForLogin(userId, password);
         if (user.isEmpty()){
             model.addAttribute(ERROR_MESSAGE, FAIL_SING_IN);
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return "user/signIn";
         }
         //세션에 user데이터 등록
-        httpSession.setAttribute(SESSIONED_USER, user);
+        httpSession.setAttribute(SESSIONED_USER, user.get());
         // 세션 설정
         httpSession.setMaxInactiveInterval(ONE_HOUR); // 1시간
 
         return "redirect:/";  // 로그인 성공시 홈페이지로 리다이렉트
     }
 
-    @GetMapping("users/sign-out")
-    public String logout(HttpSession httpSession, HttpServletResponse response){
+    @PostMapping("users/sign-out")
+    public String logout(HttpSession httpSession){
         httpSession.invalidate();
-
-        // 클라이언트 쿠키에서 세션 ID 삭제
-        Cookie cookie = new Cookie(JSESSION_ID, null); // 세션 쿠키 삭제
-        cookie.setMaxAge(ZERO);  // 즉시 만료
-        cookie.setPath(ROOT_DIRECTORY);   // 모든 경로에서 적용
-        response.addCookie(cookie);
 
         return "redirect:/";
     }

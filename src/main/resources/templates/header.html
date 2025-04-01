@@ -13,6 +13,37 @@
             from { opacity: 1; transform: translate(-50%, 0); }
             to { opacity: 0; transform: translate(-50%, -10px); }
         }
+        .btn {
+            display: inline-block; /* a 태그처럼 동작 */
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* 버튼도 동일한 스타일 적용 */
+        button.btn {
+            all: unset; /* 기본 버튼 스타일 제거 */
+            display: inline-block;
+            padding: 8px 12px;
+            background-color: #0056b3;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button.btn:hover {
+            background-color: #007bff;
+        }
     </style>
 
     <script th:if="${errorMessage != null}" th:inline="javascript">
@@ -26,6 +57,7 @@
             }
         };
     </script>
+
     <nav>
         <div class="logo">
             <a href="/">Codestagram</a>
@@ -39,10 +71,13 @@
             </div>
             <!-- 로그인한 경우 -->
             <div th:if="${session.sessionedUser != null}">
-                <a href="/users/sign-out" class="btn">로그아웃</a>
+                <form th:action="@{/users/sign-out}" method="post" style="display: inline;">
+                    <button type="submit" class="btn">로그아웃</button>
+                </form>
                 <a th:href="@{/users/{id}/update(id=${session.sessionedUser.id})}" class="btn">개인정보 수정</a>
                 <a href="/articles/form" class="btn write-btn">글쓰기</a>
             </div>
         </div>
     </nav>
+
 </header>

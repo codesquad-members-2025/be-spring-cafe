@@ -5,7 +5,6 @@ import static codesquad.codestagram.service.ArticleService.NO_USER;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.UserDto.UserRequestDto;
 import codesquad.codestagram.repository.UserRepository;
-import jakarta.annotation.PostConstruct;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -16,12 +15,6 @@ public class UserService {
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-    }
-
-    @PostConstruct
-    public void initDB() {
-        userRepository.save(new User("javajigi", "test", "자바지기", "javajigi@slipp.net"));
-        userRepository.save(new User("sanjigi", "test", "산지기", "sanjigi@slipp.net"));
     }
 
     public void joinUser(UserRequestDto requestDto) {
