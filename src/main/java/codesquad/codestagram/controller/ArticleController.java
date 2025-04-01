@@ -48,6 +48,19 @@ public class ArticleController {
         return "redirect:/";
     }
 
+    @DeleteMapping("/articles/{articleId}")
+    public String deleteArticle(@PathVariable Long articleId, HttpSession session){
+        Article article = articleService.findById(articleId);
+        User loginUser = (User) session.getAttribute("loginUser");
+
+        if(article.getUser().getId().equals(loginUser.getId())){
+            articleService.delete(article);
+            return "redirect:/";
+        }
+
+        return "redirect:/";
+    }
+
 
     @GetMapping("/articles")
     public String getArticleForm(HttpServletRequest request){

@@ -47,4 +47,7 @@ public class ArticleService {
                 .orElseThrow(() -> new EntityNotFoundException("해당 질문을 찾을 수 없습니다."));
     }
 
+    public void delete(Article article) {
+        articleRepository.delete(article);
+    }
 }
