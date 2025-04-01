@@ -1,7 +1,7 @@
 package codesquad.codestagram.service;
 
 import codesquad.codestagram.domain.User;
-import codesquad.codestagram.repository.UserRepository;
+import codesquad.codestagram.repository.SpringDataJpaUserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +12,9 @@ import java.util.Optional;
 @Transactional
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final SpringDataJpaUserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(SpringDataJpaUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -30,6 +30,12 @@ public class UserService {
                 .ifPresent(u -> {
                     throw new IllegalStateException("사용할 수 없는 아이디입니다.");
                 });
+    }
+
+    // 회원정보수정
+    public String update(User user) {
+        userRepository.save(user);
+        return user.getUserId();
     }
 
     public List<User> findAllUsers() {

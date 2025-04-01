@@ -1,7 +1,8 @@
 package codesquad.codestagram;
 
 import codesquad.codestagram.domain.Article;
-import codesquad.codestagram.repository.ArticleRepository;
+import codesquad.codestagram.domain.User;
+import codesquad.codestagram.repository.SpringDataJpaArticleRepository;
 import codesquad.codestagram.service.ArticleService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
@@ -18,16 +19,17 @@ public class ArticleServiceIntegrationTest {
     @Autowired
     ArticleService articleService;
     @Autowired
-    ArticleRepository articleRepository;
+    SpringDataJpaArticleRepository articleRepository;
 
     @Test
     @DisplayName("생성한 게시글과 찾은 게시글이 동일한 id를 가지고 있는지 테스트")
     public void ask() throws Exception {
         // given
-        Article newArticle = new Article("writer", "title", "contents");
+        User user = new User("userId", "name", "password", "email");
+        Article newArticle = new Article(user, "title", "contents");
 
         // when
-        Long articleId = articleService.ask(newArticle);
+        Long articleId = articleService.save(newArticle);
 
         // then
         Article findArticle = articleRepository.findById(articleId).get();
