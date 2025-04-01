@@ -23,7 +23,6 @@ public class LoginController {
     private final UserService userService;
     private final SessionService sessionService;
 
-    @Autowired
     public LoginController(UserService userService, SessionService sessionService) {
         this.userService = userService;
         this.sessionService = sessionService;
