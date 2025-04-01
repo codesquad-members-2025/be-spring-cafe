@@ -154,7 +154,7 @@ public class UserController {
         }
 
         try {
-            userService.updateUser(request.toEntity(id));
+            userService.updateUser(id, request);
 
             return "redirect:/users";
         } catch (IllegalArgumentException e) {

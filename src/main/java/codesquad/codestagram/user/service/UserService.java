@@ -2,6 +2,7 @@ package codesquad.codestagram.user.service;
 
 import codesquad.codestagram.user.domain.User;
 import codesquad.codestagram.user.dto.SignUpRequest;
+import codesquad.codestagram.user.dto.UserUpdateRequest;
 import codesquad.codestagram.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,21 +51,21 @@ public class UserService {
     }
 
     @Transactional
-    public User updateUser(User updatedUser) {
+    public User updateUser(Long id, UserUpdateRequest request) {
 
-        User findUser = findById(updatedUser.getId());
+        User findUser = findById(id);
 
-        if (updatedUser.getPassword().equals(findUser.getPassword())) {
+        if (request.password().equals(findUser.getPassword())) {
             throw new IllegalArgumentException("새 비밀번호가 현재 비밀번호와 동일합니다. 다른 비밀번호를 입력해주세요.");
         }
 
-        if (!updatedUser.getPassword().isEmpty()) {
-            validatePassword(updatedUser.getPassword());
+        if (!request.password().isEmpty()) {
+            validatePassword(request.password());
         }
 
-        String newPassword = updatedUser.getPassword().isEmpty() ? findUser.getPassword() : updatedUser.getPassword();
+        String newPassword = request.password().isEmpty() ? findUser.getPassword() : request.password();
 
-        findUser.updateUser(newPassword, updatedUser.getName(), updatedUser.getEmail());
+        findUser.updateUser(newPassword, request.name(), request.email());
 
         return userRepository.save(findUser);
     }
