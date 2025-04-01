@@ -130,20 +130,17 @@ public class ArticleController {
             Article article = articleService.findArticle(id);
 
             if (!article.getWriter().getId().equals(loggedInUserId)) {
-                redirectAttributes.addFlashAttribute("errorMessage", "본인의 게시글만 수정할 수 있습니다.");
-                return "redirect:/article/" + id;
+                model.addAttribute("errorMessage", "본인의 게시글만 수정할 수 있습니다.");
+                return ERROR;
             }
 
             articleService.updateArticle(id, request);
             return "redirect:/articles/" + id;
 
-        } catch (NoSuchElementException e) {
+        } catch (IllegalArgumentException | NoSuchElementException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/articles/" + id + "/form";
-        } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/articles/" + id + "/form";
-        } catch (Exception e) {
+        }  catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "질문 수정 중 오류가 발생했습니다: " + e.getMessage());
             return "redirect:/articles/" + id + "/form";
         }
