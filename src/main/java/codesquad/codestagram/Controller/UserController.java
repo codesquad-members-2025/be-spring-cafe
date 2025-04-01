@@ -27,11 +27,7 @@ public class UserController {
 
     @PostMapping("/users/create")
     public String create(@ModelAttribute UserForm form, RedirectAttributes redirectAttributes) {
-        User user = new User(); //Entity 생성
-        user.setLoginId(form.getLoginId()); //DTO -> Entity 변환
-        user.setName(form.getName());
-        user.setPassword(form.getPassword());
-        user.setEmail(form.getEmail());
+        User user = User.form(form);
 
         boolean success = userService.join(user);
 

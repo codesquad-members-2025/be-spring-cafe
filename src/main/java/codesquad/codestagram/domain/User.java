@@ -1,5 +1,6 @@
 package codesquad.codestagram.domain;
 
+import codesquad.codestagram.dto.UserForm;
 import jakarta.persistence.*;
 
 
@@ -12,6 +13,22 @@ public class User {
     private String name;
     private String password;
     private String email; //프로필 페이지에서 필요
+
+    public User(String loginId, String name, String password, String email) {
+        this.loginId = loginId;
+        this.name = name;
+        this.password = password;
+        this.email = email;
+
+    }
+
+    public static User form(UserForm form) {
+        return new User(form.getLoginId(), form.getName(), form.getPassword(), form.getEmail());
+    }
+
+    public User() {
+
+    }
 
     public Long getId() {
         return id;
