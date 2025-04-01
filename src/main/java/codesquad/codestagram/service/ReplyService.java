@@ -18,9 +18,9 @@ public class ReplyService {
         this.replyRepository = replyRepository;
     }
 
-    public void addReply(String content, Article findArticle, User user) {
+    public Reply addReply(String content, Article findArticle, User user) {
         Reply reply = new Reply(content, findArticle, user);
-        replyRepository.save(reply);
+        return replyRepository.save(reply);
     }
 
     public List<Reply> findReplies(Article article) {
