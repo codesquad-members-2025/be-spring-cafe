@@ -19,37 +19,58 @@ echo "Git이 설치되었습니다."
 git clone $REPO_PATH be-spring-cafe > /dev/null
 echo "Git 저장소를 복제했습니다."
 cd be-spring-cafe/
+git switch feat/ajax
 
 
-# Install Docker
-for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done > /dev/null
-sudo apt-get update -y > /dev/null
-sudo apt-get install ca-certificates curl -y > /dev/null
-sudo install -m 0755 -d /etc/apt/keyrings > /dev/null
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc > /dev/null
-sudo chmod a+r /etc/apt/keyrings/docker.asc
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update -y > /dev/null
-sudo apt-get install make docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y > /dev/null
-sudo usermod -aG docker $USER
-echo "Docker가 설치되었습니다."
+# Install MySQL JDK
+sudo apt-get update -y
+sudo apt-get install -y openjdk-21-jdk unzip mysql-server
 
-# Docker 이미지 빌드
-echo "Docker 이미지 빌드 중..."
-docker build -t myapp:latest .
-
-# 기존 컨테이너 중지 및 제거 (이미 존재한다면)
-if [ "$(docker ps -aq -f name=myapp_container)" ]; then
-  echo "기존 컨테이너 중지 및 제거 중..."
-  docker stop myapp_container > /dev/null
-  docker rm myapp_container > /dev/null
+# Create Swap Memory
+if ! swapon --noheadings | grep -q .; then
+  echo "Swap 공간이 없습니다. 2GB swap 파일을 생성합니다..."
+  sudo fallocate -l 2G /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=2048
+  sudo chmod 600 /swapfile
+  sudo mkswap /swapfile
+  sudo swapon /swapfile
+  echo "/swapfile none swap sw 0 0" | sudo tee -a /etc/fstab
+  echo "Swap 공간이 생성되었습니다."
+else
+  echo "Swap 공간이 이미 존재합니다."
 fi
 
-# 새 컨테이너 실행
-echo "새 컨테이너 실행 중..."
-docker run -d --name myapp_container -p 8080:8080 myapp:latest
+# gradlew 파일 존재 여부 확인
+if [ ! -f "./gradlew" ]; then
+  echo "gradlew 파일을 찾을 수 없습니다. 스크립트를 종료합니다."
+  exit 1
+fi
 
-echo "완료!"
+chmod +x ./gradlew
+
+echo "애플리케이션 빌드 중..."
+./gradlew clean build -x test
+echo "애플리케이션 빌드 완료."
+
+DB_EXISTS=$(sudo mysql -N -s -e "SHOW DATABASES LIKE 'codestagram';")
+if [ "$DB_EXISTS" != "codestagram" ]; then
+  echo "MySQL 데이터베이스 설정을 진행합니다..."
+  sudo mysql -e "CREATE DATABASE codestagram DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; \
+                 CREATE USER 'springuser'@'%' IDENTIFIED BY 'password'; \
+                 GRANT ALL PRIVILEGES ON codestagram.* TO 'springuser'@'%'; \
+                 FLUSH PRIVILEGES;"
+  echo "MySQL 데이터베이스 설정이 완료되었습니다."
+else
+  echo "MySQL 데이터베이스가 이미 설정되어 있습니다. 스킵합니다."
+fi
+
+# Search for the built jar file
+JAR_FILE=$(find build/libs -type f -name "*.jar" | head -n 1)
+if [ -z "$JAR_FILE" ]; then
+  echo "빌드된 jar 파일을 찾을 수 없습니다."
+  exit 1
+fi
+
+# 애플리케이션 실행
+echo "애플리케이션 실행 중..."
+nohup java -jar $JAR_FILE > app.log 2>&1 &
+echo "완료! 애플리케이션이 백그라운드에서 실행 중입니다."
