@@ -18,6 +18,13 @@ import java.util.NoSuchElementException;
 @Controller
 public class ArticleController {
 
+    public static final String REDIRECT_LOGIN = "redirect:/users/login";
+    public static final String REDIRECT_JOIN = "redirect:/users/join";
+    public static final String REDIRECT_HOME = "redirect:/";
+    public static final String ERROR = "error";
+
+
+
     private final ArticleService articleService;
     private final SessionService sessionService;
 
@@ -31,7 +38,7 @@ public class ArticleController {
 
         Long loggedInUserId = sessionService.getLoggedInUserId(session);
         if (loggedInUserId == null) {
-            return "redirect:/users/login";
+            return REDIRECT_LOGIN;
         }
 
         return "qna/form";
@@ -44,15 +51,15 @@ public class ArticleController {
 
         Long loggedInUserId = sessionService.getLoggedInUserId(session);
         if (loggedInUserId == null) {
-            return "redirect:/users/login";
+            return REDIRECT_LOGIN;
         }
 
         try {
             articleService.create(request, loggedInUserId);
-            return "redirect:/";
+            return REDIRECT_HOME;
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/users/join";
+            return REDIRECT_JOIN;
         }
     }
 
@@ -70,7 +77,7 @@ public class ArticleController {
 
         Long loggedInUserId = sessionService.getLoggedInUserId(session);
         if (loggedInUserId == null) {
-            return "redirect:/users/login";
+            return REDIRECT_LOGIN;
         }
 
         try {
@@ -78,7 +85,7 @@ public class ArticleController {
             model.addAttribute("article", article);
             return "qna/show";
         } catch (Exception e) {
-            return "redirect:/";
+            return REDIRECT_HOME;
         }
     }
 
@@ -89,7 +96,7 @@ public class ArticleController {
                              RedirectAttributes redirectAttributes) {
         Long loggedInUserId = sessionService.getLoggedInUserId(session);
         if (loggedInUserId == null) {
-            return "redirect:/users/login";
+            return REDIRECT_LOGIN;
         }
 
         try {
@@ -97,13 +104,13 @@ public class ArticleController {
 
             if (!article.getWriter().getId().equals(loggedInUserId)) {
                 model.addAttribute("errorMessage", "본인의 게시글만 수정할 수 있습니다.");
-                return "error";
+                return ERROR;
             }
             model.addAttribute("article", article);
             return "qna/updateForm";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/";
+            return REDIRECT_HOME;
         }
     }
 
@@ -115,7 +122,7 @@ public class ArticleController {
                                 RedirectAttributes redirectAttributes) {
         Long loggedInUserId = sessionService.getLoggedInUserId(session);
         if (loggedInUserId == null) {
-            return "redirect:/users/login";
+            return REDIRECT_LOGIN;
         }
 
         try {
@@ -150,7 +157,7 @@ public class ArticleController {
 
         Long loggedInUserId = sessionService.getLoggedInUserId(session);
         if (loggedInUserId == null) {
-            return "redirect:/users/login";
+            return REDIRECT_LOGIN;
         }
 
         try {
@@ -158,14 +165,14 @@ public class ArticleController {
 
             if (!article.getWriter().getId().equals(loggedInUserId)) {
                 model.addAttribute("errorMessage", "본인의 게시글만 삭제할 수 있습니다.");
-                return "error";
+                return ERROR;
             }
 
             articleService.delete(id);
-            return "redirect:/";
+            return REDIRECT_HOME;
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/";
+            return REDIRECT_HOME;
         }
     }
 }

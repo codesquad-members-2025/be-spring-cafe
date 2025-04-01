@@ -14,6 +14,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
+import static codesquad.codestagram.article.controller.ArticleController.REDIRECT_HOME;
+import static codesquad.codestagram.article.controller.ArticleController.REDIRECT_LOGIN;
+
 
 @Controller
 @RequestMapping("/users")
@@ -41,17 +44,17 @@ public class LoginController {
         try {
             User user = userService.authenticate(request.userId(), request.password());
             sessionService.login(session, user.getId());
-            return "redirect:/";
+            return REDIRECT_HOME;
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/users/login";
+            return REDIRECT_LOGIN;
         }
     }
 
     @PostMapping("/logout")
     public String logout(HttpSession session) {
         sessionService.logout(session);
-        return "redirect:/";
+        return REDIRECT_HOME;
     }
 
 }
