@@ -51,6 +51,14 @@ echo "애플리케이션 빌드 중..."
 ./gradlew clean build -x test
 echo "애플리케이션 빌드 완료."
 
+# MySQL 서비스 상태 확인 및 시작
+if ! systemctl is-active --quiet mysql; then
+  echo "MySQL 서비스가 실행 중이 아닙니다. 서비스를 시작합니다..."
+  sudo systemctl start mysql
+
+  sudo systemctl enable mysql
+fi
+
 DB_EXISTS=$(sudo mysql -N -s -e "SHOW DATABASES LIKE 'codestagram';")
 if [ "$DB_EXISTS" != "codestagram" ]; then
   echo "MySQL 데이터베이스 설정을 진행합니다..."
