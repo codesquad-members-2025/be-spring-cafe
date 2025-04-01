@@ -12,10 +12,10 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final Logger log  = LoggerFactory.getLogger(UserController.class);
+    private static final Logger log  = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public String handleNotFound(ResourceNotFoundException e, Model model, HttpServletResponse response) {
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String handleNotFound(IllegalArgumentException e, Model model, HttpServletResponse response) {
         response.setStatus(404); // 404 에러
         log.error("사용자 오류 발생", e);
         model.addAttribute("errorMessage", e.getMessage());
@@ -23,8 +23,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
-    public String handleNoResourceFound(NoResourceFoundException e, Model model, HttpServletResponse response) {
-        response.setStatus(HttpServletResponse.SC_NOT_FOUND); // 404 처리
+    public String handleStaticResourceError(NoResourceFoundException e, Model model, HttpServletResponse response) {
+        response.setStatus(404);
         model.addAttribute("errorMessage", "요청하신 리소스를 찾을 수 없습니다.");
         return "error/404";
     }

@@ -2,7 +2,6 @@ package codesquad.codestagram.Controller;
 
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.UserForm;
-import codesquad.codestagram.exception.ResourceNotFoundException;
 import codesquad.codestagram.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +90,7 @@ public class UserController {
             return "redirect:/users/login";
         }
         User user = userService.findOne(id)
-                .orElseThrow(() -> new ResourceNotFoundException("해당 사용자가 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
 
         model.addAttribute("user", user);
         return "user/updateForm";
@@ -106,7 +105,7 @@ public class UserController {
                              HttpSession session,
                              RedirectAttributes redirectAttributes) {
         if (!isAuthorized(session, id, redirectAttributes)) {
-            return "redirect:/users/login";
+            return "redirect:/users/profile";
         }
 
         boolean result = userService.updateUser(id,currentPassword, newPassword, name,email);
@@ -123,7 +122,7 @@ public class UserController {
     @GetMapping("/users/{loginId}")
     public String viewUserProfile(@PathVariable("loginId") String loginId, Model model) {
         User user = userService.findByLoginId(loginId)
-                .orElseThrow(() -> new ResourceNotFoundException("해당 사용자가 존재하지 않습니다. loginId=" + loginId));
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다. loginId=" + loginId));
         model.addAttribute("user", user);
         return "user/profile";
     }
