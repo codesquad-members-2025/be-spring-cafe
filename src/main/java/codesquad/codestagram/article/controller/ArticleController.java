@@ -141,4 +141,30 @@ public class ArticleController {
             return "redirect:/articles/" + id + "/form";
         }
     }
+
+    @DeleteMapping("/articles/{id}")
+    public String delete(@PathVariable Long id,
+                         HttpSession session,
+                         RedirectAttributes redirectAttributes) {
+
+        Long loggedInUserId = sessionService.getLoggedInUserId(session);
+        if (loggedInUserId == null) {
+            return "redirect:/users/login";
+        }   
+
+        try {
+            Article article = articleService.findArticle(id);
+
+            if (!article.getWriter().getId().equals(loggedInUserId)) {
+                redirectAttributes.addFlashAttribute("errorMessage", "본인의 게시글만 삭제할 수 있습니다.");
+                return "redirect:/articles/" + id;
+            }
+
+            articleService.delete(id);
+            return "redirect:/";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/";
+        }
+    }
 }

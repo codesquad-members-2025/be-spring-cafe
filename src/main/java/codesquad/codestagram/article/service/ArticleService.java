@@ -72,4 +72,9 @@ public class ArticleService {
             throw new IllegalArgumentException("내용을 입력해주세요");
         }
     }
+
+    public void delete(Long id) {
+        Article article = findArticle(id);
+        articleRepository.delete(article);
+    }
 }
