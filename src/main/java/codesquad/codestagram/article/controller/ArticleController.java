@@ -48,10 +48,6 @@ public class ArticleController {
             return "redirect:/users/login";
         }
 
-        /*if (!loggedInUser.getUserId().equals(request.writerId())) {
-            return "error";
-        }*/
-
         try {
             articleService.create(request, loggedInUserId);
             return "redirect:/";
@@ -85,6 +81,5 @@ public class ArticleController {
         } catch (Exception e) {
             return "redirect:/";
         }
-
     }
 }
