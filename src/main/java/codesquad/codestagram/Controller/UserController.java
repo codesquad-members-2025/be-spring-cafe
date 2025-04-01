@@ -29,9 +29,7 @@ public class UserController {
     public String create(@ModelAttribute UserForm form, RedirectAttributes redirectAttributes) {
         User user = User.form(form);
 
-        boolean success = userService.join(user);
-
-        if (!success) {
+        if (!userService.join(user)) {
             redirectAttributes.addFlashAttribute("errorMessage", "⚠️ 이미 존재하는 아이디입니다.");
             return "redirect:/users/new"; // form.html로 다시
         }
