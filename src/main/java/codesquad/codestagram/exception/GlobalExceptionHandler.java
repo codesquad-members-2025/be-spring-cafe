@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
         return "error/404";
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(Exception.class) //지정해준 에러 이외의 모든 에러는 500으로 되는데... 어떻게 처리하지
     public String handleGeneric(Exception e, Model model, HttpServletResponse response) {
         response.setStatus(500); // 500 에러
         log.error("오류 발생", e);
