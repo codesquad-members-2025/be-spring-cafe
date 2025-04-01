@@ -44,42 +44,22 @@
             <h4>댓글</h4>
         </div>
         <div class="card-body">
-            <div th:if="${#lists.isEmpty(replies)}">
-                <p>댓글이 없습니다.</p>
-            </div>
-            <div th:if="${!#lists.isEmpty(replies)}">
-                <ul class="list-group">
-                    <li class="list-group-item" th:each="reply : ${replies}">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <strong th:text="${reply.user.getName()}">작성자</strong>
-<!--                                <small th:text="${#dates.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</small>-->
-                            </div>
-                            <div th:if="${session.sessionedUser.getId() == reply.user.id}">
-                                <form th:action="@{/articles/{articleId}/replies/{replyId}(articleId=${article.id}, replyId=${reply.id})}"
-                                      method="post" style="display: inline;">
-                                    <input type="hidden" name="_method" value="DELETE" />
-                                    <button type="submit" class="btn btn-sm btn-danger"
-                                            onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
-                                </form>
-                            </div>
-                        </div>
-                        <p th:text="${reply.content}" class="mt-2 mb-0">댓글 내용</p>
-                    </li>
-                </ul>
-            </div>
+            <ul class="list-group" id="replies-container">
+                <!-- AJAX로 채워질 댓글 목록 -->
+            </ul>
         </div>
     </div>
 
-    <!-- 댓글 작성 폼 (로그인한 사용자만 접근 가능) -->
+    <!-- 댓글 작성 폼 -->
     <div class="card mt-4">
         <div class="card-header">
             <h4>댓글 작성</h4>
         </div>
         <div class="card-body">
-            <form th:action="@{/articles/{articleId}/replies(articleId=${article.id})}" method="post">
+            <form id="reply-form">
                 <div class="mb-3">
-                    <textarea name="content" class="form-control" rows="3" placeholder="댓글을 입력하세요." required></textarea>
+                    <textarea id="reply-content" class="form-control" rows="3" placeholder="댓글을 입력하세요."
+                              required></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">댓글 등록</button>
             </form>
@@ -88,5 +68,82 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </body>
+<script th:inline="javascript">
+    const articleId = [[${article.id}]];
+    const sessionUserName = [[${session.sessionedUser != null ? session.sessionedUser.name : null}]];
+
+    $(document).ready(function () {
+        loadReplies();
+
+        $("#reply-form").on("submit", function (e) {
+            e.preventDefault();
+            const content = $("#reply-content").val().trim();
+            if (!content) return;
+
+            $.ajax({
+                type: "POST",
+                url: `/articles/${articleId}/replies`,
+                contentType: "application/json",
+                data: JSON.stringify({ content }),
+                success: function () {
+                    $("#reply-content").val('');
+                    loadReplies();
+                },
+                error: function () {
+                    alert("댓글 등록 실패");
+                }
+            });
+        });
+    });
+
+    function loadReplies() {
+        $.ajax({
+            type: "GET",
+            url: `/articles/${articleId}/replies`,
+            success: function (replies) {
+                const container = $("#replies-container");
+                if (replies.length === 0) {
+                    container.html('<li class="list-group-item">댓글이 없습니다.</li>');
+                    return;
+                }
+
+                const replyHtml = replies.map(reply => `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>${reply.writerName}</strong>
+                            <p class="mt-2 mb-0">${reply.content}</p>
+                        </div>
+                        ${reply.writerName === sessionUserName ? `
+                        <button class="btn btn-danger btn-sm" onclick="deleteReply(${reply.id})">
+                            삭제
+                        </button>` : ''}
+                    </li>
+                `).join('');
+
+                container.html(replyHtml);
+            },
+            error: function () {
+                alert("댓글 불러오기 실패");
+            }
+        });
+    }
+
+    function deleteReply(replyId) {
+        if (!confirm("정말 삭제하시겠습니까?")) return;
+
+        $.ajax({
+            type: "DELETE",
+            url: `/articles/${articleId}/replies/${replyId}`,
+            success: function () {
+                loadReplies();
+            },
+            error: function () {
+                alert("댓글 삭제 실패");
+            }
+        });
+    }
+</script>
+
 </html>
