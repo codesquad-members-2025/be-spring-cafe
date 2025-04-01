@@ -2,12 +2,13 @@ package codesquad.codestagram.service;
 
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.repository.UserRepository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-@Transactional
+@Service
 public class UserService {
     private final UserRepository userRepository;
     //생성자를 통해 외부에서 UserRepository 주입 -> DI 활용 위해
@@ -17,10 +18,14 @@ public class UserService {
     /**
      * 회원가입
      */
-    public Long join(User user) {
-        validateDuplicateUser(user); //중복 회원 검증
+    @Transactional
+    public  boolean join(User user) {
+        // Entity를 저장
+        if (userRepository.findByLoginId(user.getLoginId()).isPresent()) {
+            return false;
+        }
         userRepository.save(user);
-        return user.getId();
+        return true;
     }
 
     private void validateDuplicateUser(User user) {
@@ -50,6 +55,7 @@ public class UserService {
      * 회원 정보 수정
      */
 
+    @Transactional
     public boolean updateUser(Long id, String currentPassword, String newPassword, String name, String email ) {
         Optional<User> optionalUser = userRepository.findById(id);
         //실행 흐름상 유저가 없을 수는 없지만 . 사이에 누군가가 삭제했을 수도 있으니 넣어주기.

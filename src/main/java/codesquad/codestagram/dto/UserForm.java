@@ -1,4 +1,4 @@
-package codesquad.codestagram.Controller;
+package codesquad.codestagram.dto;
 
 public class UserForm {
     private String loginId;
