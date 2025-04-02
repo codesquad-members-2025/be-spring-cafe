@@ -10,10 +10,13 @@ public class PostMapRepository implements PostRepository {
 
     @Override
     public Post save(Post post) {
-        post.setId(++sequence);
+        if (post.getId() == null) {
+            post.setId(++sequence);
+        }
         posts.put(post.getId(), post);
         return post;
     }
+
 
     @Override
     public Optional<Post> findById(Long id) {
@@ -23,5 +26,10 @@ public class PostMapRepository implements PostRepository {
     @Override
     public List<Post> findAll() {
         return new ArrayList<>(posts.values());
+    }
+
+    @Override
+    public void delete(Post post) {
+        posts.remove(post.getId());
     }
 }

@@ -8,4 +8,5 @@ public interface PostRepository {
     Post save(Post post);
     Optional<Post> findById(Long id);
     List<Post> findAll();
+    void delete(Post post);
 }
