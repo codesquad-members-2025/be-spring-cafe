@@ -5,6 +5,7 @@ import codesquad.codestagram.entity.Post;
 import codesquad.codestagram.entity.User;
 import codesquad.codestagram.service.PostService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +22,7 @@ public class PostController {
 
     @GetMapping("/")
     public String home(Model model) {
-        List<Post> posts = postService.findAll();
-        model.addAttribute("posts", posts);
-        return "user/index";
+        return "redirect:/page/1";
     }
 
 //    public void init(){
@@ -99,5 +98,27 @@ public class PostController {
             return "redirect:/boards/" + postId + "?error=unauthorized";
         }
         return null;
+    }
+
+    @GetMapping("/page/{id}")
+    public String getListPage(Model model, @PathVariable Long id) {
+        int pageSize = 15;
+        Page<Post> posts = postService.getPage(id);
+
+        int pageCount = 5;
+        long totalPosts = posts.getTotalElements();
+        int totalPages = posts.getTotalPages();
+        int currentPage = id.intValue();
+
+        int startPage = ((currentPage - 1) / pageCount) * pageCount + 1;
+        int endPage = Math.min(startPage + pageCount - 1, totalPages);
+
+        model.addAttribute("posts", posts);
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("totalPages", totalPages);
+
+        return "user/index";
     }
 }

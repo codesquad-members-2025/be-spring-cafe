@@ -1,6 +1,8 @@
 package codesquad.codestagram.repository.post;
 
 import codesquad.codestagram.entity.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.*;
 
@@ -31,5 +33,10 @@ public class PostMapRepository implements PostRepository {
     @Override
     public void delete(Post post) {
         posts.remove(post.getId());
+    }
+
+    @Override
+    public Page<Post> findPageBy(Pageable page) {
+        return null;
     }
 }

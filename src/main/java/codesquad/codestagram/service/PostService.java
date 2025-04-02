@@ -4,8 +4,8 @@ import codesquad.codestagram.dto.PostRequestDto;
 import codesquad.codestagram.entity.Post;
 import codesquad.codestagram.entity.User;
 import codesquad.codestagram.repository.post.PostRepository;
-import codesquad.codestagram.repository.user.UserRepository;
-import jakarta.annotation.PostConstruct;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,23 +14,14 @@ import java.util.List;
 @Service
 public class PostService {
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
 
-    public PostService(PostRepository postRepository,
-                       UserRepository userRepository){
+    public PostService(PostRepository postRepository){
         this.postRepository = postRepository;
-        this.userRepository = userRepository;
     }
 
     public List<Post> findAll(){
         return postRepository.findAll();
     }
-
-//    @PostConstruct
-//    public void initExamplePosts(){
-//        User user = userRepository.save(new User("배찌", "배찌", "w@w","배찌"));
-//        postRepository.save(new Post("안녕", "내", user));
-//    }
 
     public void savePost(PostRequestDto dto, User user){
         postRepository.save(new Post(dto.getTitle(), dto.getContent(), user));
@@ -57,5 +48,9 @@ public class PostService {
         post.setTitle(title);
         post.setContent(content);
         postRepository.save(post);
+    }
+
+    public Page<Post> getPage(Long id) {
+        return postRepository.findPageBy(PageRequest.of((int) (id-1L), 5));
     }
 }
