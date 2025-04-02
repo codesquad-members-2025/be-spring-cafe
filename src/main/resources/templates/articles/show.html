@@ -28,8 +28,33 @@
                             alert("댓글 추가에 실패했습니다.");
                         }
                     },
-                    error: function(xhr) {
+                    error: function() {
                         alert("댓글 등록에 실패했습니다.");
+                    }
+                });
+            });
+
+            // 댓글 삭제
+            $(document).on("click", ".deleteReply", function() {
+                const replyId = $(this).data("reply-id");
+                const articleId = [[${article.id}]];       // 게시글의 ID
+                const csrfToken = $("meta[name='_csrf']").attr("content"); // CSRF 토큰 (필요시 추가)
+
+                $.ajax({
+                    url: `/api/article/${articleId}/reply/${replyId}`,
+                    type: "DELETE",
+                    headers: {
+                        "X-CSRF-TOKEN": csrfToken  // CSRF 토큰을 헤더에 추가
+                    },
+                    success: function(response) {
+                        if (response.isSuccess) {
+                            $(`#reply-${replyId}`).remove();  // 삭제된 댓글을 UI에서 제거
+                        } else {
+                            alert("댓글 삭제에 실패했습니다.");
+                        }
+                    },
+                    error: function(xhr) {
+                        alert("댓글 삭제에 실패했습니다.");
                     }
                 });
             });
@@ -42,12 +67,10 @@
                 }
 
                 replies.forEach(function(reply) {
-
                     const sessionUserId = [[${session.sessionedUser != null ? session.sessionedUser.userId : ''}]];
                     const isAuthor = String(sessionUserId) === String(reply.userId);
-
                     let replyHtml = `
-            <div class="reply-item">
+            <div class="reply-item" id="reply-${reply.id}">
                 <p class="reply-content">${reply.content}</p>
                 <p class="reply-meta">
                     <span>${reply.userId}</span>
@@ -57,13 +80,7 @@
                     if (isAuthor) {
                         replyHtml += `
                 <div class="form-actions">
-                    <form action="/article/${reply.articleId}/reply/${reply.id}" method="post" style="display: inline;">
-                        <button type="submit" class="btn btn-primary">수정</button>
-                    </form>
-                    <form action="/article/${reply.articleId}/reply/${reply.id}" method="post" style="display: inline;">
-                        <input type="hidden" name="_method" value="delete">
-                        <button type="submit" class="btn btn-danger">삭제</button>
-                    </form>
+                    <button type="button" class="btn btn-danger deleteReply" data-reply-id="${reply.id}">삭제</button>
                 </div>`;
                     }
 
@@ -132,12 +149,17 @@
     </div>
     <div class="reply-container">
         <h3>댓글</h3>
-        <div th:each="reply : ${replies}" class="reply-item">
+        <div th:each="reply : ${replies}" class="reply-item" th:id="'reply-' + ${reply.id}">
             <p class="reply-content" th:text="${reply.content}"></p>
             <p class="reply-meta">
                 <span th:text="${reply.user.userId}"></span>
                 <span th:text="${#temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
             </p>
+
+            <!-- 현재 로그인한 사용자 ID와 댓글 작성자 ID 비교 -->
+            <div th:if="${session.sessionedUser != null and session.sessionedUser.userId == reply.user.userId}" class="form-actions">
+                <button type="button" class="btn btn-danger deleteReply" th:data-reply-id="${reply.id}">삭제</button>
+            </div>
         </div>
     </div>
     <div class="reply-form">
