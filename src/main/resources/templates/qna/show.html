@@ -24,8 +24,8 @@
                             <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="#" class="article-author-name" th:text="${article.writer.userId}">kimmunsu</a>
-                            <a href="#" class="article-header-time" title="퍼머링크">
+                            <a href="#" class="article-author-name" th:href="@{/users/{id}(id=${article.writer.id})}" th:text="${article.writer.userId}">kimmunsu</a>
+                            <a href="#" class="article-header-time" title="퍼머링크" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}">
                                 2015-12-30 01:47
                                 <i class="icon-link"></i>
                             </a>
@@ -37,15 +37,17 @@
                     </div>
                     <div class="article-util">
                         <ul class="article-util-list">
-                            <li>
-                                <a class="link-modify-article" th:href="@{/articles/{id}/form(id=${article.id})}">수정</a>
-                            </li>
-                            <li>
-                                <form class="form-delete" th:action="@{/articles/{id}(id=${article.id})}" method="POST">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <button class="link-delete-article" type="submit">삭제</button>
-                                </form>
-                            </li>
+                            <th:block th:if="${session.LOGGED_IN_USER_ID != null && session.LOGGED_IN_USER_ID == article.writer.id}">
+                                <li>
+                                    <a class="link-modify-article" th:href="@{/articles/{id}/form(id=${article.id})}">수정</a>
+                                </li>
+                                <li>
+                                    <form class="form-delete" th:action="@{/articles/{id}(id=${article.id})}" method="POST" onsubmit="return confirm('게시글을 삭제하시겠습니까?');">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <button class="link-delete-article" type="submit">삭제</button>
+                                    </form>
+                                </li>
+                            </th:block>
                             <li>
                                 <a class="link-modify-article" href="/">목록</a>
                             </li>

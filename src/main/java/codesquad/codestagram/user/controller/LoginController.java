@@ -14,6 +14,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
+import static codesquad.codestagram.article.controller.ArticleController.*;
+
 
 @Controller
 @RequestMapping("/users")
@@ -23,7 +25,6 @@ public class LoginController {
     private final UserService userService;
     private final SessionService sessionService;
 
-    @Autowired
     public LoginController(UserService userService, SessionService sessionService) {
         this.userService = userService;
         this.sessionService = sessionService;
@@ -41,19 +42,18 @@ public class LoginController {
 
         try {
             User user = userService.authenticate(request.userId(), request.password());
-            sessionService.login(session, user);
-            return "redirect:/";
+            sessionService.login(session, user.getId());
+            return REDIRECT_HOME;
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/users/login";
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
+            return REDIRECT_LOGIN;
         }
     }
 
-    //@PostMapping이 맞나?
-    //회원가입 후 바로 로그인 되게끔하자
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public String logout(HttpSession session) {
         sessionService.logout(session);
-        return "redirect:/";
+        return REDIRECT_HOME;
     }
+
 }

@@ -29,7 +29,8 @@
                     <td th:text="${user.name}">자바지기</td>
                     <td th:text="${user.email}">javajigi@sample.net</td>
                     <td>
-                        <a th:href="@{/users/{id}/verify(id=${user.id})}" class="btn btn-success" role="button">수정</a>
+                        <a th:if="${session.LOGGED_IN_USER_ID != null && session.LOGGED_IN_USER_ID == user.id}"
+                           th:href="@{/users/{id}/verify(id=${user.id})}" class="btn btn-success" role="button">수정</a>
                     </td>
                 </tr>
                 </tbody>

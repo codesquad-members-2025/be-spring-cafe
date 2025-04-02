@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+
+import static codesquad.codestagram.article.controller.ArticleController.*;
 
 @Controller
 @RequestMapping("/users")
@@ -21,7 +24,6 @@ public class UserController {
     private final UserService userService;
     private final SessionService sessionService;
 
-    @Autowired
     public UserController(UserService userService, SessionService sessionService) {
         this.userService = userService;
         this.sessionService = sessionService;
@@ -29,14 +31,18 @@ public class UserController {
 
     @PostMapping("/signUp")
     public String signUp(@ModelAttribute SignUpRequest request,
+                         HttpSession session,
                          RedirectAttributes redirectAttributes) { // @ModelAttribute 공부,
         try {
-            userService.join(request);
-            return "redirect:/users";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            User newUser = userService.join(request);
 
-            return "redirect:/users/join";
+            sessionService.login(session, newUser.getId());
+
+            return REDIRECT_HOME;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
+
+            return REDIRECT_JOIN;
         }
     }
 
@@ -50,7 +56,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String showUserProfile(@PathVariable Long id, Model model) {
-        User user = userService.findUser(id);
+        User user = userService.findById(id);
         model.addAttribute("user", user);
         return "user/profile";
     }
@@ -60,19 +66,19 @@ public class UserController {
                                      HttpSession session,
                                      Model model) {
 
-        User loggedInUser = sessionService.getLoggedInUser(session);
-        if (loggedInUser == null) {
-            return "redirect:/users/login";
+        Long loggedInUserId = sessionService.getLoggedInUserId(session);
+        if (loggedInUserId == null) {
+            return REDIRECT_LOGIN;
         }
 
-        User findUser = userService.findUser(id);
+        User findUser = userService.findById(id);
 
-        if (!loggedInUser.getId().equals(findUser.getId()) || !id.equals(findUser.getId())) {
-            model.addAttribute("errorMessage", "다른 사용자의 정보는 수정할 수 없습니다.");
-            return "error";
+        if (!loggedInUserId.equals(findUser.getId()) || !id.equals(findUser.getId())) {
+            model.addAttribute(ERROR_MESSAGE, "다른 사용자의 정보는 수정할 수 없습니다.");
+            return ERROR;
         }
 
-        userService.findUser(id);
+        userService.findById(id);
         model.addAttribute("id", id);
         return "user/passwordVerifyForm";
     }
@@ -84,16 +90,16 @@ public class UserController {
                                  Model model,
                                  RedirectAttributes redirectAttributes) {
 
-        User loggedInUser = sessionService.getLoggedInUser(session);
-        if (loggedInUser == null) {
-            return "redirect:/users/login";
+        Long loggedInUserId = sessionService.getLoggedInUserId(session);
+        if (loggedInUserId == null) {
+            return REDIRECT_LOGIN;
         }
 
-        User findUser = userService.findUser(id);
+        User findUser = userService.findById(id);
 
-        if (!loggedInUser.getId().equals(findUser.getId()) || !id.equals(findUser.getId())) {
-            model.addAttribute("errorMessage", "다른 사용자의 정보는 수정할 수 없습니다.");
-            return "error";
+        if (!loggedInUserId.equals(findUser.getId()) || !id.equals(findUser.getId())) {
+            model.addAttribute(ERROR_MESSAGE, "다른 사용자의 정보는 수정할 수 없습니다.");
+            return ERROR;
         }
         try {
             boolean isVerified = userService.verifyPassword(id, password);
@@ -101,10 +107,10 @@ public class UserController {
             if (isVerified) {
                 return "redirect:/users/" + id + "/form";
             }
-            redirectAttributes.addFlashAttribute("errorMessage", "비밀번호가 일치하지 않습니다.");
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "비밀번호가 일치하지 않습니다.");
             return "redirect:/users/" + id + "/verify";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return "redirect:/users/" + id + "/verify";
         }
     }
@@ -113,19 +119,19 @@ public class UserController {
     public String updateUserProfileForm(@PathVariable Long id,
                                         Model model,
                                         HttpSession session) {
-        User loggedInUser = sessionService.getLoggedInUser(session);
-        if (loggedInUser == null) {
-            return "redirect:/users/login";
+        Long loggedInUserId = sessionService.getLoggedInUserId(session);
+        if (loggedInUserId == null) {
+            return REDIRECT_LOGIN;
         }
 
-        User findUser = userService.findUser(id);
+        User findUser = userService.findById(id);
 
-        if (!loggedInUser.getId().equals(findUser.getId()) || !id.equals(findUser.getId())) {
-            model.addAttribute("errorMessage", "다른 사용자의 정보는 수정할 수 없습니다.");
-            return "error";
+        if (!loggedInUserId.equals(findUser.getId()) || !id.equals(findUser.getId())) {
+            model.addAttribute(ERROR_MESSAGE, "다른 사용자의 정보는 수정할 수 없습니다.");
+            return ERROR;
         }
 
-        User user = userService.findUser(id);
+        User user = userService.findById(id);
         model.addAttribute("user", user);
         return "user/updateForm";
     }
@@ -138,29 +144,26 @@ public class UserController {
                          Model model,
                          RedirectAttributes redirectAttributes) {
 
-        User loggedInUser = sessionService.getLoggedInUser(session);
-        if (loggedInUser == null) {
-            return "redirect:/users/login";
+        Long loggedInUserId = sessionService.getLoggedInUserId(session);
+        if (loggedInUserId == null) {
+            return REDIRECT_LOGIN;
         }
-        User findUser = userService.findUser(id);
+        User findUser = userService.findById(id);
 
-        if (!loggedInUser.getId().equals(findUser.getId()) || !id.equals(findUser.getId())) {
-            model.addAttribute("errorMessage", "다른 사용자의 정보는 수정할 수 없습니다.");
-            return "error";
+        if (!loggedInUserId.equals(findUser.getId()) || !id.equals(findUser.getId())) {
+            model.addAttribute(ERROR_MESSAGE, "다른 사용자의 정보는 수정할 수 없습니다.");
+            return ERROR;
         }
 
         try {
-            userService.updateUser(request.toEntity(id));
-
-            User updatedUser = userService.findUser(id);
-            sessionService.login(session, updatedUser);
+            userService.updateUser(id, request);
 
             return "redirect:/users";
-        } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (IllegalArgumentException | NoSuchElementException e) {
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return "redirect:/users/" + id + "/form";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "회원정보 수정 중 오류가 발생했습니다: " + e.getMessage());
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "회원정보 수정 중 오류가 발생했습니다: " + e.getMessage());
             return "redirect:/users/" + id + "/form";
         }
     }

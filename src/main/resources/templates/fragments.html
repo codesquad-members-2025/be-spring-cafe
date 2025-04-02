@@ -60,7 +60,7 @@
         <div class="navbar-header">
             <a href="#" style="margin-left:15px;" class="navbar-btn btn btn-default btn-plus dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-home" style="color:#dd1111;"></i> Home <small><i class="glyphicon glyphicon-chevron-down"></i></small></a>
             <ul class="nav dropdown-menu">
-                <li><a href="/users/profile"><i class="glyphicon glyphicon-user" style="color:#1111dd;"></i> Profile</a></li>
+                <li><a href="/users/profile" th:href="@{/users/{id}(id=${session.LOGGED_IN_USER_ID})}"><i class="glyphicon glyphicon-user" style="color:#1111dd;"></i> Profile</a></li>
                 <li class="nav-divider"></li>
                 <li><a href="#"><i class="glyphicon glyphicon-cog" style="color:#dd1111;"></i> Settings</a></li>
             </ul>
@@ -75,11 +75,15 @@
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/">Posts</a></li>
-                <li th:if="${session.LOGGED_IN_USER == null}"><a href="/users/login" role="button">로그인</a></li>
-                <li th:if="${session.LOGGED_IN_USER == null}"><a href="/users/join" role="button">회원가입</a></li>
-                <li th:if="${session.LOGGED_IN_USER != null}"><a href="/users/logout" role="button">로그아웃</a></li>
-                <li th:if="${session.LOGGED_IN_USER != null}">
-                    <a th:href="@{/users/{id}/verify(id=${session.LOGGED_IN_USER.id})}" role="button">개인정보수정</a>
+                <li th:if="${session.LOGGED_IN_USER_ID == null}"><a href="/users/login" role="button">로그인</a></li>
+                <li th:if="${session.LOGGED_IN_USER_ID == null}"><a href="/users/join" role="button">회원가입</a></li>
+                <li th:if="${session.LOGGED_IN_USER_ID != null}">
+                    <form action="/users/logout" method="post" style="margin: 0; padding: 0;">
+                        <button type="submit" class="btn btn-link" style="text-decoration: none; color: #777; padding: 15px; border: none; background: none;">로그아웃</button>
+                    </form>
+                </li>
+                <li th:if="${session.LOGGED_IN_USER_ID != null}">
+                    <a th:href="@{/users/{id}/verify(id=${session.LOGGED_IN_USER_ID})}" role="button">개인정보수정</a>
                 </li>
             </ul>
         </div>
