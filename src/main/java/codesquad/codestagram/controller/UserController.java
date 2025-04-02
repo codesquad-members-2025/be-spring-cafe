@@ -83,7 +83,7 @@ public class UserController {
         }
         HttpSession newSession = request.getSession(true);
         newSession.setAttribute("loginUser", user);
-        return "redirect:/users/" + userId;
+        return "redirect:/";
     }
 
     @PostMapping("/user/logout")
