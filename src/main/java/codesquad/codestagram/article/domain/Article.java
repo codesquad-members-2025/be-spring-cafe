@@ -13,7 +13,7 @@ public class Article {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User writer;
     private String title;
@@ -29,7 +29,7 @@ public class Article {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Article() {
+    protected Article() {
 
     }
 
