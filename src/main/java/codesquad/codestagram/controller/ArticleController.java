@@ -4,6 +4,7 @@ package codesquad.codestagram.controller;
 
 import codesquad.codestagram.dto.RequestArticleDto;
 import codesquad.codestagram.service.ArticleService;
+import codesquad.codestagram.session.SessionConst;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,8 +24,9 @@ public class ArticleController {
     }
 
     @GetMapping("/articles")
-    public String getArticleForm(HttpSession session){
-        if(session == null){
+    public String getArticleForm(HttpSession session, Model model){
+        User loginUser = (User)session.getAttribute(SessionConst.LOGIN_USER);
+        if(loginUser == null){
             return "user/login";
         }
         return "qna/form.html";
@@ -36,15 +38,22 @@ public class ArticleController {
         return "redirect:/";
     }
 
+
     @GetMapping("/articles/edit/{userId}/{articleId}")
     public String showArticleEditForm(@PathVariable Long userId,
                                       @PathVariable Long articleId,
                                       Model model,
                                       HttpSession session,
                                       RedirectAttributes redirectAttributes) {
-        User loginUser = (User) session.getAttribute("loginUser");
+        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_USER);
+        if(loginUser == null){
+            return "user/login";
+        }
+
+
         if(loginUser.getId().equals(userId)){
-            model.addAttribute("article", articleService.findById(articleId));
+            Article article = articleService.findById(articleId);
+            model.addAttribute("article", article);
             return "article/edit";
         }
 
@@ -64,7 +73,12 @@ public class ArticleController {
                                 HttpSession session,
                                 RedirectAttributes redirectAttributes){
         Article article = articleService.findById(articleId);
-        User loginUser = (User) session.getAttribute("loginUser");
+        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_USER);
+
+        if(loginUser == null){
+            return "user/login";
+        }
+
 
         if(article.getUser().getId().equals(loginUser.getId())){
             articleService.delete(article);
