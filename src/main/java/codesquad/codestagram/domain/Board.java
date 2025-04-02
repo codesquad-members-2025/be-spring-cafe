@@ -1,6 +1,7 @@
 package codesquad.codestagram.domain;
 
 import codesquad.codestagram.dto.BoardForm;
+import codesquad.codestagram.dto.UserForm;
 import jakarta.persistence.*;
 
 @Entity
@@ -21,6 +22,7 @@ public class Board {
         this.title = title;
         this.content = content;
     }
+
 
     public static Board form(BoardForm form) {
         return new Board(form.getTitle(), form.getContent());
@@ -48,6 +50,13 @@ public class Board {
 
     public void setContent(String content) {
         this.content = content;
+    }
+    public User getWriter() {
+        return writer;
+    }
+
+    public void setWriter(User writer) {
+        this.writer = writer;
     }
 
 }

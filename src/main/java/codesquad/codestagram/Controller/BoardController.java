@@ -1,6 +1,7 @@
 package codesquad.codestagram.Controller;
 
 import codesquad.codestagram.domain.Board;
+import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.BoardForm;
 import codesquad.codestagram.service.BoardService;
 import codesquad.codestagram.util.AuthUtil;
@@ -29,15 +30,6 @@ public class BoardController {
     }
 
 
-    @PostMapping("/boards/create")
-    public String createBoard(@ModelAttribute BoardForm form) {
-        Board board = Board.form(form);
-
-        boardService.writeBoard(board);
-        return "redirect:/"; //메인 페이지로 이동
-
-    }
-
     @GetMapping("/")
     public String listBoards(Model model) {
         List<Board> boards = boardService.getAllBoards();
@@ -62,5 +54,29 @@ public class BoardController {
 
         model.addAttribute("board", board);
         return "qna/show"; // 게시글 상세 화면 (qna/show.html)
+    }
+    //글 작성 화면
+    @GetMapping("/boards/new")
+    public String newBoardForm(HttpSession session,  RedirectAttributes redirectAttributes) {
+        if (!AuthUtil.isLogined(session, redirectAttributes)) {
+            return "redirect:/users/login";
+        }
+        return "qna/form";
+    }
+
+    @PostMapping("/boards/create")
+    public String createBoard(@ModelAttribute BoardForm form, HttpSession session, RedirectAttributes redirectAttributes) {
+        if (!AuthUtil.isLogined(session, redirectAttributes)) {
+            return "redirect:/users/login";
+        }
+
+        User user = (User) session.getAttribute("user");
+        Board board = Board.form(form);
+        board.setWriter(user);
+
+        log.info("게시글 생성 요청: 제목={}, 작성자id={}", board.getTitle(), board.getWriter().getLoginId());
+        boardService.writeBoard(board);
+        return "redirect:/"; //메인 페이지로 이동
+
     }
 }
