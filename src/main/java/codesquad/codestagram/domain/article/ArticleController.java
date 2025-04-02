@@ -16,11 +16,9 @@ import java.util.List;
 public class ArticleController {
 
     private final ArticleService articleService;
-    private final ReplyService replyService;
 
-    public ArticleController(ArticleService articleService, ReplyService replyService) {
+    public ArticleController(ArticleService articleService) {
         this.articleService = articleService;
-        this.replyService = replyService;
     }
 
     // 게시물 생성
@@ -40,9 +38,6 @@ public class ArticleController {
                               Model model) {
         Article article = articleService.findArticle(id);
         model.addAttribute("article", article);
-
-        List<Reply> repliesByArticle = replyService.findRepliesByArticle(id);
-        model.addAttribute("replies", repliesByArticle);
 
         return "article/view";
     }
