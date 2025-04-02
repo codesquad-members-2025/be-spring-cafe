@@ -49,7 +49,7 @@
               <div class="qna-comment">
                   <div class="qna-comment-slipp">
                       <p class="qna-comment-count"><strong>{{replyCount}}</strong>개의 의견</p>
-                      <div class="qna-comment-slipp-articles">
+                      <div class="qna-comment-slipp-articles" id="answer-list">
                          {{#replyDtoList}}
                           <article class="article" id="answer-1405">
                               <div class="article-header">
@@ -81,15 +81,14 @@
                               </div>
                           </article>
                           {{/replyDtoList}}
-
-                          <form class="submit-write" method="post" action="/articles/{{article.id}}/answers">
-                              <div class="form-group" style="padding:14px;">
-                                  <textarea class="form-control" name="text" placeholder="Update your status"></textarea>
-                              </div>
-                              <button class="btn btn-success pull-right" type="submit">답변하기</button>
-                              <div class="clearfix" />
-                          </form>
                       </div>
+                      <form class="submit-write" method="post" action="/articles/{{article.id}}/answers">
+                          <div class="form-group" style="padding:14px;">
+                              <textarea class="form-control" name="text" placeholder="Update your status"></textarea>
+                          </div>
+                          <button class="btn btn-success pull-right" type="submit">답변하기</button>
+                          <div class="clearfix" />
+                      </form>
                   </div>
               </div>
           </div>
@@ -129,5 +128,42 @@
 
 <!-- script references -->
 {{> partials/footer}}
+
+<!--ajax-->
+<script>
+    $(function () {
+        $('.submit-write').on('submit', function (e) {
+            e.preventDefault(); // 기본 제출 막기
+
+            const form = $(this);
+            const url = form.attr('action');
+            const formData = form.serialize(); // 폼 데이터 직렬화
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (response) {
+                    alert('답변이 등록되었습니다.');
+                    form.find('textarea').val('');
+
+                    const template = $("#answerTemplate").html();
+
+                    const filled = template
+                        .replace("{0}", response.name)
+                        .replace("{1}", response.createdAt)
+                        .replace("{2}", response.text)
+                        .replace("{3}", response.questionId)
+                        .replace("{4}", response.answerId);
+
+                    $('#answer-list').append(filled); // 필요한 경우 답변 목록 갱신
+                },
+                error: function (xhr, status, error) {
+                    alert('오류가 발생했습니다: ' + xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
 	</body>
 </html>
