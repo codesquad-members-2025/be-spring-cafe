@@ -86,6 +86,10 @@
                     </div>
                 </div>
 
+                <div class="text-center" style="margin-top: 10px;">
+                    <button id="load-more-btn" class="btn btn-default" style="display: none;">더보기</button>
+                </div>
+
                 <div class="submit-write">
                     <div class="form-group" style="padding:14px;">
                         <textarea class="form-control" id="comment-content" placeholder="댓글을 입력하세요" required></textarea>
@@ -102,12 +106,14 @@
 </div>
 
 <!-- script references -->
-<script src="../../static/js/jquery-2.2.0.min.js"></script>
-<script src="../../static/js/bootstrap.min.js"></script>
-<script src="../../static/js/scripts.js"></script>
+<script src="/js/jquery-2.2.0.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/scripts.js"></script>
 
 <script>
     const boardId = document.getElementById("board-id").value;
+    let allComments = [];
+    let visibleCount = 5;
 
     function loadComments() {
         fetch(`/boards/${boardId}/comments`, {
@@ -115,34 +121,56 @@
         })
             .then(res => res.json())
             .then(data => {
-                const list = document.getElementById("comment-list");
-                const count = document.getElementById("comment-count");
-                list.innerHTML = "";
-                count.textContent = data.length;
-
-                data.forEach(comment => {
-                    const article = document.createElement("article");
-                    article.classList.add("article");
-
-                    article.innerHTML = `
-                    <div class="article-header">
-                        <div class="article-header-thumb">
-                            <img src="https://graph.facebook.com/v2.3/123/picture" class="article-author-thumb" alt="">
-                        </div>
-                        <div class="article-header-text">
-                            <a href="/users/${comment.writerId}" class="article-author-name">${comment.writer}</a>
-                            <span class="article-header-time">${comment.date}</span>
-                        </div>
-                    </div>
-                    <div class="article-doc comment-doc">
-                        <p>${comment.content}</p>
-                    </div>
-                `;
-
-                    list.appendChild(article);
-                });
+                allComments = data;
+                document.getElementById("comment-count").textContent = data.length;
+                visibleCount = 5;
+                renderComments();
             });
     }
+
+    function renderComments() {
+        const list = document.getElementById("comment-list");
+        list.innerHTML = "";
+
+        const commentsToShow = allComments.slice(0, visibleCount);
+        commentsToShow.forEach(comment => {
+            const article = document.createElement("article");
+            article.classList.add("article");
+
+            article.innerHTML = `
+            <div class="article-header">
+                <div class="article-header-thumb">
+                    <img src="https://graph.facebook.com/v2.3/123/picture" class="article-author-thumb" alt="">
+                </div>
+                <div class="article-header-text">
+                    <a href="/users/${comment.writerId}" class="article-author-name">${comment.writer}</a>
+                    <span class="article-header-time">${comment.date}</span>
+                </div>
+            </div>
+            <div class="article-doc comment-doc">
+                <p>${comment.content}</p>
+            </div>
+        `;
+            list.appendChild(article);
+        });
+
+        const loadMoreBtn = document.getElementById("load-more-btn");
+        if (visibleCount < allComments.length) {
+            loadMoreBtn.style.display = "inline-block";
+        } else {
+            loadMoreBtn.style.display = "none";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        loadComments();
+
+        const loadMoreBtn = document.getElementById("load-more-btn");
+        loadMoreBtn.addEventListener("click", () => {
+            visibleCount += 5;
+            renderComments();
+        });
+    });
 
     function submitComment() {
         const content = document.getElementById("comment-content").value;
