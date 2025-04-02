@@ -3,10 +3,10 @@ package codesquad.codestagram.controller;
 import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.ArticleForm;
+import codesquad.codestagram.dto.ReplyViewDto;
 import codesquad.codestagram.service.ArticleService;
 import codesquad.codestagram.utility.TextUtility;
 import jakarta.servlet.http.HttpSession;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -42,15 +42,19 @@ public class ArticleController {
     }
 
     @GetMapping("/articles/{index}")
-    public String viewArticle(@PathVariable int index, Model model, HttpSession session) {
+    public String viewArticle(@PathVariable Long index, Model model, HttpSession session) {
         Article article = articleService.findArticleById(index);
+        List<ReplyViewDto> replyViewDtoList = articleService.findRepliesByArticle(article);
+
         model.addAttribute("article", article);
         model.addAttribute("parsedContent", TextUtility.escapeAndConvertNewlines(article.getContent()));
+        model.addAttribute("replyDtoList", replyViewDtoList);
+        model.addAttribute("replyCount", replyViewDtoList.size());
         return "qna/show";
     }
 
     @DeleteMapping("/articles/{index}")
-    public String delete(@PathVariable int index, HttpSession session) {
+    public String delete(@PathVariable Long index, HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
         Article article = articleService.findArticleIfOwner(loginUser, index);
         articleService.delete(article);
@@ -58,7 +62,7 @@ public class ArticleController {
     }
 
     @GetMapping("/articles/{index}/update-form")
-    public String updateForm(@PathVariable int index, Model model, HttpSession session) {
+    public String updateForm(@PathVariable Long index, Model model, HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
         Article article = articleService.findArticleIfOwner(loginUser, index);
 
@@ -67,9 +71,8 @@ public class ArticleController {
         return "qna/update-form";
     }
 
-    @Transactional
     @PutMapping("/articles/{index}/update")
-    public String update(@PathVariable int index, ArticleForm articleForm, HttpSession session) {
+    public String update(@PathVariable Long index, ArticleForm articleForm, HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
         articleService.update(loginUser, index, articleForm);
 

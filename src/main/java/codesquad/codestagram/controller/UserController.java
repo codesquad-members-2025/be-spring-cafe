@@ -63,8 +63,10 @@ public class UserController {
     @PutMapping("/users/{userId}/update")
     public String updateForm(UserForm userForm, HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
-        userService.updateUser(loginUser, userForm);
-        return "redirect:/users/" + loginUser.getUserId();
+        User updatedUser = userService.updateUser(loginUser, userForm);
+
+        session.setAttribute("loginUser", updatedUser);
+        return "redirect:/users/" + updatedUser.getUserId();
     }
 
     @GetMapping("/user/login")

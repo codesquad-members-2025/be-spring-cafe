@@ -2,11 +2,18 @@ package codesquad.codestagram.domain;
 
 import codesquad.codestagram.dto.ArticleForm;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Where;
+
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Where(clause = "deleted = false")
 public class Article {
 
     @Id
@@ -15,22 +22,31 @@ public class Article {
     private String title;
     private String content;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)  // ✅ 외래 키 설정
     private User user;
-    private LocalDateTime createdAt;
 
-    public Article() {}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "article")
+    @Where(clause = "deleted = false")
+    private List<Reply> replies = new ArrayList<>();
+    private LocalDateTime createdAt;
+    private boolean deleted = false;
+
+    protected Article() {}
 
     public Article(User user, String title, String content) {
         this.user = user;
         this.title = title;
         this.content = content;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
     }
 
     public User getUser() {
         return user;
+    }
+
+    public List<Reply> getReplies() {
+        return replies;
     }
 
     public String getTitle() {
@@ -45,10 +61,20 @@ public class Article {
         return id;
     }
 
+    public Reply addReply(User user, String text) {
+        Reply reply = new Reply(user, this, text);
+        replies.add(reply);
+        return reply;
+    }
+
+    public void softDelete() {
+        deleted = true;
+        replies.forEach(Reply::softDelete);
+    }
+
     public String getCreatedAt() {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        return createdAt.format(dateFormatter)+" "+createdAt.format(timeFormatter);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return createdAt.format(formatter);
     }
 
     public boolean isAuthor(User user) {

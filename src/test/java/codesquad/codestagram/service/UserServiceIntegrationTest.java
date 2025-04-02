@@ -3,6 +3,7 @@ package codesquad.codestagram.service;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.UserForm;
 import codesquad.codestagram.exception.DuplicateUserIdException;
+import codesquad.codestagram.exception.InvalidPasswordException;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,7 +52,7 @@ public class UserServiceIntegrationTest {
         updatedUserForm.setName("userName2");
         updatedUserForm.setPassword("password");
         updatedUserForm.setChangedPassword("changed");
-        assertThat(userService.updateUser(user, updatedUserForm)).isEqualTo(true);
+        assertThat(userService.updateUser(user, updatedUserForm)).isEqualTo(user);
         assertThat(userService.findByUserId("dino").getName()).isEqualTo("userName2");
     }
 
@@ -62,7 +63,7 @@ public class UserServiceIntegrationTest {
         User user = userService.join(userForm);
 
         UserForm updatedUserForm =  new UserForm("dino","userName2","wrongPassword","jd@naver","12345");
-        assertThat(userService.updateUser(user, updatedUserForm)).isEqualTo(false);
+        assertThatThrownBy(()->userService.updateUser(user, updatedUserForm)).isInstanceOf(InvalidPasswordException.class);
         assertThat(userService.findByUserId("dino").getName()).isEqualTo("userName");
     }
 }

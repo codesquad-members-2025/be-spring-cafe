@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface JpaArticleRepository extends ArticleRepository, JpaRepository<Article, Integer> {
+public interface JpaArticleRepository extends ArticleRepository, JpaRepository<Article, Long> {
 
     @Override
     Article save(Article article);
@@ -19,7 +19,7 @@ public interface JpaArticleRepository extends ArticleRepository, JpaRepository<A
     List<Article> findByTitle(String title);
 
     @Override
-    Optional<Article> findById(int id);
+    Optional<Article> findById(Long id);
 
     @Override
     List<Article> findAll();

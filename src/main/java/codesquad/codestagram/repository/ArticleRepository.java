@@ -10,7 +10,7 @@ public interface ArticleRepository {
     Article save(Article article);
     List<Article> findByUser(User user);
     List<Article> findByTitle(String title);
-    Optional<Article> findById(int id);
+    Optional<Article> findById(Long id);
     List<Article> findAll();
     void delete(Article article);
 }
