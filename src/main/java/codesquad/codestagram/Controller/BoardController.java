@@ -58,7 +58,7 @@ public class BoardController {
             return "redirect:/users/login";
         }
         Board board = boardService.getBoardById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + boardId));
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
 
         model.addAttribute("board", board);
         return "qna/show"; // 게시글 상세 화면 (qna/show.html)
