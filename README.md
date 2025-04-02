@@ -151,8 +151,19 @@ JdbcUserRepository의 findById 메서드에서 User 객체를 생성한 후에 s
   - 로그아웃 요청 변경 (GET -> POST)
 
 # 6단계
-- 구현
-  - 123
+- ## 구현
+  - `null`
+- ## 피드백
+1. session에 저장된 `Long` 타입의 user의 id를 그대로 반환하여 `null` 검사를 하고 있는데, `Optional`로 감싸서 구현해라.
+- 시도  
+![img_12.png](img_12.png)![img_13.png](img_13.png)  
+왼쪽의 기존 코드를 오른쪽 코드처럼 `Optional`로만 감싸니 `Unchecked cast`가 발생했다.
+이유는 `session.getAttribute(USER_ID_SESSION_KEY)`가 `Optional<Long>`이 아닌 `Long` 혹은 `null`을 반환하기 때문이었다.
+- 해결  
+![img_14.png](img_14.png)
+세션에서 가져온 userId가 `Long` 타입이면 userId를 `Long`으로 캐스팅하고 `Optional`로 감싸서 반환하고, 아니라면 빈 `Optional`을 반환하는 명확한 타입 캐스팅 방법으로 수정하니 경고가 없어졌다.  
+2. 로그인하지 않은 사용자가 회원 권한이 필요한 요청을 보냈을 때 로그인을 하면 직전에 요청했던 곳으로 돌아가게 해라.
+
 
 # 학습
 ### PRG 패턴 (POST-REDIRECT-GET)
