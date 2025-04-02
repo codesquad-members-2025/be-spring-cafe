@@ -3,14 +3,15 @@ package codesquad.codestagram.article.service;
 import codesquad.codestagram.article.domain.Article;
 import codesquad.codestagram.article.dto.ArticleRequest;
 import codesquad.codestagram.article.repository.ArticleRepository;
+import codesquad.codestagram.common.exception.error.ForbiddenException;
+import codesquad.codestagram.common.exception.error.InvalidRequestException;
+import codesquad.codestagram.common.exception.error.ResourceNotFoundException;
 import codesquad.codestagram.user.domain.User;
 import codesquad.codestagram.user.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static codesquad.codestagram.user.service.UserService.USER_NOT_FOUND;
 
@@ -31,7 +32,7 @@ public class ArticleService {
     public Long create(ArticleRequest request, Long id) {
 
         User foundUser = userRepository.findById(id).orElseThrow(
-                () -> new NoSuchElementException(USER_NOT_FOUND)
+                () -> new ResourceNotFoundException(USER_NOT_FOUND)
         );
 
         Article article = new Article(
@@ -48,15 +49,21 @@ public class ArticleService {
 
     public Article findArticle(Long id) {
         return articleRepository.findById(id).orElseThrow(
-                () -> new NoSuchElementException(NOT_FOUND_ARTICLE)
+                () -> new ResourceNotFoundException(NOT_FOUND_ARTICLE)
         );
     }
 
     @Transactional
-    public void updateArticle(Long id, ArticleRequest request) {
+    public void updateArticle(Long id, ArticleRequest request, Long loggedInUserId) {
+
+
         Article article = articleRepository.findById(id).orElseThrow(
-                () -> new NoSuchElementException(NOT_FOUND_ARTICLE)
+                () -> new ResourceNotFoundException(NOT_FOUND_ARTICLE)
         );
+
+        if (!loggedInUserId.equals(article.getWriter().getId())) {
+            throw new ForbiddenException("본인의 게시글만 수정할 수 있습니다.");
+        }
 
         validateArticle(request.title(), request.contents());
 
@@ -65,11 +72,11 @@ public class ArticleService {
 
     private void validateArticle(String title, String contents) {
         if (title == null || title.trim().isEmpty()) {
-            throw new IllegalArgumentException("제목을 입력해주세요");
+            throw new InvalidRequestException("제목을 입력해주세요");
         }
 
         if (contents == null || contents.trim().isEmpty()) {
-            throw new IllegalArgumentException("내용을 입력해주세요");
+            throw new InvalidRequestException("내용을 입력해주세요");
         }
     }
 
