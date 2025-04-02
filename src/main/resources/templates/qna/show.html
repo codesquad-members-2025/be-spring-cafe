@@ -70,58 +70,31 @@
 
                 </article>
 
+                <input type="hidden" id="board-id" th:value="${post.id}" />
+
                 <h3>댓글</h3>
 
                 <!-- 댓글 리스트 -->
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
                         <p class="qna-comment-count">
-                            <strong th:text="${#lists.size(comments)}"></strong>개의 의견
+                            <strong id="comment-count">0</strong>개의 의견
                         </p>
-                        <div class="qna-comment-slipp-articles">
-                            <article class="article" th:each="comment : ${comments}">
-                                <div class="article-header">
-                                    <div class="article-header-thumb">
-                                        <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
-                                    </div>
-                                    <div class="article-header-text">
-                                        <a href="#" class="article-author-name" th:text="${comment.user.name}">작성자</a>
-                                        <span class="article-header-time" th:text="${comment.createdAt}">날짜</span>
-                                    </div>
-                                </div>
-                                <div class="article-doc comment-doc">
-                                    <p th:text="${comment.content}">댓글 내용</p>
-                                </div>
-                                <div class="article-util">
-                                    <ul class="article-util-list">
-                                        <li th:if="${loginUser != null and loginUser.id == comment.user.id}">
-                                            <form class="form-delete" th:action="@{/comments/{id}(id=${comment.id}, boardId=${post.id})}" method="post" onsubmit="return confirm('댓글을 삭제하시겠습니까?');">
-                                                <button class="delete-answer-button" type="submit">삭제</button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </article>
+                        <div class="qna-comment-slipp-articles" id="comment-list">
+                            <!-- JS로 댓글이 들어올 자리 -->
                         </div>
                     </div>
                 </div>
 
-                <!-- 댓글 입력 폼 (로그인한 사용자만 가능) -->
-                <div class="qna-comment" th:if="${loginUser != null}">
-                    <form class="submit-write" th:action="@{/comments}" method="post">
-                        <input type="hidden" name="boardId" th:value="${board.id}">
-                        <input type="hidden" name="userId" th:value="${loginUser.userSeq}">
-                        <div class="form-group" style="padding:14px;">
-                            <textarea class="form-control" name="content" placeholder="댓글을 입력하세요" required></textarea>
-                        </div>
-                        <button class="btn btn-success pull-right" type="submit">댓글 작성</button>
-                        <div class="clearfix"></div>
-                    </form>
+                <div class="submit-write">
+                    <div class="form-group" style="padding:14px;">
+                        <textarea class="form-control" id="comment-content" placeholder="댓글을 입력하세요" required></textarea>
+                    </div>
+                    <button class="btn btn-success pull-right" onclick="submitComment()">댓글 작성</button>
+                    <div class="clearfix"></div>
                 </div>
 
-                <!-- 로그인하지 않은 경우 -->
-                <div class="qna-comment" th:if="${loginUser == null}">
-                    <p>댓글을 작성하려면 <a th:href="@{/login}">로그인</a>하세요.</p>
+
                 </div>
             </div>
         </div>
@@ -132,6 +105,72 @@
 <script src="../../static/js/jquery-2.2.0.min.js"></script>
 <script src="../../static/js/bootstrap.min.js"></script>
 <script src="../../static/js/scripts.js"></script>
+
+<script>
+    const boardId = document.getElementById("board-id").value;
+
+    function loadComments() {
+        fetch(`/boards/${boardId}/comments`, {
+            credentials: "same-origin"
+        })
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById("comment-list");
+                const count = document.getElementById("comment-count");
+                list.innerHTML = "";
+                count.textContent = data.length;
+
+                data.forEach(comment => {
+                    const article = document.createElement("article");
+                    article.classList.add("article");
+
+                    article.innerHTML = `
+                    <div class="article-header">
+                        <div class="article-header-thumb">
+                            <img src="https://graph.facebook.com/v2.3/123/picture" class="article-author-thumb" alt="">
+                        </div>
+                        <div class="article-header-text">
+                            <a href="/users/${comment.writerId}" class="article-author-name">${comment.writer}</a>
+                            <span class="article-header-time">${comment.date}</span>
+                        </div>
+                    </div>
+                    <div class="article-doc comment-doc">
+                        <p>${comment.content}</p>
+                    </div>
+                `;
+
+                    list.appendChild(article);
+                });
+            });
+    }
+
+    function submitComment() {
+        const content = document.getElementById("comment-content").value;
+        if (!content.trim()) return alert("댓글을 입력하세요.");
+
+        fetch(`/boards/${boardId}/comments`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin",
+            body: JSON.stringify({ content })
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("댓글 작성 실패");
+                return res.json();
+            })
+            .then(() => {
+                document.getElementById("comment-content").value = "";
+                loadComments();
+            })
+            .catch(err => alert(err.message));
+    }
+
+    // 페이지 로드시 댓글 불러오기
+    window.onload = loadComments;
+</script>
+
 
 </body>
 </html>
