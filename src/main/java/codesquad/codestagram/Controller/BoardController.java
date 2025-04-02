@@ -102,7 +102,6 @@ public class BoardController {
         Board board = boardService.getBoardById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
 
-        // isOwner를 통해 권한(소유자 여부) 검사
         if (!AuthUtil.isAuthorized(session, board.getWriter().getId(), redirectAttributes)) {
             return "redirect:/boards/" + boardId;
         }
@@ -112,4 +111,21 @@ public class BoardController {
         boardService.writeBoard(board); // todo form 만들기 (set 사용 안하도록)
         return "redirect:/boards/" + boardId;
     }
+
+    @DeleteMapping("/boards/{boardId}")
+    public String deleteBoard(@PathVariable("boardId") Long boardId,
+                              HttpSession session,
+                              RedirectAttributes redirectAttributes) {
+
+        Board board = boardService.getBoardById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+
+        if (!AuthUtil.isAuthorized(session, board.getWriter().getId(), redirectAttributes)) {
+            return "redirect:/boards/" + boardId;
+        }
+
+        boardService.deleteBoard(boardId);
+        return "redirect:/";
+    }
+
 }
