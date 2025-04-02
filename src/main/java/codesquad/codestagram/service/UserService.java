@@ -5,6 +5,8 @@ import codesquad.codestagram.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -39,15 +41,19 @@ public class UserService {
         return true;
     }
 
-    public User authenticateUser(String loginId, String password) {
-        User findUser = userRepository.findByLoginId(loginId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이디입니다."));
+    public Map<String, Object> authenticateUser(String loginId, String password) {
+        Optional<User> optionalUser = userRepository.findByLoginId(loginId);
 
-        if (!password.equals(findUser.getPassword())) { //비밀번호가 틀릴 경우
-            return null;
+        if (optionalUser.isEmpty()) {
+            return Map.of("success", false, "errorMessage", "존재하지 않는 아이디입니다.");
         }
 
-        return findUser;
+        User user = optionalUser.get();
+        if (!user.getPassword().equals(password)) {
+            return Map.of("success", false, "errorMessage", "비밀번호가 일치하지 않습니다.");
+        }
+
+        return Map.of("success", true, "user", user);
     }
 
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/users")
@@ -96,21 +97,16 @@ public class UserController {
     public String loginUser(@RequestParam String loginId, @RequestParam String password, HttpSession session
         , RedirectAttributes redirectAttributes) {
 
-        try {
-            User loginUser = userService.authenticateUser(loginId, password);
+        Map<String, Object> result = userService.authenticateUser(loginId, password);
 
-            if (loginUser == null) {
-                redirectAttributes.addFlashAttribute("message", "비밀번호가 일치하지 않습니다.");
-                return "redirect:/users/loginForm";
-            }
-
-            session.setAttribute(SESSION_LOGIN_USER, loginUser);
-            return "redirect:/";
-
-        } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("message", e.getMessage());
+        if (!(boolean)result.get("success")) {
+            redirectAttributes.addFlashAttribute("message", result.get("errorMessage"));
             return "redirect:/users/loginForm";
         }
+
+        session.setAttribute(SESSION_LOGIN_USER, result.get("user"));
+        return "redirect:/";
+
 
     }
 
