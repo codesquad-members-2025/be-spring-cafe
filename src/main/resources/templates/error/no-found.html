@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>페이지를 찾을 수 없습니다</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="alert alert-danger rounded shadow-sm" role="alert" style="background-color: #ffecec;">
+        <h4 class="alert-heading">😢 페이지를 찾을 수 없어요!</h4>
+        <p th:text="${errorMessage}">주소를 다시 확인해주세요</p>
+        <hr>
+        <a href="/" class="btn btn-primary">홈으로 돌아가기</a>
+    </div>
+</div>
+</body>
+</html>
