@@ -3,6 +3,7 @@ package codesquad.codestagram.Controller;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.UserForm;
 import codesquad.codestagram.service.UserService;
+import codesquad.codestagram.util.AuthUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +76,7 @@ public class UserController {
         User sessionUser = (User) session.getAttribute("user");
         // isAuthorized 내부에서 null 검증을 하므로 여기서는 바로 targetUserId로 검증 가능
         //로그인한 사용자가 있다면 그 사용자의 id를, 없다면 null을 전달
-        if (!isAuthorized(session, sessionUser == null ? null : sessionUser.getId(), redirectAttributes)) {
+        if (!AuthUtil.isAuthorized(session, sessionUser == null ? null : sessionUser.getId(), redirectAttributes)) {
             return "redirect:/users/login";
         }
         model.addAttribute("user", sessionUser);
@@ -87,12 +88,12 @@ public class UserController {
     @GetMapping("/users/edit/{id}")
     public String updateForm(@PathVariable("id") Long id, HttpSession session,Model model, RedirectAttributes redirectAttributes) {
         // 인증: 로그인하지 않은 경우 로그인 페이지로 리다이렉트
-        if (!isLogined(session, redirectAttributes)) {
+        if (!AuthUtil.isLogined(session, redirectAttributes)) {
             return "redirect:/users/login";
         }
 
         // 인가: 로그인했지만 다른 사용자의 정보를 수정하려고 할 때는 에러 메시지만 보여주고, 예를 들어 프로필 페이지로 리다이렉트
-        if (!isOwner(session, id, redirectAttributes)) {
+        if (!AuthUtil.isOwner(session, id, redirectAttributes)) {
             // 에러 팝업 후 자신의 프로필 페이지 등으로 리다이렉트
             return "redirect:/users/list";
         }
@@ -109,7 +110,7 @@ public class UserController {
                              @ModelAttribute("updateDto") UserForm.UpdateUser updateDto,
                              HttpSession session,
                              RedirectAttributes redirectAttributes) {
-        if (!isAuthorized(session, id, redirectAttributes)) {
+        if (!AuthUtil.isAuthorized(session, id, redirectAttributes)) {
             return "redirect:/users/profile";
         }
 
@@ -128,30 +129,5 @@ public class UserController {
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다. loginId=" + loginId));
         model.addAttribute("user", user);
         return "user/profile";
-    }
-
-    //인증/인가 로직인 웹 계층(controller)에서 처리하는 것이 좋음
-    //인증(로그인여부만 확인)
-    private boolean isLogined(HttpSession session, RedirectAttributes redirectAttributes) {
-        if (session.getAttribute("user") == null) { //세션에 user 속성이 있는지만 체크 -> 변수로 할당할 필요 없음
-            redirectAttributes.addFlashAttribute("errorMessage", "로그인이 필요합니다.");
-            return false;
-        }
-        return true;
-    }
-
-    //인가(동알 사용자인지(권한 확인)) -> 이 전에 로그인 상태인지 반드시 확인해야함
-    private boolean isOwner(HttpSession session, Long targetUserId, RedirectAttributes redirectAttributes) {
-        User sessionUser = (User) session.getAttribute("user");
-        if (!sessionUser.getId().equals(targetUserId)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "다른 사용자의 정보를 수정할 수 없습니다.");
-            return false;
-        }
-        return true;
-    }
-
-    //한번에 확인
-    private boolean isAuthorized(HttpSession session, Long targetUserId, RedirectAttributes redirectAttributes) {
-        return isLogined(session, redirectAttributes) && isOwner(session, targetUserId, redirectAttributes);
     }
 }

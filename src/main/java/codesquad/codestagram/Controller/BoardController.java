@@ -3,6 +3,8 @@ package codesquad.codestagram.Controller;
 import codesquad.codestagram.domain.Board;
 import codesquad.codestagram.dto.BoardForm;
 import codesquad.codestagram.service.BoardService;
+import codesquad.codestagram.util.AuthUtil;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.*;
 
@@ -38,11 +41,8 @@ public class BoardController {
     @GetMapping("/")
     public String listBoards(Model model) {
         List<Board> boards = boardService.getAllBoards();
-
         log.info("현재 저장된 게시글 개수: {}",  boards.size());
-
         model.addAttribute("boards", boards);
-
         return "index"; // 게시글 목록 화면
     }
 
@@ -51,7 +51,12 @@ public class BoardController {
      * GET 요청: /boards/{boardId}
      */
     @GetMapping("/boards/{boardId}")
-    public String showBoard(@PathVariable("boardId") Long boardId, Model model) {
+    public String showBoard(@PathVariable("boardId") Long boardId, Model model,
+                            HttpSession session,
+                            RedirectAttributes redirectAttributes) {
+        if (!AuthUtil.isLogined(session, redirectAttributes)) {
+            return "redirect:/users/login";
+        }
         Board board = boardService.getBoardById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + boardId));
 
