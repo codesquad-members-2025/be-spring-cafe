@@ -1,5 +1,6 @@
 package codesquad.codestagram.reply.controller;
 
+import codesquad.codestagram.reply.dto.ReplyRequest;
 import codesquad.codestagram.user.service.SessionService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -11,7 +12,6 @@ import java.util.NoSuchElementException;
 @Controller
 @RequestMapping("/articles/{articleId}/replies")
 public class ReplyController {
-
     private final SessionService sessionService;
     private final ReplyService replyService;
 
