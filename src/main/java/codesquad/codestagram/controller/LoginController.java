@@ -43,4 +43,10 @@ public class LoginController {
         //로그인 성공 처리 TODO
         return "redirect:/";
     }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
+    }
 }

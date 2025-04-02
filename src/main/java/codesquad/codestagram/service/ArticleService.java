@@ -10,10 +10,8 @@ import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -28,7 +26,7 @@ public class ArticleService {
     }
 
 
-    public List<Article> getArticlesV2() {
+    public List<Article> getArticles() {
         return articleRepository.findAll();
     }
 
@@ -53,7 +51,7 @@ public class ArticleService {
     }
     // 사용자를 지정해서 게시글 추가
 
-    public void addArticleV2(ArticleWriteRequest request) {
+    public void addArticle(ArticleWriteRequest request) {
         Article article = new Article(request.getTitle(), request.getContent(),request.getUser());
         articleRepository.save(article);
     }

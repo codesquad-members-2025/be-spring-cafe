@@ -32,7 +32,7 @@ public class ArticleController {
     // 모든 게시글 조회
     @GetMapping()
     public String viewQuestions(Model model) {
-        List<Article> articles = articleService.getArticlesV2();
+        List<Article> articles = articleService.getArticles();
         model.addAttribute("articles", articles);
         return "qna/list";
     }
@@ -71,11 +71,11 @@ public class ArticleController {
         }
 
 
-        articleService.addArticleV2(request);
+        articleService.addArticle(request);
         return "redirect:/qna";
     }
 
-
+    //게시글 수정 입력폼노출
     @GetMapping("/articles/{articleId}/edit")
         public String showUpdateArticleForm(@Login User user, @PathVariable("articleId")Long articleId,Model model){
 
@@ -103,8 +103,27 @@ public class ArticleController {
     //게시글 삭제
     @PostMapping("/articles/{articleId}/delete")
     public String deleteArticle(@PathVariable("articleId") Long articleId) {
-        articleService.deleteArticleById(articleId);
-        return "redirect:/qna";
+        // 게시글 조회
+        Article article = articleService.findArticleById(articleId).orElseThrow(() -> new IllegalArgumentException("Article not found"));
+
+        // 댓글이 없는 경우 바로 삭제 가능
+        if (article.getComments().isEmpty()) {
+            articleService.deleteArticleById(articleId);
+            return "redirect:/qna";
+        }
+
+        // 댓글 작성자와 게시글 작성자가 모두 같은지 확인
+        boolean allCommentsByAuthor = article.getComments().stream()
+                .allMatch(comment -> comment.getUser().equals(article.getUser()));
+
+        if (allCommentsByAuthor) {
+            // 모든 댓글 작성자가 게시글 작성자인 경우 삭제 가능
+            articleService.deleteArticleById(articleId);
+            return "redirect:/qna";
+        }
+
+        // 조건에 맞지 않으면 삭제 불가능
+        return "redirect:/articles";
     }
 
 }
