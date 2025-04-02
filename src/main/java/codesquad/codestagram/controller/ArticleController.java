@@ -11,10 +11,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
+import static codesquad.codestagram.config.AppConstants.*;
+
 @Controller
 public class ArticleController {
-
-    private static final String SESSION_LOGIN_USER = "loginUser";
 
     private final ArticleService articleService;
 
@@ -36,7 +36,7 @@ public class ArticleController {
 
     @PostMapping("/article")
     public String createArticle(@ModelAttribute Article article, HttpSession session) {
-        User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
+        User loginUser = (User) session.getAttribute(LOGIN_USER);
         article.setUser(loginUser);
         articleService.saveArticle(article);
         return "redirect:/";
@@ -51,7 +51,7 @@ public class ArticleController {
             return "article/detail";
 
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("alertMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute(ALERT_MESSAGE, e.getMessage());
             return "redirect:/";
         }
 
@@ -59,13 +59,13 @@ public class ArticleController {
 
     @GetMapping("/article/{id}/form")
     public String getArticleUpdateForm(@PathVariable("id") Long id, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
-        User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
+        User loginUser = (User) session.getAttribute(LOGIN_USER);
 
         try {
             Article article = articleService.findArticle(id);
 
             if (loginUser.getId() != article.getUser().getId()) {
-                redirectAttributes.addFlashAttribute("alertMessage", "작성자 ID와 사용자 ID가 일치하지 않습니다.");
+                redirectAttributes.addFlashAttribute(ALERT_MESSAGE, "작성자 ID와 사용자 ID가 일치하지 않습니다.");
                 return "redirect:/article/" + id;
             }
 
@@ -73,7 +73,7 @@ public class ArticleController {
             return "article/updateForm";
 
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("alertMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute(ALERT_MESSAGE, e.getMessage());
             return "redirect:/";
         }
 
@@ -84,12 +84,12 @@ public class ArticleController {
     @PutMapping("/article/{id}/update")
     public String updateArticle(@PathVariable("id") Long id, @ModelAttribute Article article, HttpSession session
         , RedirectAttributes redirectAttributes) {
-        User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
+        User loginUser = (User) session.getAttribute(LOGIN_USER);
 
         boolean result = articleService.updateArticle(id, article, loginUser);
 
         if (!result) {
-            redirectAttributes.addFlashAttribute("alertMessage", "작성자 ID와 사용자 ID가 일치하지 않습니다.");
+            redirectAttributes.addFlashAttribute(ALERT_MESSAGE, "작성자 ID와 사용자 ID가 일치하지 않습니다.");
             return "redirect:/article/" + id;
         }
 
@@ -98,16 +98,16 @@ public class ArticleController {
 
     @DeleteMapping("/article/{id}/delete")
     public String deleteArticle(@PathVariable("id") Long id, HttpSession session, RedirectAttributes redirectAttributes) {
-        User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
+        User loginUser = (User) session.getAttribute(LOGIN_USER);
 
         boolean result = articleService.removeArticle(id, loginUser);
 
         if (!result) {
-            redirectAttributes.addFlashAttribute("alertMessage", "작성자 ID와 사용자 ID가 일치하지 않습니다.");
+            redirectAttributes.addFlashAttribute(ALERT_MESSAGE, "작성자 ID와 사용자 ID가 일치하지 않습니다.");
             return "redirect:/article/" + id;
         }
 
-        redirectAttributes.addFlashAttribute("alertMessage", "게시글이 정상적으로 삭제되었습니다.");
+        redirectAttributes.addFlashAttribute(ALERT_MESSAGE, "게시글이 정상적으로 삭제되었습니다.");
         return "redirect:/";
     }
 }

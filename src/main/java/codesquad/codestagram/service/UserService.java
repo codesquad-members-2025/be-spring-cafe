@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static codesquad.codestagram.config.AppConstants.*;
+
 @Service
 public class UserService {
 
@@ -45,15 +47,15 @@ public class UserService {
         Optional<User> optionalUser = userRepository.findByLoginId(loginId);
 
         if (optionalUser.isEmpty()) {
-            return Map.of("success", false, "errorMessage", "존재하지 않는 아이디입니다.");
+            return Map.of(SUCCESS, false, MESSAGE, "존재하지 않는 아이디입니다.");
         }
 
         User user = optionalUser.get();
         if (!user.getPassword().equals(password)) {
-            return Map.of("success", false, "errorMessage", "비밀번호가 일치하지 않습니다.");
+            return Map.of(SUCCESS, false, MESSAGE, "비밀번호가 일치하지 않습니다.");
         }
 
-        return Map.of("success", true, "user", user);
+        return Map.of(SUCCESS, true, "user", user);
     }
 
 }

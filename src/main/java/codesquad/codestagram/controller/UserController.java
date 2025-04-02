@@ -12,11 +12,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 import java.util.Map;
 
+import static codesquad.codestagram.config.AppConstants.*;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
-
-    private static final String SESSION_LOGIN_USER = "loginUser";
 
     private final UserService userService;
 
@@ -30,7 +30,7 @@ public class UserController {
         try {
             userService.createUser(user);
         } catch (DataIntegrityViolationException e) {
-            redirectAttributes.addFlashAttribute("message", "이미 사용중인 아이디입니다.");
+            redirectAttributes.addFlashAttribute(MESSAGE, "이미 사용중인 아이디입니다.");
             return "redirect:/users/form";
         }
 
@@ -50,10 +50,12 @@ public class UserController {
         try {
             User user = userService.findUser(id);
             model.addAttribute("user", user);
-        } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("message", e.getMessage());
+
+        } catch (EntityNotFoundException e) {
+            redirectAttributes.addFlashAttribute(MESSAGE, e.getMessage());
             return "redirect:/";
         }
+
         return "user/profile";
     }
 
@@ -61,7 +63,7 @@ public class UserController {
     public String getUpdateForm(@PathVariable("id") Long id, Model model, HttpSession session
         , RedirectAttributes redirectAttributes) {
 
-        User loginUser = (User) session.getAttribute(SESSION_LOGIN_USER);
+        User loginUser = (User) session.getAttribute(LOGIN_USER);
 
         try {
             User findUser = userService.findUser(id);
@@ -72,7 +74,7 @@ public class UserController {
             model.addAttribute("user", findUser);
 
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("alertMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute(ALERT_MESSAGE, e.getMessage());
             return "redirect:/";
         }
 
@@ -86,7 +88,7 @@ public class UserController {
         boolean updateResult = userService.updateUser(user, id, confirmPassword);
 
         if (!updateResult) {
-            redirectAttributes.addFlashAttribute("message", "비밀번호가 일치하지 않습니다.");
+            redirectAttributes.addFlashAttribute(MESSAGE, "비밀번호가 일치하지 않습니다.");
             return "redirect:/users/" + id + "/form";
         }
 
@@ -99,12 +101,12 @@ public class UserController {
 
         Map<String, Object> result = userService.authenticateUser(loginId, password);
 
-        if (!(boolean)result.get("success")) {
-            redirectAttributes.addFlashAttribute("message", result.get("errorMessage"));
+        if (!(boolean)result.get(SUCCESS)) {
+            redirectAttributes.addFlashAttribute(MESSAGE, result.get(MESSAGE));
             return "redirect:/users/loginForm";
         }
 
-        session.setAttribute(SESSION_LOGIN_USER, result.get("user"));
+        session.setAttribute(LOGIN_USER, result.get("user"));
         return "redirect:/";
 
 
