@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,9 +41,9 @@ public class UserController {
         return "user/list";
     }
 
-    public void init() {
-        userService.initExampleUsers();
-    }
+//    public void init() {
+//        userService.initExampleUsers();
+//    }
 
     @GetMapping("/signup")
     public String addForm(){
@@ -52,14 +54,6 @@ public class UserController {
     public String addUser(@ModelAttribute("user") UserRequestDto dto){
         userService.join(dto);
         return "redirect:/users";
-    }
-
-    @GetMapping("/{id}")
-    public String userInfo(@PathVariable Long id, Model model){
-        User user = userService.getUserById(id);
-        UserResponseDto dto = new UserResponseDto(user);
-        model.addAttribute("user", dto);
-        return "user/profile";
     }
 
     @GetMapping("/login")
@@ -80,5 +74,62 @@ public class UserController {
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/";
+    }
+
+    @GetMapping("/{id}")
+    public String userInfo(@PathVariable Long id,
+                           Model model,
+                           HttpSession session){
+        User user = userService.getUserById(id);
+        UserResponseDto dto = new UserResponseDto(user);
+
+        User loginUser = (User) session.getAttribute("loginUser");
+        boolean isOwner = loginUser != null && loginUser.getId().equals(id);
+
+        model.addAttribute("user", dto);
+        model.addAttribute("isOwner", isOwner);
+
+        return "user/profile";
+    }
+
+    @PostMapping("/{id}/revise")
+    public String revise(@PathVariable Long id,
+                         @RequestParam String name,
+                         @RequestParam String email,
+                         @ModelAttribute("loginUser") User loginUser){
+
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
+
+        if (!id.equals(loginUser.getId())) {
+            // todo: 에러메시지 이런 사용자는 없다.
+            return "redirect:/users";
+        }
+
+        userService.updateUserProfile(id, name, email);
+        return "redirect:/users/" + id;
+    }
+
+    @PostMapping("/{id}/password")
+    public String changePassword(@PathVariable Long id,
+                                 @RequestParam String curPassword,
+                                 @RequestParam String newPassword,
+                                 HttpSession session,
+                                 RedirectAttributes redirectAttributes){
+        User loginUser = (User) session.getAttribute("loginUser");
+
+        if (loginUser == null || !loginUser.getId().equals(id)) {
+            return "redirect:/login";
+        }
+
+        try {
+            userService.changePassword(id, curPassword, newPassword);
+            redirectAttributes.addFlashAttribute("message", "비밀번호가 성공적으로 변경되었습니다.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/users/" + id;
     }
 }
