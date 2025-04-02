@@ -1,5 +1,6 @@
 package codesquad.codestagram.article.domain;
 
+import codesquad.codestagram.domain.User;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,6 +13,12 @@ public class Article {
 
     @Column(nullable = false, unique = true)
     String writer;
+
+    //@ManyToOne
+    //@JoinColumn(name = "writer_id")
+   // private User writer;
+
+
 
     @Column(nullable = false)
     String title;

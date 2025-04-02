@@ -30,4 +30,12 @@ public class ArticleService {
         return articleRepository.findArticleById(Id);
     }
 
+    public void updateArticle(Long id, Article updateArticle) {
+        Article article = articleRepository.findArticleById(id);
+        if(article != null){
+            article.setTitle(updateArticle.getTitle());
+            article.setContents(updateArticle.getContents());
+            write(article);
+        }
+    }
 }
