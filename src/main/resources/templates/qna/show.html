@@ -41,9 +41,9 @@
                                     <a th:href="@{/boards/{boardId}/edit(boardId=${board.boardId})}" class="link-modify-article">수정</a>
                                 </li>
                                 <li>
-                                    <form class="form-delete" action="/boards/{boardId}" method="POST">
+                                    <form class="form-delete" method="post" th:action="@{/boards/{boardId}(boardId=${board.boardId})}">
                                         <input type="hidden" name="_method" value="DELETE">
-                                        <button class="link-delete-article" type="submit">삭제</button>
+                                        <button type="submit" class="link-delete-article">삭제</button>
                                     </form>
                                 </li>
                                 <li>

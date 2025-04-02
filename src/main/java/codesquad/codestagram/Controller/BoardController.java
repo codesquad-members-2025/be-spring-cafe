@@ -90,7 +90,7 @@ public class BoardController {
             return "redirect:/boards/" + boardId; //todo 오류 메시지 수정하기.
         }
         model.addAttribute("board", board);
-        return "qna/editForm";
+        return "qna/edit";
     }
 
     //게시글 수정
