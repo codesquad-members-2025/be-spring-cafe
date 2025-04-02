@@ -21,10 +21,14 @@
         <span th:text="${loginError}"></span>
     </div>
 
+    <div th:if="${param.error} == 'unauthorized'" class="alert alert-danger" role="alert">
+        권한이 없습니다.
+    </div>
+
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
             <header class="qna-header">
-                <h2 class="qna-title" th:text="${board.title}">게시글 제목</h2>
+                <h2 class="qna-title" th:text="${post.title}">게시글 제목</h2>
             </header>
             <div class="content-main">
                 <article class="article">
@@ -33,15 +37,37 @@
                             <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a th:href="@{/users/{id}(id=${board.writerId})}" class="author" th:text="${board.writerName}">작성자</a>
+                            <a th:href="@{/users/{id}(id=${post.writerId})}" class="author" th:text="${post.writerName}">작성자</a>
                             <a href="#" class="article-header-time" title="퍼머링크">
-                                <span th:text="${board.uploadDate}"></span>
+                                <span th:text="${post.date}"></span>
                             </a>
                         </div>
                     </div>
                     <div class="article-doc">
-                        <p th:text="${board.content}">게시글 내용</p>
+                        <p th:text="${post.content}">게시글 내용</p>
                     </div>
+
+                    <div class="article-util" th:if="${isOwner}">
+                        <div class="article-util">
+                            <ul class="article-util-list">
+                                <li>
+                                    <form class="form-update" th:action="@{/boards/{id}/edit(id=${post.id})}">
+                                        <button class="link-update-article" type="submit">수정</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form class="form-delete" th:action="@{/boards/{id}(id=${post.id})}" method="POST" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <button class="link-delete-article" type="submit">삭제</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <a class="link-modify-article" href="/">목록</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
                 </article>
 
                 <h3>댓글</h3>
@@ -69,7 +95,7 @@
                                 <div class="article-util">
                                     <ul class="article-util-list">
                                         <li th:if="${loginUser != null and loginUser.id == comment.user.id}">
-                                            <form class="form-delete" th:action="@{/comments/{id}(id=${comment.id}, boardId=${board.id})}" method="post" onsubmit="return confirm('댓글을 삭제하시겠습니까?');">
+                                            <form class="form-delete" th:action="@{/comments/{id}(id=${comment.id}, boardId=${post.id})}" method="post" onsubmit="return confirm('댓글을 삭제하시겠습니까?');">
                                                 <button class="delete-answer-button" type="submit">삭제</button>
                                             </form>
                                         </li>
