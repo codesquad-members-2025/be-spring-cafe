@@ -11,11 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.*;
 
@@ -78,5 +76,40 @@ public class BoardController {
         boardService.writeBoard(board);
         return "redirect:/"; //메인 페이지로 이동
 
+    }
+
+    //게시글 수정 폼
+    @GetMapping("/boards/{boardId}/edit")
+    public String editBoardForm(@PathVariable("boardId") Long boardId, Model model,
+                                HttpSession session,
+                                RedirectAttributes redirectAttributes) {
+        Board board = boardService.getBoardById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+
+        if (!AuthUtil.isAuthorized(session, board.getWriter().getId(), redirectAttributes)) {
+            return "redirect:/boards/" + boardId; //todo 오류 메시지 수정하기.
+        }
+        model.addAttribute("board", board);
+        return "qna/editForm";
+    }
+
+    //게시글 수정
+    @PutMapping("/boards/{boardId}/edit")
+    public String updateBoard(@PathVariable("boardId") Long boardId,
+                              @ModelAttribute BoardForm form,
+                              HttpSession session,
+                              RedirectAttributes redirectAttributes) {
+        Board board = boardService.getBoardById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+
+        // isOwner를 통해 권한(소유자 여부) 검사
+        if (!AuthUtil.isAuthorized(session, board.getWriter().getId(), redirectAttributes)) {
+            return "redirect:/boards/" + boardId;
+        }
+
+        board.setTitle(form.getTitle());
+        board.setContent(form.getContent());
+        boardService.writeBoard(board); // todo form 만들기 (set 사용 안하도록)
+        return "redirect:/boards/" + boardId;
     }
 }
