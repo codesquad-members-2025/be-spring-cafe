@@ -2,6 +2,7 @@ package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -69,11 +70,12 @@ public class UserController {
             User findUser = userService.findUser(id);
 
             if (loginUser.getId() != findUser.getId()) { //URL을 직접 입력해서 타인의 회원정보를 수정할 경우
-                throw new IllegalArgumentException("사용자 ID가 일치하지 않습니다.");
+                redirectAttributes.addFlashAttribute(ALERT_MESSAGE, "사용자 ID가 일치하지 않습니다.");
+                return "redirect:/";
             }
             model.addAttribute("user", findUser);
 
-        } catch (IllegalArgumentException e) {
+        } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute(ALERT_MESSAGE, e.getMessage());
             return "redirect:/";
         }

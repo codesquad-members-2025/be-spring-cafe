@@ -2,6 +2,7 @@ package codesquad.codestagram.service;
 
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class UserService {
     }
 
     public User findUser(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
     }
 
     public boolean updateUser(User user, Long id, String confirmPassword) {

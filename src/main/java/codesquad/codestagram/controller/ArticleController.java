@@ -3,6 +3,7 @@ package codesquad.codestagram.controller;
 import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.service.ArticleService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,14 +44,14 @@ public class ArticleController {
     }
 
     @GetMapping("/article/{id}")
-    public String getArticle(@PathVariable("id") Long id, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String getArticle(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
 
         try {
             Article article = articleService.findArticle(id);
             model.addAttribute("article", article);
             return "article/detail";
 
-        } catch (IllegalArgumentException e) {
+        } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute(ALERT_MESSAGE, e.getMessage());
             return "redirect:/";
         }
@@ -72,7 +73,7 @@ public class ArticleController {
             model.addAttribute("article", article);
             return "article/updateForm";
 
-        } catch (IllegalArgumentException e) {
+        } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute(ALERT_MESSAGE, e.getMessage());
             return "redirect:/";
         }
