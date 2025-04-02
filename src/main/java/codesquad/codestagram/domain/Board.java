@@ -23,10 +23,16 @@ public class Board {
         this.content = content;
     }
 
+    public void updateFrom(BoardForm form) {
+        this.title = form.getTitle();
+        this.content = form.getContent();
+    }
+
 
     public static Board form(BoardForm form) {
         return new Board(form.getTitle(), form.getContent());
     }
+
 
     public Long getBoardId() {
         return boardId;

@@ -63,7 +63,9 @@ public class BoardController {
     }
 
     @PostMapping("/boards/create")
-    public String createBoard(@ModelAttribute BoardForm form, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String createBoard(@ModelAttribute BoardForm form,
+                              HttpSession session,
+                              RedirectAttributes redirectAttributes) {
         if (!AuthUtil.isLogined(session, redirectAttributes)) {
             return "redirect:/users/login";
         }
@@ -106,8 +108,9 @@ public class BoardController {
             return "redirect:/boards/" + boardId;
         }
 
-        board.setTitle(form.getTitle());
-        board.setContent(form.getContent());
+//        board.setTitle(form.getTitle());
+//        board.setContent(form.getContent());
+        board.updateFrom(form);
         boardService.writeBoard(board); // todo form 만들기 (set 사용 안하도록)
         return "redirect:/boards/" + boardId;
     }
