@@ -1,71 +1,74 @@
 package codesquad.codestagram.controller;
 
-import codesquad.codestagram.service.CommentService;
-import org.springframework.ui.Model;
 import codesquad.codestagram.dto.UserRequestDto;
 import codesquad.codestagram.dto.UserResponseDto;
+import codesquad.codestagram.entity.User;
 import codesquad.codestagram.service.UserService;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
+
     private final UserService userService;
-    private final CommentService commentService;
 
-    public UserController(UserService userService
-                        , CommentService commentService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.commentService = commentService;
     }
 
-    @GetMapping("/create")
-    public String showRegisterForm() {
-        return "user/form";
-    }
-
-    @PostMapping
-    public String registerUser(@ModelAttribute UserRequestDto dto) {
-        userService.registerUser(dto);
-        return "redirect:/users";
+    @ModelAttribute("loginUser")
+    public User loginUser(HttpSession session) {
+        return (User) session.getAttribute("loginUser");
     }
 
     @GetMapping
-    public String getAllUsers(Model model) {
-        List<UserResponseDto> users = userService.getAllUsers();
-        model.addAttribute("users", users);
+    public String users(Model model){
+        List<User> users =  userService.findAll();
+        List<UserResponseDto> dtos = new ArrayList<>();
+
+        for (User user : users) {
+            dtos.add(new UserResponseDto(user));
+        }
+
+        model.addAttribute("users",dtos);
         return "user/list";
     }
 
-    @GetMapping("/{id}")
-    public String getUserProfile(@PathVariable String id, Model model) {
-        UserResponseDto user = userService.getUserById(id);
-        model.addAttribute("user", user);
-        return "user/profile";
+//    public void init() {
+//        userService.initExampleUsers();
+//    }
+
+    @GetMapping("/signup")
+    public String addForm(){
+        return "user/form";
+    }
+
+    @PostMapping("/signup")
+    public String addUser(@ModelAttribute("user") UserRequestDto dto){
+        userService.join(dto);
+        return "redirect:/users";
     }
 
     @GetMapping("/login")
-    public String showLoginForm() {
+    public String loginForm(){
         return "user/login";
     }
 
-
     @PostMapping("/login")
-    public String login(@RequestParam String id, @RequestParam String password, HttpSession session, RedirectAttributes redirectAttributes) {
-        UserResponseDto user = userService.authenticate(id, password);
-        if (user == null) {
-            redirectAttributes.addFlashAttribute("loginError", "아이디 또는 비밀번호가 틀립니다.");
-            return "redirect:/users/login";
-        }
-
+    public String login(@RequestParam String userid,
+                        @RequestParam String password,
+                        HttpSession session){
+        User user = userService.login(userid, password);
         session.setAttribute("loginUser", user);
-        return "redirect:/";
-    }
+        return "redirect:/users"; //리다이렉트는 다르게 써야함
+    }//로그인 실패 로직 구현 -> 예외 핸들러로 보내면되나?
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
@@ -73,21 +76,60 @@ public class UserController {
         return "redirect:/";
     }
 
-    @GetMapping("/{id}/revise")
-    public String showEditUserForm(@PathVariable String id, Model model) {
-        UserResponseDto user = userService.getUserById(id);
-        if (user == null) {
-            return "redirect:/users";
-        }
-        model.addAttribute("user", user);
-        return "user/change";
+    @GetMapping("/{id}")
+    public String userInfo(@PathVariable Long id,
+                           Model model,
+                           HttpSession session){
+        User user = userService.getUserById(id);
+        UserResponseDto dto = new UserResponseDto(user);
+
+        User loginUser = (User) session.getAttribute("loginUser");
+        boolean isOwner = loginUser != null && loginUser.getId().equals(id);
+
+        model.addAttribute("user", dto);
+        model.addAttribute("isOwner", isOwner);
+
+        return "user/profile";
     }
 
+    @PostMapping("/{id}/revise")
+    public String revise(@PathVariable Long id,
+                         @RequestParam String name,
+                         @RequestParam String email,
+                         @ModelAttribute("loginUser") User loginUser){
 
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
 
-    @PostMapping("/comments/{id}")
-    public String deleteComment(@PathVariable Long id, @RequestParam(required = false) Long boardId) {
-        commentService.deleteComment(id);
-        return (boardId != null) ? "redirect:/boards/" + boardId : "redirect:/";
+        if (!id.equals(loginUser.getId())) {
+            // todo: 에러메시지 이런 사용자는 없다.
+            return "redirect:/users";
+        }
+
+        userService.updateUserProfile(id, name, email);
+        return "redirect:/users/" + id;
+    }
+
+    @PostMapping("/{id}/password")
+    public String changePassword(@PathVariable Long id,
+                                 @RequestParam String curPassword,
+                                 @RequestParam String newPassword,
+                                 HttpSession session,
+                                 RedirectAttributes redirectAttributes){
+        User loginUser = (User) session.getAttribute("loginUser");
+
+        if (loginUser == null || !loginUser.getId().equals(id)) {
+            return "redirect:/login";
+        }
+
+        try {
+            userService.changePassword(id, curPassword, newPassword);
+            redirectAttributes.addFlashAttribute("message", "비밀번호가 성공적으로 변경되었습니다.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/users/" + id;
     }
 }

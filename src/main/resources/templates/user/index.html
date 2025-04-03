@@ -16,12 +16,14 @@
 
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
+<div th:if="${message}" th:text="${message}" style="color:red;"></div>
+
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="alert alert-danger" role="alert" th:if="${loginError}" th:text="${loginError}"></div>
         <div class="panel panel-default qna-list">
             <ul class="list">
-                <li th:each="board, stat : ${boards}">
+                <li th:each="board, stat : ${posts}">
                     <div class="wrap">
                         <div class="main">
                             <strong class="subject">
@@ -29,7 +31,7 @@
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
-                                <span class="time" th:text="${board.uploadDate}"></span>
+                                <span class="time" th:text="${board.date}"></span>
                                 <a th:href="@{/users/{id}(id=${board.writerId})}" class="author" th:text="${board.writerName}"></a>
                             </div>
                             <div class="reply" title="댓글">
@@ -44,13 +46,21 @@
                 <div class="col-md-3"></div>
                 <div class="col-md-6 text-center">
                     <ul class="pagination center-block" style="display:inline-block;">
-                        <li><a href="#">«</a></li>
-                        <li><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                        <li><a href="#">»</a></li>
+                        <!-- 이전 페이지 묶음 버튼 -->
+                        <li th:if="${startPage > 1}">
+                            <a th:href="@{'/page/' + ${startPage - 1}}">«</a>
+                        </li>
+
+                        <!-- 페이지 번호 목록 -->
+                        <li th:each="i : ${#numbers.sequence(startPage, endPage)}"
+                            th:classappend="${i} == ${currentPage} ? 'active'">
+                            <a th:href="@{'/page/' + ${i}}" th:text="${i}">1</a>
+                        </li>
+
+                        <!-- 다음 페이지 묶음 버튼 -->
+                        <li th:if="${endPage < totalPages}">
+                            <a th:href="@{'/page/' + ${endPage + 1}}">»</a>
+                        </li>
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
@@ -140,8 +150,8 @@
 -->
 
 <!-- script references -->
-<script src="../../static/js/jquery-2.2.0.min.js"></script>
-<script src="../../static/js/bootstrap.min.js"></script>
-<script src="../../static/js/scripts.js"></script>
+<script src="/js/jquery-2.2.0.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/scripts.js"></script>
 	</body>
 </html>

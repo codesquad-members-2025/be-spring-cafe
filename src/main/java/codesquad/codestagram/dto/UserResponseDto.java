@@ -1,29 +1,33 @@
 package codesquad.codestagram.dto;
 
-public class UserResponseDto {
-    private Long userSeq;
-    private String id;
-    private String name;
-    private String email;
+import codesquad.codestagram.entity.User;
 
-    public UserResponseDto(Long userSeq, String id, String name, String email) {
-        this.userSeq = userSeq;
-        this.id = id;
-        this.name = name;
-        this.email = email;
+public class UserResponseDto {
+    private Long id;
+    private String userid;
+    private String email;
+    private String name;
+
+    public UserResponseDto(User user) {
+        this.id = user.getId();
+        this.userid = user.getUserid();
+        this.email = user.getEmail();
+        this.name = user.getName();
     }
 
-    public Long getUserSeq() { return userSeq; };
-
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getUserid() {
+        return userid;
     }
 
     public String getEmail() {
         return email;
+    }
+
+    public String getName() {
+        return name;
     }
 }

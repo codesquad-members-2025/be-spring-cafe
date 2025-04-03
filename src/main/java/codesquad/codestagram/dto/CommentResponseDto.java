@@ -1,40 +1,47 @@
 package codesquad.codestagram.dto;
 
-import codesquad.codestagram.Entity.Comment;
-import java.time.format.DateTimeFormatter;
-
 public class CommentResponseDto {
-    private Long id;
-    private Long userId;
-    private Long boardId;
     private String content;
-    private UserResponseDto user;
-    private String createdAt;
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private String writer;
+    private String date;
+    private Long writerId;
 
-    public CommentResponseDto(Comment comment) {
-        this.id = comment.getId();
-        this.content = comment.getContent();
-        this.boardId = comment.getBoard() != null ? comment.getBoard().getId() : null;
-        this.userId = comment.getUser() != null ? comment.getUser().getUserSeq() : null;
-        this.createdAt = comment.getCreatedAt().format(FORMATTER);
-
-        if (comment.getUser() != null) {
-            this.user = new UserResponseDto(
-                    comment.getUser().getUserSeq(),
-                    comment.getUser().getId(),
-                    comment.getUser().getName(),
-                    comment.getUser().getEmail()
-            );
-        } else {
-            this.user = null;
-        }
+    public CommentResponseDto(String content, String writer, String date, Long writerId) {
+        this.content = content;
+        this.writer = writer;
+        this.date = date;
+        this.writerId = writerId;
     }
 
-    public Long getId() { return id; }
-    public Long getUserId() { return userId; }
-    public Long getBoardId() { return boardId; }
-    public String getContent() { return content; }
-    public UserResponseDto getUser() { return user; }
-    public String getCreatedAt() { return createdAt; }
+    public String getWriter() {
+        return writer;
+    }
+
+    public void setWriter(String writer) {
+        this.writer = writer;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Long getWriterId() {
+        return writerId;
+    }
+
+    public void setWriterId(Long writerId) {
+        this.writerId = writerId;
+    }
 }

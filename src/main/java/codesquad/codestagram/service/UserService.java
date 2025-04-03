@@ -1,85 +1,67 @@
 package codesquad.codestagram.service;
 
-import codesquad.codestagram.Entity.User;
 import codesquad.codestagram.dto.UserRequestDto;
-import codesquad.codestagram.dto.UserResponseDto;
-import codesquad.codestagram.repository.UserMapRepository;
-import codesquad.codestagram.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Qualifier;
+import codesquad.codestagram.entity.User;
+import codesquad.codestagram.repository.user.UserRepository;
+import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final UserMapRepository userMapRepository;
-
-    public UserService(@Qualifier("userJpaRepository") UserRepository userRepository,
-                       @Qualifier("userMapRepository") UserMapRepository userMapRepository) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.userMapRepository = userMapRepository;
     }
 
-    public UserResponseDto registerUser(UserRequestDto dto) {
-        User user = new User(dto.getId(), dto.getName(), dto.getPassword(), dto.getEmail());
+//    @PostConstruct
+//    public void initExampleUsers(){
+//        userRepository.save(new User("a","a","a@a","bazzi"));
+//        userRepository.save(new User("b","b","b@b","bazzi1"));
+//    }
 
-        User saveUser = userRepository.save(user);
-        userMapRepository.save(saveUser);
-
-        return new UserResponseDto(saveUser.getUserSeq(), saveUser.getId(), saveUser.getName(), saveUser.getEmail());
+    public List<User> findAll(){
+        return userRepository.findAll();
     }
 
-    public ArrayList<UserResponseDto> getAllUsers() {
-        List<User> userList = userRepository.findAll();
-        ArrayList<UserResponseDto> users = new ArrayList<>();
-        for (User user : userList) {
-            users.add(new UserResponseDto(user.getUserSeq(), user.getId(), user.getName(), user.getEmail()));
-        }
-        return users;
+    public void join(UserRequestDto dto){
+        userRepository.save(dto.toEntity());
     }
 
-    public UserResponseDto getUserById(String id) {
-        User user = userMapRepository.findByUserId(id);
-        if (user != null) {
-            return new UserResponseDto(user.getUserSeq(), user.getId(), user.getName(), user.getEmail());
-        }
-        return null;
+    public User getUserById(Long id){
+        return userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
     }
 
-    public User getUserBySeq(Long seq) {
-        User user = userMapRepository.findByUserSeq(seq);
-        return user;
-    }
-
-    public UserResponseDto authenticate(String id, String password) {
-        User user = userRepository.findById(id).orElse(null);
-
-        if (user == null) {
-            user = userMapRepository.findByUserId(id);
-        }
-
-        if (user != null && user.getPassword().equals(password)) {
-            return new UserResponseDto(user.getUserSeq(), user.getId(), user.getName(), user.getEmail());
+    public User login(String userid, String password){
+        Optional<User> findUser = userRepository.findByUserid(userid);
+        if(findUser.isPresent()){
+            User user = findUser.get();
+            if(user.getPassword().equals(password)){
+                return user;
+            }
         }
         return null;
+        //user service findByid = 회원가입한 아이디 찾아오는거임 => 예외처리를 해야하는 상황과 널을 처리하는 상황
     }
 
-    public void updateUser(String id, String name, String email) {
-        User user = userRepository.findById(id).orElse(null);
-
-        if (user != null) {
-            user.setName(name);
-            user.setEmail(email);
-            userRepository.save(user);
-        }
-
-        User mapUser = userMapRepository.findByUserId(id);
-        if (mapUser != null) {
-            mapUser.setName(name);
-            mapUser.setEmail(email);
-        }
+    @Transactional
+    public void updateUserProfile(Long id, String name, String email) {
+        User user = getUserById(id);
+        user.setName(name);
+        user.setEmail(email);
     }
 
+    public void changePassword(Long id, String curPassword, String newPassword) {
+        User user = getUserById(id);
+        if (!user.getPassword().equals(curPassword)) {
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+        }
+
+        user.setPassword(newPassword);
+        userRepository.save(user);
+    }
 }

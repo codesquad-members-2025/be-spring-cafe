@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html lang="kr">
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-    <title>SLiPP Java Web Programming</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <!--[if lt IE 9]>
-    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <meta charset="UTF-8">
+    <title>내 프로필</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <script th:src="@{/js/jquery-2.2.0.min.js}"></script>
 </head>
 <body>
 
@@ -18,33 +14,90 @@
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default">
-            <div class="panel-heading"><h4>Profiles</h4></div>
+            <div class="panel-heading"><h4>내 프로필</h4></div>
             <div class="panel-body">
                 <div class="well well-sm">
                     <div class="media">
                         <a class="thumbnail pull-left" href="#">
-                            <img class="media-object" src="../../static/images/80-text.png">
+                            <img class="media-object" src="/images/80-text.png" alt="">
                         </a>
                         <div class="media-body">
-                            <h4 class="media-heading" th:text="${user.name}">사용자 이름</h4>
+                            <h4 class="media-heading" th:text="${user.name}">닉네임</h4>
                             <p>
-                                <a href="#" class="btn btn-xs btn-default">
-                                    <span class="glyphicon glyphicon-envelope"></span>&nbsp;
-                                    <span th:text="${user.email}">사용자 이메일</span>
-                                </a>
+                                <span class="glyphicon glyphicon-envelope"></span>
+                                <span th:text="${user.email}">이메일</span>
                             </p>
+
+                            <!-- 본인일 때만 버튼 표시 -->
+                            <div th:if="${isOwner}">
+                                <button class="btn btn-primary btn-sm" onclick="toggleEdit()">개인정보 수정</button>
+                                <button class="btn btn-warning btn-sm" onclick="togglePassword()">비밀번호 변경</button>
+                            </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- 개인정보 수정 폼 -->
+                <div id="editForm" style="display: none;">
+                    <form th:action="@{/users/{id}/revise(id=${user.id})}" method="post">
+                        <div class="form-group">
+                            <label>닉네임</label>
+                            <input type="text" name="name" class="form-control" th:value="${user.name}">
+                        </div>
+                        <div class="form-group">
+                            <label>이메일</label>
+                            <input type="text" name="email" class="form-control" th:value="${user.email}">
+                        </div>
+                        <button type="submit" class="btn btn-success btn-sm">저장</button>
+                    </form>
+                    <hr>
+                </div>
+
+                <!-- 비밀번호 변경 폼 -->
+                <div id="passwordForm" style="display: none;">
+                    <form th:action="@{/users/{id}/password(id=${user.id})}" method="post">
+                        <div class="form-group">
+                            <label>현재 비밀번호</label>
+                            <input type="password" name="curPassword" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>새 비밀번호</label>
+                            <input type="password" name="newPassword" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-success btn-sm">변경</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- 토글 스크립트 -->
+<script>
+    function toggleEdit() {
+        const editForm = document.getElementById("editForm");
+        const pwForm = document.getElementById("passwordForm");
 
-<!-- script references -->
-<script src="../../static/js/jquery-2.2.0.min.js"></script>
-<script src="../../static/js/bootstrap.min.js"></script>
-<script src="../../static/js/scripts.js"></script>
-	</body>
+        if (editForm.style.display === "none") {
+            editForm.style.display = "block";
+            pwForm.style.display = "none";
+        } else {
+            editForm.style.display = "none";
+        }
+    }
+
+    function togglePassword() {
+        const editForm = document.getElementById("editForm");
+        const pwForm = document.getElementById("passwordForm");
+
+        if (pwForm.style.display === "none") {
+            pwForm.style.display = "block";
+            editForm.style.display = "none";
+        } else {
+            pwForm.style.display = "none";
+        }
+    }
+</script>
+
+</body>
 </html>
