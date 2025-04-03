@@ -24,7 +24,7 @@ public class ArticleController {
     }
 
     @GetMapping("/articles")
-    public String getArticleForm(HttpSession session, Model model){
+    public String getArticleForm(HttpSession session){
         User loginUser = (User)session.getAttribute(SessionConst.LOGIN_USER);
         if(loginUser == null){
             return "user/login";
@@ -33,7 +33,12 @@ public class ArticleController {
     }
 
     @PostMapping("/articles")
-    public String writeArticle(@ModelAttribute RequestArticleDto requestArticle) {
+    public String writeArticle(@ModelAttribute RequestArticleDto requestArticle, HttpSession session) {
+        User loginUser = (User)session.getAttribute(SessionConst.LOGIN_USER);
+        if(loginUser == null){
+            return "user/login";
+        }
+
         articleService.save(requestArticle);
         return "redirect:/";
     }
