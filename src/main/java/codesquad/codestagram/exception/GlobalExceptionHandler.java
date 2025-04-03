@@ -13,7 +13,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 public class GlobalExceptionHandler {
 
     private static final Logger log  = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-
+    //todo 에러면 세분화하기
     @ExceptionHandler(IllegalArgumentException.class)
     public String handleNotFound(IllegalArgumentException e, Model model, HttpServletResponse response) {
         response.setStatus(404); // 404 에러

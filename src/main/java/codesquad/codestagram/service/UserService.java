@@ -29,13 +29,6 @@ public class UserService {
         return true;
     }
 
-    private void validateDuplicateUser(User user) {
-        //같은 아이디 중복 회원 x
-        userRepository.findByLoginId(user.getLoginId())
-                .ifPresent(u -> {
-                    throw new IllegalStateException("User already exists");
-                });
-    }
 
     /**
      * 전체 회원 조회
