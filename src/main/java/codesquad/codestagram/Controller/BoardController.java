@@ -103,15 +103,13 @@ public class BoardController {
                               RedirectAttributes redirectAttributes) {
         Board board = boardService.getBoardById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
-
+        //로그인 여부 & 작성자id, 세션id 검증
         if (!AuthUtil.isAuthorized(session, board.getWriter().getId(), redirectAttributes)) {
             return "redirect:/boards/" + boardId;
         }
 
-//        board.setTitle(form.getTitle());
-//        board.setContent(form.getContent());
         board.updateFrom(form);
-        boardService.writeBoard(board); // todo form 만들기 (set 사용 안하도록)
+        boardService.writeBoard(board);
         return "redirect:/boards/" + boardId;
     }
 
