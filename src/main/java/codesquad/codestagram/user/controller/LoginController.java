@@ -6,14 +6,11 @@ import codesquad.codestagram.user.dto.LoginRequest;
 import codesquad.codestagram.user.service.SessionService;
 import codesquad.codestagram.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.Optional;
 
 import static codesquad.codestagram.article.controller.ArticleController.*;
 
@@ -44,7 +41,9 @@ public class LoginController {
         try {
             User user = userService.authenticate(request.userId(), request.password());
             sessionService.login(session, user.getId());
-            return REDIRECT_HOME;
+
+            String redirectUrl = sessionService.popRedirectUrl(session);
+            return "redirect:" + redirectUrl;
         } catch (InvalidRequestException e) {
             redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return "redirect:/users/login";
