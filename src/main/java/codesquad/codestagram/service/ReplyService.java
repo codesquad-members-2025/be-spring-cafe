@@ -25,25 +25,30 @@ public class ReplyService {
     }
 
     //댓글작성(추가)
+    @Transactional
     public Reply addReply(ReplyForm form, User writer, Long boardId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(BoardNotFoundException::new);
         Reply reply = new Reply(form.getContent(), writer, board);
+        board.addReply(reply); //보드의 replyList에도 댓글 추가
         return replyRepository.save(reply);
     }
 
     //댓글 조회 : 특정 게시글에 달린 전체 댓글
     public List<Reply> getReplies(Board board) {
-        return replyRepository.findByBoard(board);
+        return board.getReplies();
     }
 
     //댓글 삭제: 댓글 id와 로그인한 사용자 확인
     @Transactional
     public boolean deleteReply(Long replyId, User writer) {
         //조건을 만족하는 댓글이 없을 수도 있기 때문에 Optional
-        Optional<Reply> reply = replyRepository.findByIdAndWriter(replyId, writer);
-        if (reply.isPresent()) {
-            replyRepository.delete(reply.get());
+        Optional<Reply> optionalReply = replyRepository.findByIdAndWriter(replyId, writer);
+        if (optionalReply.isPresent()) {
+            Reply reply =  optionalReply.get();
+            Board board = reply.getBoard();
+            board.removeReply(reply);
+            replyRepository.delete(reply);
             return true;
         }
         return false;
