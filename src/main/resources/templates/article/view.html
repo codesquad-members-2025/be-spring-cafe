@@ -121,6 +121,7 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <div>
                             <strong>${reply.writerName}</strong>
+                            <div class="text-muted small mb-1">${formatDateTime(reply.createdAt)}</div>
                             <p class="mt-2 mb-0">${reply.content}</p>
                         </div>
                         ${reply.writerName === sessionUserName ? `
@@ -152,6 +153,19 @@
             }
         });
     }
+
+    function formatDateTime(dateString) {
+        const date = new Date(dateString);
+
+        const yyyy = date.getFullYear();
+        const MM = String(date.getMonth() + 1).padStart(2, '0');
+        const dd = String(date.getDate()).padStart(2, '0');
+        const HH = String(date.getHours()).padStart(2, '0');
+        const mm = String(date.getMinutes()).padStart(2, '0');
+
+        return `${yyyy}-${MM}-${dd} ${HH}:${mm}`;
+    }
+
 </script>
 
 </html>

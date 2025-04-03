@@ -1,11 +1,12 @@
 package codesquad.codestagram.domain.reply;
 
+import codesquad.codestagram.common.entity.BaseEntity;
 import codesquad.codestagram.domain.user.User;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "reply")
-public class Reply {
+public class Reply extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
