@@ -2,6 +2,7 @@ package codesquad.codestagram.Controller;
 
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.UserForm;
+import codesquad.codestagram.exception.UserNotFoundException;
 import codesquad.codestagram.service.UserService;
 import codesquad.codestagram.util.AuthUtil;
 import org.slf4j.Logger;
@@ -18,7 +19,7 @@ import java.util.Optional;
 
 @Controller
 public class UserController {
-    private UserService userService;
+    private final UserService userService;
     private static final Logger log  = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
@@ -99,7 +100,7 @@ public class UserController {
         }
 
         User user = userService.findOne(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+                .orElseThrow(UserNotFoundException::new);
 
         model.addAttribute("user", user);
         return "user/updateForm";
