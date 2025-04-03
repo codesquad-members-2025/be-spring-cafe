@@ -3,9 +3,12 @@ package codesquad.codestagram.reply.controller;
 import codesquad.codestagram.reply.dto.ReplyRequest;
 import codesquad.codestagram.reply.service.ReplyService;
 import codesquad.codestagram.user.service.SessionService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 import static codesquad.codestagram.article.controller.ArticleController.REDIRECT_LOGIN;
 
@@ -22,37 +25,53 @@ public class ReplyController {
 
     @PostMapping
     public String createReply(@PathVariable Long articleId,
-                              @ModelAttribute ReplyRequest request,
-                              HttpSession session) {
-        return sessionService.getLoggedInUserId(session)
-                .map(loggedInUserId -> {
-                    replyService.createReply(articleId, loggedInUserId, request);
-                    return "redirect:/articles/" + articleId;
-                }).orElse(REDIRECT_LOGIN);
+                              @ModelAttribute ReplyRequest replyRequest,
+                              HttpSession session,
+                              HttpServletRequest request) {
+
+        Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
+        if (loggedInUserIdOpt.isEmpty()) {
+            sessionService.saveRedirectUrl(session, request.getRequestURI());
+            return REDIRECT_LOGIN;
+        }
+
+        Long loggedInUserId = loggedInUserIdOpt.get();
+        replyService.createReply(articleId, loggedInUserId, replyRequest);
+        return "redirect:/articles/" + articleId;
     }
 
     @PutMapping("/{replyId}")
     public String updateReply(@PathVariable Long articleId,
                               @PathVariable Long replyId,
-                              @ModelAttribute ReplyRequest request,
-                              HttpSession session) {
+                              @ModelAttribute ReplyRequest replyRequest,
+                              HttpSession session,
+                              HttpServletRequest request) {
 
-        return sessionService.getLoggedInUserId(session)
-                .map(loggedInUserId -> {
-                    replyService.updateReply(replyId, loggedInUserId, request);
-                    return "redirect:/articles/" + articleId;
-                }).orElse(REDIRECT_LOGIN);
+        Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
+        if (loggedInUserIdOpt.isEmpty()) {
+            sessionService.saveRedirectUrl(session, request.getRequestURI());
+            return REDIRECT_LOGIN;
+        }
+
+        Long loggedInUserId = loggedInUserIdOpt.get();
+        replyService.updateReply(replyId, loggedInUserId, replyRequest);
+        return "redirect:/articles/" + articleId;
     }
 
     @DeleteMapping("/{replyId}")
     public String deleteReply(@PathVariable Long articleId,
                               @PathVariable Long replyId,
-                              HttpSession session) {
+                              HttpSession session,
+                              HttpServletRequest request) {
 
-        return sessionService.getLoggedInUserId(session)
-                .map(loggedInUserId -> {
-                    replyService.deleteReply(replyId, loggedInUserId);
-                    return "redirect:/articles/" + articleId;
-                }).orElse(REDIRECT_LOGIN);
+        Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
+        if (loggedInUserIdOpt.isEmpty()) {
+            sessionService.saveRedirectUrl(session, request.getRequestURI());
+            return REDIRECT_LOGIN;
+        }
+
+        Long loggedInUserId = loggedInUserIdOpt.get();
+        replyService.deleteReply(replyId, loggedInUserId);
+        return "redirect:/articles/" + articleId;
     }
 }

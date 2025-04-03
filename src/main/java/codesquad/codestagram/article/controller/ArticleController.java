@@ -5,6 +5,7 @@ import codesquad.codestagram.article.dto.ArticleRequest;
 import codesquad.codestagram.article.service.ArticleService;
 import codesquad.codestagram.common.exception.error.InvalidRequestException;
 import codesquad.codestagram.user.service.SessionService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class ArticleController {
@@ -31,29 +33,37 @@ public class ArticleController {
     }
 
     @GetMapping("/articles/form")
-    public String createForm(HttpSession session) {
+    public String createForm(HttpSession session,
+                             HttpServletRequest request) {
+        Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
+        if (loggedInUserIdOpt.isEmpty()) {
+            sessionService.saveRedirectUrl(session, request.getRequestURI());
+            return REDIRECT_LOGIN;
+        }
 
-        return sessionService.getLoggedInUserId(session)
-                .map(loggedInUserId -> "qna/form")
-                .orElse(REDIRECT_LOGIN);
+        return "qna/form";
     }
 
     @PostMapping("/articles")
-    public String create(@ModelAttribute ArticleRequest request,
+    public String create(@ModelAttribute ArticleRequest articleRequest,
                          HttpSession session,
+                         HttpServletRequest request,
                          RedirectAttributes redirectAttributes) {
 
-        return sessionService.getLoggedInUserId(session)
-                .map(loggedInUserId -> {
-                    try {
-                        Long articleId = articleService.create(request, loggedInUserId);
-                        return "redirect:/articles/" + articleId;
-                    } catch (InvalidRequestException e) {
-                        redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
-                        return "redirect:/articles/form";
-                    }
-                })
-                .orElse(REDIRECT_LOGIN);
+        Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
+        if (loggedInUserIdOpt.isEmpty()) {
+            sessionService.saveRedirectUrl(session, request.getRequestURI());
+            return REDIRECT_LOGIN;
+        }
+
+        Long loggedInUserId = loggedInUserIdOpt.get();
+        try {
+            Long articleId = articleService.create(articleRequest, loggedInUserId);
+            return "redirect:/articles/" + articleId;
+        } catch (InvalidRequestException e) {
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
+            return "redirect:/articles/form";
+        }
     }
 
     @GetMapping("/")
@@ -66,56 +76,73 @@ public class ArticleController {
     @GetMapping("/articles/{id}")
     public String showArticle(@PathVariable Long id,
                               Model model,
-                              HttpSession session) {
+                              HttpSession session,
+                              HttpServletRequest request) {
 
-        return sessionService.getLoggedInUserId(session)
-                .map(loggedInUserId -> {
-                    Article article = articleService.findArticle(id);
-                    model.addAttribute(ARTICLE, article);
-                    return "qna/show";
-                }).orElse(REDIRECT_LOGIN);
+        Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
+        if (loggedInUserIdOpt.isEmpty()) {
+            sessionService.saveRedirectUrl(session, request.getRequestURI());
+            return REDIRECT_LOGIN;
+        }
+
+        Article article = articleService.findArticle(id);
+        model.addAttribute(ARTICLE, article);
+        return "qna/show";
     }
 
     @GetMapping("/articles/{id}/form")
     public String updateForm(@PathVariable Long id,
                              Model model,
-                             HttpSession session) {
+                             HttpSession session,
+                             HttpServletRequest request) {
+        Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
+        if (loggedInUserIdOpt.isEmpty()) {
+            sessionService.saveRedirectUrl(session, request.getRequestURI());
+            return REDIRECT_LOGIN;
+        }
 
-        return sessionService.getLoggedInUserId(session)
-                .map(loggedInUserId -> {
-                    Article article = articleService.findArticleAndVerifyOwner(id, loggedInUserId);
-                    model.addAttribute(ARTICLE, article);
-                    return "qna/updateForm";
-                }).orElse(REDIRECT_LOGIN);
+        Long loggedInUserId = loggedInUserIdOpt.get();
+        Article article = articleService.findArticleAndVerifyOwner(id, loggedInUserId);
+        model.addAttribute(ARTICLE, article);
+        return "qna/updateForm";
     }
 
     @PutMapping("/articles/{id}")
     public String updateArticle(@PathVariable Long id,
-                                ArticleRequest request,
+                                ArticleRequest articleRequest,
                                 HttpSession session,
+                                HttpServletRequest request,
                                 RedirectAttributes redirectAttributes) {
 
-        return sessionService.getLoggedInUserId(session)
-                .map(loggedInUserId -> {
-                    try {
-                        articleService.updateArticle(id, request, loggedInUserId);
-                        return "redirect:/articles/" + id;
-                    } catch (InvalidRequestException e) {
-                        redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
-                        return "redirect:/articles/" + id + "/form";
-                    }
-                })
-                .orElse(REDIRECT_LOGIN);
+        Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
+        if (loggedInUserIdOpt.isEmpty()) {
+            sessionService.saveRedirectUrl(session, request.getRequestURI());
+            return REDIRECT_LOGIN;
+        }
+
+        Long loggedInUserId = loggedInUserIdOpt.get();
+        try {
+            articleService.updateArticle(id, articleRequest, loggedInUserId);
+            return "redirect:/articles/" + id;
+        } catch (InvalidRequestException e) {
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
+            return "redirect:/articles/" + id + "/form";
+        }
     }
 
     @DeleteMapping("/articles/{id}")
     public String delete(@PathVariable Long id,
-                         HttpSession session) {
+                         HttpSession session,
+                         HttpServletRequest request) {
 
-        return sessionService.getLoggedInUserId(session)
-                .map(loggedInUserId -> {
-                    articleService.delete(id, loggedInUserId);
-                    return REDIRECT_HOME;
-                }).orElse(REDIRECT_LOGIN);
+        Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
+        if (loggedInUserIdOpt.isEmpty()) {
+            sessionService.saveRedirectUrl(session, request.getRequestURI());
+            return REDIRECT_LOGIN;
+        }
+
+        Long loggedInUserId = loggedInUserIdOpt.get();
+        articleService.delete(id, loggedInUserId);
+        return REDIRECT_HOME;
     }
 }

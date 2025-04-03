@@ -7,6 +7,7 @@ import codesquad.codestagram.user.dto.SignUpRequest;
 import codesquad.codestagram.user.dto.UserUpdateRequest;
 import codesquad.codestagram.user.service.SessionService;
 import codesquad.codestagram.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static codesquad.codestagram.article.controller.ArticleController.*;
 
@@ -62,63 +63,83 @@ public class UserController {
     @GetMapping("/{id}/verify")
     public String verifyPasswordForm(@PathVariable Long id,
                                      HttpSession session,
-                                     Model model) {
+                                     Model model,
+                                     HttpServletRequest request) {
+        Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
+        if (loggedInUserIdOpt.isEmpty()) {
+            sessionService.saveRedirectUrl(session, request.getRequestURI());
+            return REDIRECT_LOGIN;
+        }
 
-        return sessionService.getLoggedInUserId(session)
-                .map(loggedInUserId -> {
-                    User user = userService.findByIdAndVerifyOwner(id, loggedInUserId);
-                    model.addAttribute("id", user.getId());
-                    return "user/passwordVerifyForm";
-                }).orElse(REDIRECT_LOGIN);
+        Long loggedInUserId = loggedInUserIdOpt.get();
+        User user = userService.findByIdAndVerifyOwner(id, loggedInUserId);
+        model.addAttribute("id", user.getId());
+        return "user/passwordVerifyForm";
     }
 
     @PostMapping("/{id}/verify-password")
     public String verifyPassword(@PathVariable Long id,
                                  @RequestParam String password,
                                  HttpSession session,
+                                 HttpServletRequest request,
                                  RedirectAttributes redirectAttributes) {
 
-        return sessionService.getLoggedInUserId(session)
-                .map(loggedInUserId -> {
-                    boolean isVerified = userService.verifyPassword(id, password, loggedInUserId);
+        Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
+        if (loggedInUserIdOpt.isEmpty()) {
+            sessionService.saveRedirectUrl(session, request.getRequestURI());
+            return REDIRECT_LOGIN;
+        }
 
-                    if (!isVerified) {
-                        redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "비밀번호가 일치하지 않습니다.");
-                        return "redirect:/users/" + id + "/verify";
-                    }
-                    return "redirect:/users/" + id + "/form";
-                }).orElse(REDIRECT_LOGIN);
+        Long loggedInUserId = loggedInUserIdOpt.get();
+        boolean isVerified = userService.verifyPassword(id, password, loggedInUserId);
+
+        if (!isVerified) {
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "비밀번호가 일치하지 않습니다.");
+            return "redirect:/users/" + id + "/verify";
+        }
+        return "redirect:/users/" + id + "/form";
     }
 
     @GetMapping("/{id}/form")
     public String updateUserProfileForm(@PathVariable Long id,
                                         Model model,
-                                        HttpSession session) {
+                                        HttpSession session,
+                                        HttpServletRequest request) {
 
-        return sessionService.getLoggedInUserId(session)
-                .map(loggedInUserId -> {
-                    User user = userService.findByIdAndVerifyOwner(id, loggedInUserId);
-                    model.addAttribute("user", user);
-                    return "user/updateForm";
-                }).orElse(REDIRECT_LOGIN);
+        Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
+        if (loggedInUserIdOpt.isEmpty()) {
+            sessionService.saveRedirectUrl(session, request.getRequestURI());
+            return REDIRECT_LOGIN;
+        }
+
+        Long loggedInUserId = loggedInUserIdOpt.get();
+        User user = userService.findByIdAndVerifyOwner(id, loggedInUserId);
+        model.addAttribute("user", user);
+        return "user/updateForm";
     }
 
 
     @PutMapping("/{id}")
     public String update(@PathVariable Long id,
-                         @ModelAttribute UserUpdateRequest request,
+                         @ModelAttribute UserUpdateRequest userUpdateRequest,
                          HttpSession session,
+                         HttpServletRequest request,
                          RedirectAttributes redirectAttributes) {
 
-        return sessionService.getLoggedInUserId(session)
-                .map(loggedInUserId -> {
-                    try {
-                        userService.updateUser(id, request, loggedInUserId);
-                        return "redirect:/users";
-                    } catch (InvalidRequestException e) {
-                        redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
-                        return "redirect:/users/" + id + "/form";
-                    }
-                }).orElse(REDIRECT_LOGIN);
+        Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
+        if (loggedInUserIdOpt.isEmpty()) {
+            sessionService.saveRedirectUrl(session, request.getRequestURI());
+            return REDIRECT_LOGIN;
+        }
+
+        Long loggedInUserId = loggedInUserIdOpt.get();
+
+        try {
+            userService.updateUser(id, userUpdateRequest, loggedInUserId);
+            return "redirect:/users";
+        } catch (InvalidRequestException e) {
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
+            return "redirect:/users/" + id + "/form";
+        }
     }
 }

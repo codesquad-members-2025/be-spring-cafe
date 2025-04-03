@@ -21,7 +21,7 @@ public class SessionService {
         session.invalidate();
     }
 
-    public Optional<Long> getLoggedInUserId(HttpSession session) {
+    public Optional<Long> getLoggedInUserIdOpt(HttpSession session) {
         Object userId = session.getAttribute(USER_ID_SESSION_KEY);
         if (userId instanceof Long) {
             return Optional.of((Long) userId);
