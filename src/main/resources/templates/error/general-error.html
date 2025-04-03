@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>알 수 없는 오류</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="alert alert-danger rounded shadow-sm" role="alert" style="background-color: #f8d7da;">
+        <h4 class="alert-heading">🚨 알 수 없는 오류가 발생했어요!</h4>
+        <p th:text="${errorMessage}">죄송해요, 문제가 발생했어요.</p>
+        <a href="/" class="btn btn-danger">홈으로 돌아가기</a>
+    </div>
+</div>
+</body>
+</html>
