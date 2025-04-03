@@ -17,6 +17,14 @@
             <h2 th:text="${article.title}" class="mb-0">게시글 제목</h2>
         </div>
         <div class="card-body">
+            <!-- 게시글 생성 및 수정 시간 -->
+            <div class="text-muted small mb-2">
+                작성일:
+                <span th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}">2025-04-01 13:00</span>
+                <span th:if="${article.updatedAt != null and article.updatedAt != article.createdAt}">
+        | 수정일: <span th:text="${#temporals.format(article.updatedAt, 'yyyy-MM-dd HH:mm')}">2025-04-01 14:00</span>
+                </span>
+            </div>
             <div class="mb-4">
                 <pre class="card-text" style="white-space: pre-wrap;" th:text="${article.content}">게시글 내용</pre>
             </div>
