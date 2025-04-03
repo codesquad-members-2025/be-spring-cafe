@@ -25,7 +25,7 @@ public class ReplyService {
     }
 
     //댓글작성(추가)
-    public Reply addReply(Long boardId, ReplyForm form, User writer) {
+    public Reply addReply(ReplyForm form, User writer, Long boardId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(BoardNotFoundException::new);
         Reply reply = new Reply(form.getContent(), writer, board);
