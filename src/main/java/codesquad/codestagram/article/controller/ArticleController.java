@@ -12,6 +12,7 @@ import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class ArticleController {
     //게시글 데이터 저장하기
     @PostMapping("/articles")
     public String createArticle(@ModelAttribute Article article, HttpSession session){
-        System.out.println("✅ createArticle() 실행됨!");
+
         if(SessionUtil.isUserLoggedIn(session)){
             User user = (User) session.getAttribute(SESSION_USER_KEY);
 
@@ -78,6 +79,7 @@ public class ArticleController {
     }
 
 
+    //게시글 수정 폼 보여주기
     @GetMapping("/articles/{id}/updateForm")
     public String updateForm(@PathVariable("id") Long id, Model model, HttpSession session){
         if(SessionUtil.isUserLoggedIn(session)) {
@@ -90,11 +92,13 @@ public class ArticleController {
 
 
 
+    //게시글 수정하기
     @PutMapping("/articles/{articleId}/update")
     public String updateArticleById(
             @PathVariable("articleId")Long id,
             @ModelAttribute Article article,
-            HttpSession session
+            HttpSession session,
+            RedirectAttributes redirectAttributes
     ){
         User loginUser = (User) session.getAttribute(SESSION_USER_KEY); //getAttribute가 Object 객체를 반환하기 때문에 User로 캐스팅 해줘야함
 
@@ -113,10 +117,46 @@ public class ArticleController {
             articleService.updateArticle(id, article);
             return "redirect:/";
         }else{
-            return "redirect:/error/forbidden"; //권한이 없을 경우 권한없음 페이지 띄우기
+            redirectAttributes.addFlashAttribute("errorMessage", "다른 사람의 글을 수정할 수 없습니다");
+            return "redirect:/error/forbidden";
         }
     }
 
 
+
+    //게시글 삭제하기
+    @DeleteMapping("/articles/{articleId}/delete")
+    public String deleteArticleById(
+        @PathVariable("articleId") Long id,
+        HttpSession session,
+        RedirectAttributes redirectAttributes //에러 메시지 전달을 위한 객체
+    ){
+        User loginUser = (User) session.getAttribute(SESSION_USER_KEY); // -> Optional로
+
+        if(loginUser == null){ // ->
+            return "redirect:/auth/login";
+        }
+
+        Article article = articleService.getArticleById(id);
+
+        if(article == null){ //게시글이 없을 경우
+            return "redirect:/error/not-found"; //404 페이지
+        }
+
+        boolean isPossibleDelete = loginService.validateUserOwnership(loginUser, article.getWriter().getUserId());
+
+        if(isPossibleDelete){
+            articleService.deleteArticle(id);
+            return "redirect:/";
+        }else{
+            redirectAttributes.addFlashAttribute("errorMessage", "다른 사람의 글을 삭제할 수 없습니다");
+            return "redirect:/error/forbidden";
+        }
+    }
+
+    @GetMapping("/error/forbidden")
+    public String forbidden() {
+        return "error/forbidden"; // error/forbidden.html 보여줌
+    }
 
 }

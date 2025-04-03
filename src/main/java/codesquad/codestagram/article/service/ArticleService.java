@@ -38,4 +38,9 @@ public class ArticleService {
             write(article);
         }
     }
+
+    public void deleteArticle(Long id) {
+        Article article = articleRepository.findArticleByArticleId(id);
+        articleRepository.delete(article);
+    }
 }
