@@ -32,7 +32,7 @@ public abstract class BaseEntity {
         return updatedAt;
     }
 
-    public void deleted() {
+    public void delete() {
         this.deleted = true;
     }
 
