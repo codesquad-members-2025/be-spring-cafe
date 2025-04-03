@@ -6,6 +6,7 @@
 {{> partials/subnav}}
 <div class="container" id="main">
     {{> partials/error}}
+    <div id="errorContainer"></div>
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
           <header class="qna-header">
@@ -144,21 +145,30 @@
                 url: url,
                 data: formData,
                 success: function (response) {
+                    $('#errorContainer').empty();
+
                     form.find('textarea').val('');
 
                     const template = $("#answerTemplate").html();
 
                     const filled = template
-                        .replace("{0}", response.name)
-                        .replace("{1}", response.createdAt)
-                        .replace("{2}", response.text)
-                        .replace("{3}", response.questionId)
-                        .replace("{4}", response.answerId);
+                        .replaceAll("{0}", response.name)
+                        .replaceAll("{1}", response.createdAt)
+                        .replaceAll("{2}", response.text)
+                        .replaceAll("{3}", response.questionId)
+                        .replaceAll("{4}", response.answerId);
 
                     $('#answer-list').append(filled); // 필요한 경우 답변 목록 갱신
                 },
-                error: function (xhr, status, error) {
-                    alert('오류가 발생했습니다: ' + xhr.responseText);
+                error: function (xhr) {
+                    const err = JSON.parse(xhr.responseText);
+                    const html = `
+                        <div class="alert alert-danger" role="alert">
+                            <strong>[${xhr.status}]</strong><br>
+                            ${err.message}
+                        </div>
+                    `;
+                    $('#errorContainer').html(html);
                 }
             });
         });
