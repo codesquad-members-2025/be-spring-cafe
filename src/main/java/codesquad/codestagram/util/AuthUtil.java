@@ -4,6 +4,7 @@ import codesquad.codestagram.domain.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+//todo 수평관심사는 인터셉터로 분리해도 좋음
 public class AuthUtil {
     //인증(로그인여부만 확인)
     public static boolean isLogined(HttpSession session, RedirectAttributes redirectAttributes) {
