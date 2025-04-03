@@ -4,6 +4,8 @@ import codesquad.codestagram.user.domain.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class SessionService {
 
@@ -19,8 +21,12 @@ public class SessionService {
         session.invalidate();
     }
 
-    public Long getLoggedInUserId(HttpSession session) {
-        return (Long) session.getAttribute(USER_ID_SESSION_KEY);
+    public Optional<Long> getLoggedInUserId(HttpSession session) {
+        Object userId = session.getAttribute(USER_ID_SESSION_KEY);
+        if (userId instanceof Long) {
+            return Optional.of((Long) userId);
+        }
+        return Optional.empty();
     }
 
     public boolean isLoggedIn(HttpSession session) {

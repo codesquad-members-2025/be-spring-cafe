@@ -1,12 +1,13 @@
 package codesquad.codestagram.user.controller;
 
+import codesquad.codestagram.common.exception.error.DuplicateResourceException;
+import codesquad.codestagram.common.exception.error.InvalidRequestException;
 import codesquad.codestagram.user.domain.User;
 import codesquad.codestagram.user.dto.SignUpRequest;
 import codesquad.codestagram.user.dto.UserUpdateRequest;
 import codesquad.codestagram.user.service.SessionService;
 import codesquad.codestagram.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -32,16 +33,13 @@ public class UserController {
     @PostMapping("/signUp")
     public String signUp(@ModelAttribute SignUpRequest request,
                          HttpSession session,
-                         RedirectAttributes redirectAttributes) { // @ModelAttribute 공부,
+                         RedirectAttributes redirectAttributes) {
         try {
             User newUser = userService.join(request);
-
             sessionService.login(session, newUser.getId());
-
             return REDIRECT_HOME;
-        } catch (Exception e) {
+        } catch (DuplicateResourceException | InvalidRequestException e) {
             redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
-
             return REDIRECT_JOIN;
         }
     }
@@ -66,74 +64,43 @@ public class UserController {
                                      HttpSession session,
                                      Model model) {
 
-        Long loggedInUserId = sessionService.getLoggedInUserId(session);
-        if (loggedInUserId == null) {
-            return REDIRECT_LOGIN;
-        }
-
-        User findUser = userService.findById(id);
-
-        if (!loggedInUserId.equals(findUser.getId()) || !id.equals(findUser.getId())) {
-            model.addAttribute(ERROR_MESSAGE, "다른 사용자의 정보는 수정할 수 없습니다.");
-            return ERROR;
-        }
-
-        userService.findById(id);
-        model.addAttribute("id", id);
-        return "user/passwordVerifyForm";
+        return sessionService.getLoggedInUserId(session)
+                .map(loggedInUserId -> {
+                    User user = userService.findByIdAndVerifyOwner(id, loggedInUserId);
+                    model.addAttribute("id", user.getId());
+                    return "user/passwordVerifyForm";
+                }).orElse(REDIRECT_LOGIN);
     }
 
     @PostMapping("/{id}/verify-password")
     public String verifyPassword(@PathVariable Long id,
                                  @RequestParam String password,
                                  HttpSession session,
-                                 Model model,
                                  RedirectAttributes redirectAttributes) {
 
-        Long loggedInUserId = sessionService.getLoggedInUserId(session);
-        if (loggedInUserId == null) {
-            return REDIRECT_LOGIN;
-        }
+        return sessionService.getLoggedInUserId(session)
+                .map(loggedInUserId -> {
+                    boolean isVerified = userService.verifyPassword(id, password, loggedInUserId);
 
-        User findUser = userService.findById(id);
-
-        if (!loggedInUserId.equals(findUser.getId()) || !id.equals(findUser.getId())) {
-            model.addAttribute(ERROR_MESSAGE, "다른 사용자의 정보는 수정할 수 없습니다.");
-            return ERROR;
-        }
-        try {
-            boolean isVerified = userService.verifyPassword(id, password);
-
-            if (isVerified) {
-                return "redirect:/users/" + id + "/form";
-            }
-            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "비밀번호가 일치하지 않습니다.");
-            return "redirect:/users/" + id + "/verify";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
-            return "redirect:/users/" + id + "/verify";
-        }
+                    if (!isVerified) {
+                        redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "비밀번호가 일치하지 않습니다.");
+                        return "redirect:/users/" + id + "/verify";
+                    }
+                    return "redirect:/users/" + id + "/form";
+                }).orElse(REDIRECT_LOGIN);
     }
 
     @GetMapping("/{id}/form")
     public String updateUserProfileForm(@PathVariable Long id,
                                         Model model,
                                         HttpSession session) {
-        Long loggedInUserId = sessionService.getLoggedInUserId(session);
-        if (loggedInUserId == null) {
-            return REDIRECT_LOGIN;
-        }
 
-        User findUser = userService.findById(id);
-
-        if (!loggedInUserId.equals(findUser.getId()) || !id.equals(findUser.getId())) {
-            model.addAttribute(ERROR_MESSAGE, "다른 사용자의 정보는 수정할 수 없습니다.");
-            return ERROR;
-        }
-
-        User user = userService.findById(id);
-        model.addAttribute("user", user);
-        return "user/updateForm";
+        return sessionService.getLoggedInUserId(session)
+                .map(loggedInUserId -> {
+                    User user = userService.findByIdAndVerifyOwner(id, loggedInUserId);
+                    model.addAttribute("user", user);
+                    return "user/updateForm";
+                }).orElse(REDIRECT_LOGIN);
     }
 
 
@@ -141,30 +108,17 @@ public class UserController {
     public String update(@PathVariable Long id,
                          @ModelAttribute UserUpdateRequest request,
                          HttpSession session,
-                         Model model,
                          RedirectAttributes redirectAttributes) {
 
-        Long loggedInUserId = sessionService.getLoggedInUserId(session);
-        if (loggedInUserId == null) {
-            return REDIRECT_LOGIN;
-        }
-        User findUser = userService.findById(id);
-
-        if (!loggedInUserId.equals(findUser.getId()) || !id.equals(findUser.getId())) {
-            model.addAttribute(ERROR_MESSAGE, "다른 사용자의 정보는 수정할 수 없습니다.");
-            return ERROR;
-        }
-
-        try {
-            userService.updateUser(id, request);
-
-            return "redirect:/users";
-        } catch (IllegalArgumentException | NoSuchElementException e) {
-            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
-            return "redirect:/users/" + id + "/form";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "회원정보 수정 중 오류가 발생했습니다: " + e.getMessage());
-            return "redirect:/users/" + id + "/form";
-        }
+        return sessionService.getLoggedInUserId(session)
+                .map(loggedInUserId -> {
+                    try {
+                        userService.updateUser(id, request, loggedInUserId);
+                        return "redirect:/users";
+                    } catch (InvalidRequestException e) {
+                        redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
+                        return "redirect:/users/" + id + "/form";
+                    }
+                }).orElse(REDIRECT_LOGIN);
     }
 }

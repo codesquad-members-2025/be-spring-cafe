@@ -1,6 +1,7 @@
 package codesquad.codestagram.user.service;
 
 import codesquad.codestagram.common.exception.error.DuplicateResourceException;
+import codesquad.codestagram.common.exception.error.ForbiddenException;
 import codesquad.codestagram.common.exception.error.InvalidRequestException;
 import codesquad.codestagram.common.exception.error.ResourceNotFoundException;
 import codesquad.codestagram.user.domain.User;
@@ -11,12 +12,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class UserService {
 
-    public static final  String USER_NOT_FOUND = "존재하지 않는 회원입니다.";
+    public static final String USER_NOT_FOUND = "존재하지 않는 회원입니다.";
 
     private final UserRepository userRepository;
 
@@ -27,7 +27,7 @@ public class UserService {
     @Transactional
     public User join(SignUpRequest request) {
         validateDuplicateUserId(request.userId());
-//        validatePassword(request.password());
+        validatePassword(request.password());
         return userRepository.save(request.toEntity());
     }
 
@@ -44,33 +44,55 @@ public class UserService {
                 () -> new ResourceNotFoundException(USER_NOT_FOUND)
         );
     }
+
+    public User findByIdAndVerifyOwner(Long id, Long loggedInUserId) {
+        User user = findById(id);
+        verifyOwner(id, loggedInUserId, user);
+        return user;
+    }
+
+    private static void verifyOwner(Long id, Long loggedInUserId, User user) {
+        if (!loggedInUserId.equals(user.getId()) || !id.equals(user.getId())) {
+            throw new ForbiddenException("다른 사용자의 정보는 수정할 수 없습니다.");
+        }
+    }
+
     public List<User> findUsers() {
         return userRepository.findAll();
     }
 
-    public boolean verifyPassword(Long id, String inputPassword) {
+    public boolean verifyPassword(Long id, String inputPassword, Long loggedInUserId) {
         User user = findById(id);
+        verifyOwner(id, loggedInUserId, user);
         return inputPassword.equals(user.getPassword());
     }
 
     @Transactional
-    public User updateUser(Long id, UserUpdateRequest request) {
-
-        User findUser = findById(id);
+    public User updateUser(Long id, UserUpdateRequest request, Long loggedInUserId) {
+        User findUser = findByIdAndVerifyOwner(id, loggedInUserId);
 
         if (request.password().equals(findUser.getPassword())) {
             throw new InvalidRequestException("새 비밀번호가 현재 비밀번호와 동일합니다. 다른 비밀번호를 입력해주세요.");
         }
-
         if (!request.password().isEmpty()) {
             validatePassword(request.password());
         }
 
         String newPassword = request.password().isEmpty() ? findUser.getPassword() : request.password();
-
         findUser.updateUser(newPassword, request.name(), request.email());
 
         return userRepository.save(findUser);
+    }
+
+    public User authenticate(String userId, String password) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND));
+
+        if (!user.getPassword().equals(password)) {
+            throw new InvalidRequestException("비밀번호가 일치하지 않습니다.");
+        }
+
+        return user;
     }
 
     private void validatePassword(String password) {
@@ -116,16 +138,5 @@ public class UserService {
         if (!hasSpecialChar) {
             throw new InvalidRequestException("비밀번호는 최소 하나의 특수 문자를 포함해야 합니다.");
         }
-    }
-
-    public User authenticate(String userId, String password) {
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND));
-
-        if (!user.getPassword().equals(password)) {
-            throw new InvalidRequestException("비밀번호가 일치하지 않습니다.");
-        }
-
-        return user;
     }
 }

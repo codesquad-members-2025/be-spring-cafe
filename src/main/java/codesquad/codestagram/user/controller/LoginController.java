@@ -1,5 +1,6 @@
 package codesquad.codestagram.user.controller;
 
+import codesquad.codestagram.common.exception.error.InvalidRequestException;
 import codesquad.codestagram.user.domain.User;
 import codesquad.codestagram.user.dto.LoginRequest;
 import codesquad.codestagram.user.service.SessionService;
@@ -44,9 +45,9 @@ public class LoginController {
             User user = userService.authenticate(request.userId(), request.password());
             sessionService.login(session, user.getId());
             return REDIRECT_HOME;
-        } catch (Exception e) {
+        } catch (InvalidRequestException e) {
             redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
-            return REDIRECT_LOGIN;
+            return "redirect:/users/login";
         }
     }
 

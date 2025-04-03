@@ -35,6 +35,8 @@ public class ArticleService {
                 () -> new ResourceNotFoundException(USER_NOT_FOUND)
         );
 
+        validateArticle(request.title(), request.contents());
+
         Article article = new Article(
                 foundUser,
                 request.title(),
@@ -48,26 +50,35 @@ public class ArticleService {
     }
 
     public Article findArticle(Long id) {
+
         return articleRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(NOT_FOUND_ARTICLE)
         );
     }
 
+    public Article findArticleAndVerifyOwner(Long id, Long loggedInUserId) {
+        Article article = findArticle(id);
+        validateArticleOwner(loggedInUserId, article);
+        return article;
+    }
+
     @Transactional
     public void updateArticle(Long id, ArticleRequest request, Long loggedInUserId) {
 
+        Article article = findArticleAndVerifyOwner(id, loggedInUserId);
+        validateArticle(request.title(), request.contents());
+        article.updateArticle(request.title(), request.contents());
+    }
 
-        Article article = articleRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException(NOT_FOUND_ARTICLE)
-        );
+    public void delete(Long id, Long loggedInUserId) {
+        Article article = findArticleAndVerifyOwner(id, loggedInUserId);
+        articleRepository.delete(article);
+    }
 
-        if (!loggedInUserId.equals(article.getWriter().getId())) {
+    private void validateArticleOwner(Long loggedInUserId, Article article) {
+        if (!article.getWriter().getId().equals(loggedInUserId)) {
             throw new ForbiddenException("본인의 게시글만 수정할 수 있습니다.");
         }
-
-        validateArticle(request.title(), request.contents());
-
-        article.updateArticle(request.title(), request.contents());
     }
 
     private void validateArticle(String title, String contents) {
@@ -78,10 +89,5 @@ public class ArticleService {
         if (contents == null || contents.trim().isEmpty()) {
             throw new InvalidRequestException("내용을 입력해주세요");
         }
-    }
-
-    public void delete(Long id) {
-        Article article = findArticle(id);
-        articleRepository.delete(article);
     }
 }
