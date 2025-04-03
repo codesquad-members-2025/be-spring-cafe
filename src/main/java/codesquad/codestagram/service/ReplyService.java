@@ -12,15 +12,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ReplyService {
+    public static final String NO_REPLY = "댓글을 찾을 수 없습니다.";
     private final ReplyRepository replyRepository;
 
     public ReplyService(ReplyRepository replyRepository) {
         this.replyRepository = replyRepository;
     }
 
-    public void addReply(String content, Article findArticle, User user) {
+    public Reply addReply(String content, Article findArticle, User user) {
         Reply reply = new Reply(content, findArticle, user);
-        replyRepository.save(reply);
+        return replyRepository.save(reply);
     }
 
     public List<Reply> findReplies(Article article) {
@@ -29,7 +30,7 @@ public class ReplyService {
 
     public Reply findReplyByIdAndNotDeleted(Long replyId) {
         return replyRepository.findByIdAndNotDeleted(replyId)
-                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(NO_REPLY));
     }
 
     public boolean isNotReplyAuthor(User user, Reply reply) {
