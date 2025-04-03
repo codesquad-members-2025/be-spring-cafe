@@ -151,9 +151,10 @@ JdbcUserRepository의 findById 메서드에서 User 객체를 생성한 후에 s
   - 로그아웃 요청 변경 (GET -> POST)
 
 # 6단계
-- ## 구현
-  - `null`
-- ## 피드백
+## 구현
+  - 커스텀 예외 생성
+  - `@ControllerAdvice`로 예외 처리
+## 피드백
 1. session에 저장된 `Long` 타입의 user의 id를 그대로 반환하여 `null` 검사를 하고 있는데, `Optional`로 감싸서 구현해라.
 - 시도  
 ![img_12.png](img_12.png)![img_13.png](img_13.png)  
@@ -163,7 +164,20 @@ JdbcUserRepository의 findById 메서드에서 User 객체를 생성한 후에 s
 ![img_14.png](img_14.png)
 세션에서 가져온 userId가 `Long` 타입이면 userId를 `Long`으로 캐스팅하고 `Optional`로 감싸서 반환하고, 아니라면 빈 `Optional`을 반환하는 명확한 타입 캐스팅 방법으로 수정하니 경고가 없어졌다.  
 2. 로그인하지 않은 사용자가 회원 권한이 필요한 요청을 보냈을 때 로그인을 하면 직전에 요청했던 곳으로 돌아가게 해라.
+## 기타
+- `@ControllerAdvice`와 `controller`계층에서의 `try-catch` 중 예외 처리 우선순위
 
+모든 예외를 에러 페이지로 보내고 싶지 않았다.   
+예를 들어, 게시글에 제목이나 내용을 적지 않고 요청을 보낸 경우에는 에러 페이지가 아닌 게시글 작성 폼 페이지로 돌아가 에러 메시지를 띄우고 싶었다.  
+하지만 `@ControllerAdvice`를 추가하여 예외 발생하면 다 에러 페이지로 보내는 처리가 되어 있었기 때문에 로직을 수정하여 아래의 사진과 같이 처리할까 하다가
+![img_15.png](img_15.png)
+<br>
+컨트롤러에서 예외를 `try-catch`로 직접 처리하면 `@ControllerAdvice`까지 예외가 전달되지 않는다는 것을 알게 되었다.   
+
+따라서 `@ControllerAdvice`에서도 처리하는 로직이 있고, 컨트롤러에서도 처리하는 방식을 채택하였다.  
+![img_16.png](img_16.png)  
+직접 실행해보니 에러 페이지가 아니라 원하는 동작인 리다이렉트가 잘 되는 것을 알 수 있었다. 
+### 결론: 컨트롤러에서 예외를 먼저 잡으면 `@ControllerAdvice`까지 전달되지 않는다. 
 
 # 학습
 ### PRG 패턴 (POST-REDIRECT-GET)
