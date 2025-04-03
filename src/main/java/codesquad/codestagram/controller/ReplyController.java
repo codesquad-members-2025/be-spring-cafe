@@ -25,10 +25,10 @@ public class ReplyController {
     }
 
     @DeleteMapping("/articles/{articleId}/answers/{replyId}")
-    public String addAnswer(@PathVariable Long articleId, @PathVariable Long replyId, HttpSession session) {
+    public ResponseEntity<?> addAnswer(@PathVariable Long articleId, @PathVariable Long replyId, HttpSession session) {
         User user = (User) session.getAttribute("loginUser");
         Reply reply = replyService.findReplyIfOwner(user,replyId);
         replyService.deleteReply(reply);
-        return "redirect:/articles/" + articleId;
+        return ResponseEntity.noContent().build();
     }
 }
