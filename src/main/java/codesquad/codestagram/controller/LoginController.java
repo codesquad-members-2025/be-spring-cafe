@@ -21,6 +21,11 @@ public class LoginController {
         this.loginService = loginService;
     }
 
+    @GetMapping("/users/login")
+    public String getLoginForm(){
+        return "user/login";
+    }
+
 
     @PostMapping("/users/login")
     public String login(@Valid @ModelAttribute LoginForm loginForm,

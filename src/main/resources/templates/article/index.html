@@ -65,8 +65,8 @@
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
                 <!-- 🔹 로그인 상태가 아닐 때 -->
-                <li th:if="${session.loginUser == null}"><a href="user/login.html">로그인</a></li>
-                <li th:if="${session.loginUser == null}"><a href="user/form.html">회원가입</a></li>
+                <li th:if="${session.loginUser == null}"><a href="/users/login">로그인</a></li>
+                <li th:if="${session.loginUser == null}"><a href="/users/saveForm">회원가입</a></li>
 
                 <!-- 🔹 로그인 상태일 때 -->
 <!--                <li th:if="${session.loginUser != null}"><a href="/users/logout">로그아웃</a></li>-->
