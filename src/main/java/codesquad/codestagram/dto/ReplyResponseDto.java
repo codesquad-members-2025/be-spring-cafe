@@ -1,6 +1,7 @@
 package codesquad.codestagram.dto;
 
 import codesquad.codestagram.domain.Reply;
+import codesquad.codestagram.utility.TextUtility;
 
 public class ReplyResponseDto {
     private final String name;
@@ -12,7 +13,7 @@ public class ReplyResponseDto {
     public ReplyResponseDto(String name, String createdAt, String text, Long articleId, Long replyId) {
         this.name = name;
         this.createdAt = createdAt;
-        this.text = text;
+        this.text = TextUtility.escapeAndConvertNewlines(text);
         this.articleId = articleId;
         this.replyId = replyId;
     }
