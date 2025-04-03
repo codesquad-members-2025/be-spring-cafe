@@ -3,6 +3,7 @@ package codesquad.codestagram.Controller;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.UserForm;
 import codesquad.codestagram.service.UserService;
+import codesquad.codestagram.util.AuthUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,15 +28,9 @@ public class UserController {
 
     @PostMapping("/users/create")
     public String create(@ModelAttribute UserForm form, RedirectAttributes redirectAttributes) {
-        User user = new User(); //Entity 생성
-        user.setLoginId(form.getLoginId()); //DTO -> Entity 변환
-        user.setName(form.getName());
-        user.setPassword(form.getPassword());
-        user.setEmail(form.getEmail());
+        User user = User.form(form);
 
-        boolean success = userService.join(user);
-
-        if (!success) {
+        if (!userService.join(user)) {
             redirectAttributes.addFlashAttribute("errorMessage", "⚠️ 이미 존재하는 아이디입니다.");
             return "redirect:/users/new"; // form.html로 다시
         }
@@ -81,7 +76,7 @@ public class UserController {
         User sessionUser = (User) session.getAttribute("user");
         // isAuthorized 내부에서 null 검증을 하므로 여기서는 바로 targetUserId로 검증 가능
         //로그인한 사용자가 있다면 그 사용자의 id를, 없다면 null을 전달
-        if (!isAuthorized(session, sessionUser == null ? null : sessionUser.getId(), redirectAttributes)) {
+        if (!AuthUtil.isAuthorized(session, sessionUser == null ? null : sessionUser.getId(), redirectAttributes)) {
             return "redirect:/users/login";
         }
         model.addAttribute("user", sessionUser);
@@ -92,51 +87,47 @@ public class UserController {
     //회원 정보 수정 폼 띄우기
     @GetMapping("/users/edit/{id}")
     public String updateForm(@PathVariable("id") Long id, HttpSession session,Model model, RedirectAttributes redirectAttributes) {
-        if (!isAuthorized(session, id, redirectAttributes)) {
+        // 인증: 로그인하지 않은 경우 로그인 페이지로 리다이렉트
+        if (!AuthUtil.isLogined(session, redirectAttributes)) {
             return "redirect:/users/login";
-        } else {
-            Optional<User> userOptional = userService.findOne(id);
-            model.addAttribute("user", userOptional.get());
-            return "user/updateForm";
         }
-        //실제 사용자 존재 여부 확인 필요? 없을 수 가 있나?
+
+        // 인가: 로그인했지만 다른 사용자의 정보를 수정하려고 할 때는 에러 메시지만 보여주고, 예를 들어 프로필 페이지로 리다이렉트
+        if (!AuthUtil.isOwner(session, id, redirectAttributes)) {
+            // 에러 팝업 후 자신의 프로필 페이지 등으로 리다이렉트
+            return "redirect:/users/list";
+        }
+
+        User user = userService.findOne(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+
+        model.addAttribute("user", user);
+        return "user/updateForm";
     }
 
     @PutMapping("/users/{id}/update")
     public String updateUser(@PathVariable("id") Long id,
-                             @RequestParam("currentPassword") String currentPassword,
-                             @RequestParam("newPassword") String newPassword,
-                             @RequestParam("name") String name,
-                             @RequestParam("email") String email,
+                             @ModelAttribute("updateDto") UserForm.UpdateUser updateDto,
                              HttpSession session,
                              RedirectAttributes redirectAttributes) {
-        if (!isAuthorized(session, id, redirectAttributes)) {
-            return "redirect:/users/login";
+        if (!AuthUtil.isAuthorized(session, id, redirectAttributes)) {
+            return "redirect:/users/profile";
         }
 
-        boolean result = userService.updateUser(id,currentPassword, newPassword, name,email);
-
-        if (!result) {
+        if (!userService.updateUser(id, updateDto)) {
             log.info("redirecting to /users/edit/{}?error=invalidPassword", id);
-            redirectAttributes.addFlashAttribute("errorMessage", "❗ 비밀번호가 일치하지 않습니다."); //화면으로 메시지 전달
+            redirectAttributes.addFlashAttribute("errorMessage", "❗ 비밀번호가 일치하지 않습니다.");
             return "redirect:/users/edit/" + id;
         }
         return "redirect:/users/profile";
 
     }
 
-    //인증/인가 로직인 웹 계층(controller)에서 처리하는 것이 좋음
-    private boolean isAuthorized(HttpSession session, Long targetUserId, RedirectAttributes redirectAttributes) {
-        User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "로그인이 필요합니다.");
-            return false;
-        }
-        if (!sessionUser.getId().equals(targetUserId)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "다른 사용자의 정보를 수정할 수 없습니다.");
-            return false;
-        }
-        return true;
+    @GetMapping("/users/{loginId}")
+    public String viewUserProfile(@PathVariable("loginId") String loginId, Model model) {
+        User user = userService.findByLoginId(loginId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다. loginId=" + loginId));
+        model.addAttribute("user", user);
+        return "user/profile";
     }
-
 }

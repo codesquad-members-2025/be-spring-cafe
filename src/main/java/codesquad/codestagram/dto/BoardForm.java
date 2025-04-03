@@ -3,7 +3,6 @@ package codesquad.codestagram.dto;
 public class BoardForm {
     private String title;
     private String content;
-    private String writer;
 
     public String getTitle() {
         return title;
@@ -21,11 +20,4 @@ public class BoardForm {
         this.content = content;
     }
 
-    public String getWriter() {
-        return writer;
-    }
-
-    public void setWriter(String writer) {
-        this.writer = writer;
-    }
 }

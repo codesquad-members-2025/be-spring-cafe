@@ -1,6 +1,7 @@
 package codesquad.codestagram.service;
 
 import codesquad.codestagram.domain.User;
+import codesquad.codestagram.dto.UserForm;
 import codesquad.codestagram.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,11 +28,7 @@ public class UserServiceIntegrationTest {
     @DisplayName("회원가입이 정삭적으로 되는지 테스트.")
     public void 회원가입() throws Exception {
         //Given
-        User user = new User();
-        user.setLoginId("brie822");
-        user.setName("브리");
-        user.setPassword("123456");
-        user.setEmail("brie822@gmail.com");
+        User user = new User("brie822", "브리", "123456", "brie822@gmail.com");
 
         // When
         boolean success = userService.join(user);
@@ -51,11 +48,8 @@ public class UserServiceIntegrationTest {
     @DisplayName("중복 loginId로 회원가입 하면 예외 발생하는지 테스트.")
     void 죽복_회원_예외() {
         //given
-        User user1 = new User();
-        user1.setLoginId("gyuwon");
-
-        User user2 = new User();
-        user2.setLoginId("gyuwon");
+        User user1 = new User("gyuwon", null, null, null);
+        User user2 = new User("gyuwon", null, null, null);
 
         // When
         boolean firstJoin = userService.join(user1);
@@ -71,11 +65,7 @@ public class UserServiceIntegrationTest {
     @DisplayName("회원 정보 수정 테스트")
     void 회원정보_수정_성공() {
         // Given
-        User user = new User();
-        user.setLoginId("brie822");
-        user.setName("브리");
-        user.setPassword("123456");
-        user.setEmail("brie822@email.com");
+        User user = new User("brie822", "브리", "123456", "brie822@email.com");
         userService.join(user);
 
         Optional<User> optional = userService.findByLoginId("brie822");
@@ -83,13 +73,8 @@ public class UserServiceIntegrationTest {
         Long id = optional.get().getId();
 
         // When
-        boolean result = userService.updateUser(
-                id,
-                "123456", // 현재 비밀번호 일치
-                "abcd",
-                "규원",
-                "brie822@gmail.com"
-        );
+        UserForm.UpdateUser updateDto = new UserForm.UpdateUser("123456", "abcd", "규원", "brie822@gmail.com");
+        boolean result = userService.updateUser(id, updateDto);
 
         // Then
         assertThat(result).isTrue();
@@ -105,11 +90,7 @@ public class UserServiceIntegrationTest {
     @DisplayName("비밀번호 틀리면 회원 수정 실패 테스트")
     void 회원정보_수정_실패_비밀번호틀림() {
         // Given
-        User user = new User();
-        user.setLoginId("brie822");
-        user.setName("브리");
-        user.setPassword("123456");
-        user.setEmail("brie822@email.com");
+        User user = new User("brie822", "브리", "123456", "brie822@email.com");
         userService.join(user);
 
         Optional<User> optional = userService.findByLoginId("brie822");
@@ -117,7 +98,8 @@ public class UserServiceIntegrationTest {
         Long id = optional.get().getId();
 
         // When
-        boolean result = userService.updateUser(id, "abcd", "abcedf", "브리", "brie822@email.com");
+        UserForm.UpdateUser updateDto = new UserForm.UpdateUser("abcd", "abcedf", "브리", "brie822@email.com");
+        boolean result = userService.updateUser(id, updateDto);
 
         // Then
         assertThat(result).isFalse(); // 수정 실패

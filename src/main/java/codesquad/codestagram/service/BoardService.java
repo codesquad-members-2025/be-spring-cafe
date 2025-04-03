@@ -35,6 +35,11 @@ public class BoardService {
         return boardRepository.findById(boardId);
     }
 
+    @Transactional
+    public void deleteBoard(Long boardId) { //todo 소프트삭제로 변경하기
+        boardRepository.deleteById(boardId);
+    }
+
 
 }
 

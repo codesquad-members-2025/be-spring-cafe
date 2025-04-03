@@ -2,6 +2,7 @@ package codesquad.codestagram.integration;
 
 
 import codesquad.codestagram.domain.User;
+import codesquad.codestagram.dto.UserForm;
 import codesquad.codestagram.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,21 +34,12 @@ public class UserLoginIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        // 테스트 데이터 추가
         if (userRepository.findByLoginId("javajigi").isEmpty()) {
-            User user1 = new User();
-            user1.setLoginId("javajigi");
-            user1.setPassword("test");
-            user1.setName("자바지기");
-            user1.setEmail("javajigi@slipp.net");
+            User user1 = new User("javajigi", "자바지기", "test", "javajigi@slipp.net");
             userRepository.save(user1);
         }
         if (userRepository.findByLoginId("sanjigi").isEmpty()) {
-            User user2 = new User();
-            user2.setLoginId("sanjigi");
-            user2.setPassword("test");
-            user2.setName("산지기");
-            user2.setEmail("sanjigi@slipp.net");
+            User user2 = new User("sanjigi", "산지기", "test", "sanjigi@slipp.net");
             userRepository.save(user2);
         }
     }
@@ -121,7 +113,7 @@ public class UserLoginIntegrationTest {
 
         mockMvc.perform(get("/users/edit/{id}", user.getId()).session(session2))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/users/login"));
+                .andExpect(redirectedUrl("/users/list"));
     }
 
 
