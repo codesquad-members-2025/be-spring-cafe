@@ -26,9 +26,9 @@ public class ReplyController {
     @PostMapping
     public String createReply(@PathVariable Long articleId,
                               @ModelAttribute ReplyRequest replyRequest,
-                              HttpSession session,
                               HttpServletRequest request) {
 
+        HttpSession session = request.getSession();
         Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
         if (loggedInUserIdOpt.isEmpty()) {
             sessionService.saveRedirectUrl(session, request.getRequestURI());
@@ -44,9 +44,9 @@ public class ReplyController {
     public String updateReply(@PathVariable Long articleId,
                               @PathVariable Long replyId,
                               @ModelAttribute ReplyRequest replyRequest,
-                              HttpSession session,
                               HttpServletRequest request) {
 
+        HttpSession session = request.getSession();
         Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
         if (loggedInUserIdOpt.isEmpty()) {
             sessionService.saveRedirectUrl(session, request.getRequestURI());
@@ -61,9 +61,9 @@ public class ReplyController {
     @DeleteMapping("/{replyId}")
     public String deleteReply(@PathVariable Long articleId,
                               @PathVariable Long replyId,
-                              HttpSession session,
                               HttpServletRequest request) {
 
+        HttpSession session = request.getSession();
         Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
         if (loggedInUserIdOpt.isEmpty()) {
             sessionService.saveRedirectUrl(session, request.getRequestURI());

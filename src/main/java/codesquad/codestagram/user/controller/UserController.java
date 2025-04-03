@@ -32,11 +32,14 @@ public class UserController {
     }
 
     @PostMapping("/signUp")
-    public String signUp(@ModelAttribute SignUpRequest request,
-                         HttpSession session,
+    public String signUp(@ModelAttribute SignUpRequest signUpRequest,
+                         HttpServletRequest request,
                          RedirectAttributes redirectAttributes) {
+
+        HttpSession session = request.getSession();
+
         try {
-            User newUser = userService.join(request);
+            User newUser = userService.join(signUpRequest);
             sessionService.login(session, newUser.getId());
             return REDIRECT_HOME;
         } catch (DuplicateResourceException | InvalidRequestException e) {
@@ -62,9 +65,11 @@ public class UserController {
 
     @GetMapping("/{id}/verify")
     public String verifyPasswordForm(@PathVariable Long id,
-                                     HttpSession session,
                                      Model model,
                                      HttpServletRequest request) {
+
+        HttpSession session = request.getSession();
+
         Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
         if (loggedInUserIdOpt.isEmpty()) {
             sessionService.saveRedirectUrl(session, request.getRequestURI());
@@ -80,9 +85,10 @@ public class UserController {
     @PostMapping("/{id}/verify-password")
     public String verifyPassword(@PathVariable Long id,
                                  @RequestParam String password,
-                                 HttpSession session,
                                  HttpServletRequest request,
                                  RedirectAttributes redirectAttributes) {
+
+        HttpSession session = request.getSession();
 
         Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
         if (loggedInUserIdOpt.isEmpty()) {
@@ -103,8 +109,9 @@ public class UserController {
     @GetMapping("/{id}/form")
     public String updateUserProfileForm(@PathVariable Long id,
                                         Model model,
-                                        HttpSession session,
                                         HttpServletRequest request) {
+
+        HttpSession session = request.getSession();
 
         Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
         if (loggedInUserIdOpt.isEmpty()) {
@@ -122,9 +129,10 @@ public class UserController {
     @PutMapping("/{id}")
     public String update(@PathVariable Long id,
                          @ModelAttribute UserUpdateRequest userUpdateRequest,
-                         HttpSession session,
                          HttpServletRequest request,
                          RedirectAttributes redirectAttributes) {
+
+        HttpSession session = request.getSession();
 
         Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
         if (loggedInUserIdOpt.isEmpty()) {

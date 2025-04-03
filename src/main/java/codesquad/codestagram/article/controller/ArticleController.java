@@ -33,8 +33,9 @@ public class ArticleController {
     }
 
     @GetMapping("/articles/form")
-    public String createForm(HttpSession session,
-                             HttpServletRequest request) {
+    public String createForm(HttpServletRequest request) {
+
+        HttpSession session = request.getSession();
         Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
         if (loggedInUserIdOpt.isEmpty()) {
             sessionService.saveRedirectUrl(session, request.getRequestURI());
@@ -46,10 +47,10 @@ public class ArticleController {
 
     @PostMapping("/articles")
     public String create(@ModelAttribute ArticleRequest articleRequest,
-                         HttpSession session,
                          HttpServletRequest request,
                          RedirectAttributes redirectAttributes) {
 
+        HttpSession session = request.getSession();
         Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
         if (loggedInUserIdOpt.isEmpty()) {
             sessionService.saveRedirectUrl(session, request.getRequestURI());
@@ -76,8 +77,9 @@ public class ArticleController {
     @GetMapping("/articles/{id}")
     public String showArticle(@PathVariable Long id,
                               Model model,
-                              HttpSession session,
                               HttpServletRequest request) {
+
+        HttpSession session = request.getSession();
 
         Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
         if (loggedInUserIdOpt.isEmpty()) {
@@ -93,8 +95,10 @@ public class ArticleController {
     @GetMapping("/articles/{id}/form")
     public String updateForm(@PathVariable Long id,
                              Model model,
-                             HttpSession session,
                              HttpServletRequest request) {
+
+        HttpSession session = request.getSession();
+
         Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
         if (loggedInUserIdOpt.isEmpty()) {
             sessionService.saveRedirectUrl(session, request.getRequestURI());
@@ -110,9 +114,10 @@ public class ArticleController {
     @PutMapping("/articles/{id}")
     public String updateArticle(@PathVariable Long id,
                                 ArticleRequest articleRequest,
-                                HttpSession session,
                                 HttpServletRequest request,
                                 RedirectAttributes redirectAttributes) {
+
+        HttpSession session = request.getSession();
 
         Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
         if (loggedInUserIdOpt.isEmpty()) {
@@ -132,8 +137,9 @@ public class ArticleController {
 
     @DeleteMapping("/articles/{id}")
     public String delete(@PathVariable Long id,
-                         HttpSession session,
                          HttpServletRequest request) {
+
+        HttpSession session = request.getSession();
 
         Optional<Long> loggedInUserIdOpt = sessionService.getLoggedInUserIdOpt(session);
         if (loggedInUserIdOpt.isEmpty()) {

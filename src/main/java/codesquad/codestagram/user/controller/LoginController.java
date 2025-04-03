@@ -5,6 +5,7 @@ import codesquad.codestagram.user.domain.User;
 import codesquad.codestagram.user.dto.LoginRequest;
 import codesquad.codestagram.user.service.SessionService;
 import codesquad.codestagram.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,12 +35,13 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(LoginRequest request,
-                        HttpSession session,
+    public String login(LoginRequest loginRequest,
+                        HttpServletRequest request,
                         RedirectAttributes redirectAttributes) {
 
+        HttpSession session = request.getSession();
         try {
-            User user = userService.authenticate(request.userId(), request.password());
+            User user = userService.authenticate(loginRequest.userId(), loginRequest.password());
             sessionService.login(session, user.getId());
 
             String redirectUrl = sessionService.popRedirectUrl(session);
@@ -51,7 +53,9 @@ public class LoginController {
     }
 
     @PostMapping("/logout")
-    public String logout(HttpSession session) {
+    public String logout(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+
         sessionService.logout(session);
         return REDIRECT_HOME;
     }
