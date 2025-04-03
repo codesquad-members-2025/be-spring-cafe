@@ -27,8 +27,8 @@ public class LoginService {
 
     //validateUpdate -> validateUserOwnership로 메서드 이름 fix
     // loginUser가 본인의 정보에 대한 권한을 가지고 있는지 검증한다
-    public boolean validateUserOwnership(User loginUser, String name) {
-        return loginUser != null && loginUser.getName().equals(name);
+    public boolean validateUserOwnership(User loginUser, String userId) {
+        return loginUser != null && loginUser.getUserId().equals(userId);
     }
 
     //회원 정보 수정 -> @Transactional 제거

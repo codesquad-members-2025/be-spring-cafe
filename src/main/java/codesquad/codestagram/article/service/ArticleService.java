@@ -27,11 +27,11 @@ public class ArticleService {
 
     //게시글 상세보기 구현하기
     public Article getArticleById(Long Id){
-        return articleRepository.findArticleById(Id);
+        return articleRepository.findArticleByArticleId(Id);
     }
 
     public void updateArticle(Long id, Article updateArticle) {
-        Article article = articleRepository.findArticleById(id);
+        Article article = articleRepository.findArticleByArticleId(id);
         if(article != null){
             article.setTitle(updateArticle.getTitle());
             article.setContents(updateArticle.getContents());

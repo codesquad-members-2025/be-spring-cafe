@@ -8,6 +8,7 @@ import codesquad.codestagram.login.service.LoginService;
 import codesquad.codestagram.service.UserService;
 import codesquad.codestagram.util.SessionUtil;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +30,9 @@ public class ArticleController {
 
     //글쓰기 폼 렌더링
     @GetMapping("/qna/form")
-    public String showArticleForm(HttpSession session){
+    public String showArticleForm(HttpSession session,Model model){
         if(SessionUtil.isUserLoggedIn(session)){
+            model.addAttribute("article", new Article());
             return "qna/form";
         }
         else return "redirect:/auth/login";
@@ -39,9 +41,12 @@ public class ArticleController {
     //게시글 데이터 저장하기
     @PostMapping("/articles")
     public String createArticle(@ModelAttribute Article article, HttpSession session){
+        System.out.println("✅ createArticle() 실행됨!");
         if(SessionUtil.isUserLoggedIn(session)){
             User user = (User) session.getAttribute(SESSION_USER_KEY);
-            article.setWriter(user.getName());
+
+            article.setWriter(user);
+
             articleService.write(article);
             return "redirect:/";
         }
@@ -59,8 +64,8 @@ public class ArticleController {
 
 
     // 게시글 상세 보기 구현하기 -> 로그인한 사용자만 게시글의 세부 내용을 볼 수 있다
-    @GetMapping("/articles/{id}")
-    public String getArticleById(@PathVariable("id") Long id, Model model, HttpSession session) {
+    @GetMapping("/articles/{articleId}")
+    public String getArticleById(@PathVariable("articleId") Long id, Model model, HttpSession session) {
         if(SessionUtil.isUserLoggedIn(session)){
             Article article = articleService.getArticleById(id);
             model.addAttribute("article", article);
@@ -85,9 +90,9 @@ public class ArticleController {
 
 
 
-    @PutMapping("/articles/{id}/update")
+    @PutMapping("/articles/{articleId}/update")
     public String updateArticleById(
-            @PathVariable("id")Long id,
+            @PathVariable("articleId")Long id,
             @ModelAttribute Article article,
             HttpSession session
     ){
@@ -102,7 +107,7 @@ public class ArticleController {
         if(existingArticle == null){
             return "redirect:/error/not-found"; // 글이 존재하지 않는 경우 404 페이지로 이동
         }
-        boolean updatePossible = loginService.validateUserOwnership(loginUser, existingArticle.getWriter());
+        boolean updatePossible = loginService.validateUserOwnership(loginUser, existingArticle.getWriter().getUserId());
 
         if(updatePossible){
             articleService.updateArticle(id, article);

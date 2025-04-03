@@ -77,16 +77,17 @@
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default content-main">
             <!-- 로그인한 사용자와 글쓴이 ID 비교 -->
-            <div th:if="${session.user == null or article.writer == null or session.user.name != article.writer}">
+            <div th:if="${session.user == null or article.writer == null or session.user.name != article.writer.name}">
                 <script>
                     alert("다른 사람의 글을 수정할 수 없습니다.");
                     window.location.href = "/error/forbidden"; // 에러 페이지로 이동
                 </script>
             </div>
-            <form name="question" method="post" th:object="${article}"  th:action="@{/articles/{id}/update(id=${article.id})}">
+            <form name="question" method="post" th:object="${article}"  th:action="@{/articles/{articleId}/update(articleId=${article.articleId})}">
                 <input type="hidden" name="_method" value="put"/>
                 <!-- 로그인 사용자 이름을 자동으로 저장 -->
-                <input type="hidden" id="writer" name="writer" th:value="${session.user != null ? session.user.name : ''}" />
+                <input type="hidden" id="writerId" name="writerId" th:value="${session.user != null ? session.user.id : ''}" />
+
                 <div class="form-group">
                     <label for="title">제목</label>
                     <input type="text" class="form-control" id="title" name="title"  th:value="${article.title}" placeholder="제목" required/>

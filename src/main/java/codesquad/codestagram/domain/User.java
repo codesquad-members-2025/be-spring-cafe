@@ -8,17 +8,17 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(nullable = false, unique = true)
-    String userId;
+    private String userId;
 
     @Column(nullable = false)
-    String password;
+    private String password;
     @Column(nullable = false)
-    String name;
+    private String name;
     @Column(nullable = false)
-    String email;
+    private String email;
 
     // 기본 생성자 필수 (JPA)
     public User() {}
@@ -30,6 +30,15 @@ public class User {
         this.name = name;
         this.email = email;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getUserId() {
         return userId;
     }
