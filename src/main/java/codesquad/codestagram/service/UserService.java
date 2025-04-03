@@ -2,10 +2,14 @@ package codesquad.codestagram.service;
 
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.repository.UserRepository;
-import jakarta.servlet.http.HttpSession;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static codesquad.codestagram.config.AppConstants.*;
 
 @Service
 public class UserService {
@@ -17,18 +21,15 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        if (userRepository.existsUserByLoginId(user.getLoginId())) {
-            throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
-        }
         return userRepository.save(user);
     }
 
-    public List<User> getUserList() {
+    public List<User> findUserList() {
         return userRepository.findAll();
     }
 
-    public User getUser(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+    public User findUser(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
     }
 
     public boolean updateUser(User user, Long id, String confirmPassword) {
@@ -43,17 +44,19 @@ public class UserService {
         return true;
     }
 
-    public boolean login(String loginId, String password, HttpSession session) {
-        User findUser = userRepository.findByLoginId(loginId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이디입니다."));
+    public Map<String, Object> authenticateUser(String loginId, String password) {
+        Optional<User> optionalUser = userRepository.findByLoginId(loginId);
 
-        if (!password.equals(findUser.getPassword())) { //비밀번호가 틀릴 경우
-            return false;
+        if (optionalUser.isEmpty()) {
+            return Map.of(SUCCESS, false, MESSAGE, "존재하지 않는 아이디입니다.");
         }
 
-        session.setAttribute("loginUser", findUser);
+        User user = optionalUser.get();
+        if (!user.getPassword().equals(password)) {
+            return Map.of(SUCCESS, false, MESSAGE, "비밀번호가 일치하지 않습니다.");
+        }
 
-        return true;
+        return Map.of(SUCCESS, true, "user", user);
     }
 
 }

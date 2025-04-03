@@ -2,38 +2,35 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout}">
 <head>
-  <title>회원가입</title>
+  <title>게시글 작성</title>
 </head>
 <body>
 <main layout:fragment="content">
-  <div class="container py-5" id="main">
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
-        <div class="card shadow-sm border-0 rounded-3">
-          <div class="card-header bg-primary text-white py-3">
-            <h2 class="text-center mb-0 fw-bold">글 작성</h2>
-          </div>
-          <div class="card-body p-4">
-            <form method="post" action="/article">
-              <div class="mb-4">
-                <label for="postTitle" class="form-label fw-bold">제목</label>
-                <input type="text" class="form-control form-control-lg" id="postTitle" name="title" placeholder="제목을 입력하세요">
-              </div>
-
-              <div class="mb-4">
-                <label for="postContent" class="form-label fw-bold">내용</label>
-                <textarea class="form-control" id="postContent" rows="10" name="content" placeholder="내용을 입력하세요"></textarea>
-              </div>
-
-              <div class="d-grid gap-2 d-flex justify-content-center mt-4">
-                <button type="submit" class="btn btn-lg btn-primary px-5 py-3">등록하기</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
+  <div class="container mx-auto px-4 py-8 max-w-4xl">
+    <div class="form-header">
+      <h1 class="form-title">새 게시글 작성</h1>
+      <p class="form-subtitle">커뮤니티에 새로운 이야기를 공유해보세요</p>
     </div>
-  </div>
+
+    <div class="form-container">
+      <form th:action="@{/article}" method="post">
+        <div class="form-group">
+          <label for="title" class="form-label">제목</label>
+          <input type="text" id="title" name="title" class="form-input" placeholder="게시글의 제목을 입력하세요">
+        </div>
+
+        <div class="form-group">
+          <label for="content" class="form-label">내용</label>
+          <textarea id="content" name="content" class="form-input form-textarea" placeholder="게시글의 내용을 입력하세요"></textarea>
+        </div>
+
+        <div class="flex justify-between mt-8">
+          <a th:href="@{/}" class="btn btn-secondary">취소</a>
+          <button type="submit" class="btn btn-primary">게시하기</button>
+        </div>
+      </form>
+    </div>
+</div>
 </main>
 </body>
 </html>

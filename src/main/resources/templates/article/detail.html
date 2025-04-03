@@ -2,28 +2,35 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout}">
 <head>
-    <title>글 작성</title>
+    <title>게시글 상세</title>
 </head>
 <body>
 <main layout:fragment="content">
-    <div class="container py-5" id="main">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card shadow-sm border-0 rounded-3">
-                    <div class="card-header bg-primary text-white py-3">
-                    </div>
-                    <div class="card-body p-4">
-                        <form method="post" action="/article">
-                            <h2 th:text="${article.title}"></h2>
-
-                            <div class="mb-4">
-                                <textarea class="form-control" id="postContent" rows="10" name="content"
-                                          th:text="${article.content}" readonly></textarea>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <div class="post-header">
+            <h1 class="post-title" th:text="${article.title}">게시글 제목</h1>
+            <div class="post-meta">
+                <span>작성일</span>
+                <span>•</span>
+                <span>
+                    <p th:text="${article.user.name}"></p>
+                </span>
             </div>
+        </div>
+
+        <div class="post-content">
+            <textarea th:text="${article.content}" readonly></textarea>
+        </div>
+
+        <div class="flex justify-between mt-8">
+            <a th:href="@{/}" class="btn btn-secondary">목록으로</a>
+            <div class="space-x-4">
+                <a th:href="@{/article/{id}/form(id=${article.id})}" class="btn btn-primary">수정</a>
+            </div>
+            <form th:action="@{/article/{id}/delete(id=${article.id})}" method="post">
+                <input type="hidden" name="_method" value="DELETE"/>
+                <button type="submit" class="btn btn-primary">삭제</button>
+            </form>
         </div>
     </div>
 </main>

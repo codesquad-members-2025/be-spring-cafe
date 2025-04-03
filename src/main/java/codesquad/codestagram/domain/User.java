@@ -2,6 +2,9 @@ package codesquad.codestagram.domain;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "members")
 public class User {
@@ -9,7 +12,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String loginId;
 
     @Column(nullable = false)
@@ -17,6 +20,9 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    @OneToMany(mappedBy = "user")
+    private List<Article> articles = new ArrayList<>();
 
     public Long getId() {
         return id;
