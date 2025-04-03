@@ -155,15 +155,24 @@ JdbcUserRepository의 findById 메서드에서 User 객체를 생성한 후에 s
   - 커스텀 예외 생성
   - `@ControllerAdvice`로 예외 처리
 ## 피드백
-1. session에 저장된 `Long` 타입의 user의 id를 그대로 반환하여 `null` 검사를 하고 있는데, `Optional`로 감싸서 구현해라.
+### 1. session에 저장된 `Long` 타입의 user의 id를 그대로 반환하여 `null` 검사를 하고 있는데, `Optional`로 감싸서 구현해라.  
 - 시도  
 ![img_12.png](img_12.png)![img_13.png](img_13.png)  
-왼쪽의 기존 코드를 오른쪽 코드처럼 `Optional`로만 감싸니 `Unchecked cast`가 발생했다.
-이유는 `session.getAttribute(USER_ID_SESSION_KEY)`가 `Optional<Long>`이 아닌 `Long` 혹은 `null`을 반환하기 때문이었다.
+왼쪽의 기존 코드를 오른쪽 코드처럼 `Optional`로만 감싸니 `Unchecked cast`가 발생했다.  
+이유는 `session.getAttribute(USER_ID_SESSION_KEY)`가 `Optional<Long>`이 아닌 `Long` 혹은 `null`을 반환하기 때문이었다.  
 - 해결  
-![img_14.png](img_14.png)
-세션에서 가져온 userId가 `Long` 타입이면 userId를 `Long`으로 캐스팅하고 `Optional`로 감싸서 반환하고, 아니라면 빈 `Optional`을 반환하는 명확한 타입 캐스팅 방법으로 수정하니 경고가 없어졌다.  
-2. 로그인하지 않은 사용자가 회원 권한이 필요한 요청을 보냈을 때 로그인을 하면 직전에 요청했던 곳으로 돌아가게 해라.
+![img_14.png](img_14.png)  
+세션에서 가져온 userId가 `Long` 타입이면 userId를 `Long`으로 캐스팅하고 `Optional`로 감싸서 반환하고, 아니라면 빈 `Optional`을 반환하는 명확한 타입 캐스팅 방법으로 수정하니 경고가 없어졌다.    
+### 2. 로그인하지 않은 사용자가 회원 권한이 필요한 요청을 보냈을 때 로그인을 하면 직전에 요청했던 곳으로 돌아가게 해라.  
+세션, 쿠키, 인터셉터 등 많은 방법이 있지만 기존에 로그인에서 세션 방식을 사용하기 때문에 이 또한 세션으로 구현하기로 하였다.
+- 구현 방식
+  - `sessionService`에 redirectUrl을 저장 및 꺼내오는 메서드 생성  
+![img_21.png](img_21.png)
+  - 로그인 처리 로직에서 세션에 저장된 redirectURL을 꺼내서 url에 붙이는 로직 추가  
+![img_20.png](img_20.png)
+  - 로그인이 필요한 모든 요청에 유저가 로그인을 하지 않았다면 세션에 requestUri(요청 주소)를 저장하는 로직 추가
+![img_19.png](img_19.png)
+
 ## 기타
 - `@ControllerAdvice`와 `controller`계층에서의 `try-catch` 중 예외 처리 우선순위
 
@@ -178,6 +187,8 @@ JdbcUserRepository의 findById 메서드에서 User 객체를 생성한 후에 s
 ![img_16.png](img_16.png)  
 직접 실행해보니 에러 페이지가 아니라 원하는 동작인 리다이렉트가 잘 되는 것을 알 수 있었다. 
 ### 결론: 컨트롤러에서 예외를 먼저 잡으면 `@ControllerAdvice`까지 전달되지 않는다. 
+
+
 
 # 학습
 ### PRG 패턴 (POST-REDIRECT-GET)
