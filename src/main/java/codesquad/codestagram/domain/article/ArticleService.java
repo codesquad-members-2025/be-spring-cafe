@@ -5,6 +5,10 @@ import codesquad.codestagram.domain.auth.exception.UnauthorizedException;
 import codesquad.codestagram.domain.reply.Reply;
 import codesquad.codestagram.domain.reply.ReplyRepository;
 import codesquad.codestagram.domain.user.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +23,13 @@ public class ArticleService {
     public ArticleService(ArticleRepository articleRepository, ReplyRepository replyRepository) {
         this.articleRepository = articleRepository;
         this.replyRepository = replyRepository;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Article> findArticles(int page) {
+        Pageable pageable = PageRequest.of(page, 15, Sort.by("createdAt").descending());
+
+        return articleRepository.findAll(pageable);
     }
 
     @Transactional
