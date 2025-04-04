@@ -21,6 +21,7 @@ public class Reply {
     @JoinColumn(name = "user_id")
     private User writer;
 
+    @Column(nullable = false)
     private String content;
 
     @Column(nullable = false, updatable = false)
