@@ -4,6 +4,7 @@ import codesquad.codestagram.domain.Board;
 import codesquad.codestagram.domain.Reply;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.ReplyForm;
+import codesquad.codestagram.exception.ReplyNotFoundException
 import codesquad.codestagram.exception.BoardNotFoundException;
 import codesquad.codestagram.repository.BoardRepository;
 import codesquad.codestagram.repository.ReplyRepository;
@@ -58,16 +59,10 @@ public class ReplyService {
 
     //댓글 삭제: 댓글 id와 로그인한 사용자 확인
     @Transactional
-    public boolean deleteReply(Long replyId, User writer) {
-        //조건을 만족하는 댓글이 없을 수도 있기 때문에 Optional
-        Optional<Reply> optionalReply = replyRepository.findByIdAndWriter(replyId, writer);
-        if (optionalReply.isPresent()) {
-            Reply reply =  optionalReply.get();
-            Board board = reply.getBoard();
-            board.removeReply(reply);
-            replyRepository.delete(reply);
-            return true;
-        }
-        return false;
+    public void deleteReply(Long replyId, User currentUser) {
+        Reply reply = replyRepository.findByIdAndWriterAndDeletedFalse(replyId, currentUser)
+                .orElseThrow(ReplyNotFoundException::new);
+        reply.setDeleted(true);
+        replyRepository.save(reply);
     }
 }

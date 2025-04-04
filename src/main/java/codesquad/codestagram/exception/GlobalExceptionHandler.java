@@ -38,6 +38,22 @@ public class GlobalExceptionHandler {
         return "error/404";
     }
 
+    @ExceptionHandler(UserNotAuthorException.class)
+    public String handleReplyNotFound(UserNotAuthorException e, Model model, HttpServletResponse response) {
+        response.setStatus(404);
+        log.warn("User not Author", e);
+        model.addAttribute("errorMessage", e.getMessage());
+        return "error/404";
+    }
+
+    @ExceptionHandler(BoardAndReplyAuthorMismatchException.class)
+    public String handleReplyNotFound(BoardAndReplyAuthorMismatchException e, Model model, HttpServletResponse response) {
+        response.setStatus(404);
+        log.warn("Board And Reply Author Mismatch", e);
+        model.addAttribute("errorMessage", e.getMessage());
+        return "error/404";
+    }
+
     /**
      * 잘못된 인자 등 일반적인 클라이언트 오류, (요청의 "값"이 잘못된 경우에 많이 씀)
      * 예를 들어 (ID는 1 이상이어야 합니다.)
