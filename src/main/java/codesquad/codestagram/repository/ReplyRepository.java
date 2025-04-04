@@ -11,4 +11,8 @@ import java.util.Optional;
 public interface ReplyRepository extends JpaRepository<Reply, Long> {
     List<Reply> findByBoard(Board board); //특정 게시글에 달린 모든 댓글 조회
     Optional<Reply> findByIdAndWriter(Long id, User writer); // DB 조회 기반 검증
+    //(삭제 여부 고려)
+    List<Reply> findByBoardAndDeletedFalse(Board board);
+    Optional<Reply> findByIdAndWriterAndDeletedFalse(Long id, User writer);
+
 }
