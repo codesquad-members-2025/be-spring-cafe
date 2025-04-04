@@ -15,8 +15,11 @@ public class Article {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @Column(nullable = false)
     private User writer;
+    @Column(nullable = false)
     private String title;
+    @Column(nullable = false)
     private String content;
 
     @Column(nullable = false, updatable = false)
