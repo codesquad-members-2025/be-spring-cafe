@@ -12,8 +12,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static codesquad.codestagram.common.constants.PaginationConstatns.DEFAULT_SORT_PROPERTY;
-import static codesquad.codestagram.common.constants.PaginationConstatns.REPLY_PAGE_SIZE;
+import static codesquad.codestagram.common.constants.PaginationConstants.DEFAULT_SORT_PROPERTY;
+import static codesquad.codestagram.common.constants.PaginationConstants.REPLY_PAGE_SIZE;
 
 @RestController
 @RequestMapping("/articles/{articleId}/replies")
