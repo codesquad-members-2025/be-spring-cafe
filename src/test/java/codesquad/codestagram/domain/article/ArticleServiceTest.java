@@ -10,8 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.*;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -51,6 +54,35 @@ class ArticleServiceTest {
         } catch (Exception e) {
             throw new RuntimeException("Reflection 실패: " + e.getMessage(), e);
         }
+    }
+
+    @Test
+    @DisplayName("게시글 페이징: 30개의 게시글 중 첫 페이지에 15개가 반환된다.")
+    void findArticles_with30Articles_shouldReturn15FirstPage() {
+        // given: 30개의 게시글 생성
+        List<Article> articles = new ArrayList<>();
+        for (int i = 1; i <= 30; i++) {
+            Article article = new Article(user.getId(), "Title" + i, "Content" + i);
+            setField(article, "id", (long) i);
+            articles.add(article);
+        }
+
+        // 첫 페이지에 해당하는 15개의 게시글을 subList로 추출
+        Pageable pageable = PageRequest.of(0, 15, Sort.by("createdDate").descending());
+        Page<Article> page = new PageImpl<>(articles.subList(0, 15), pageable, articles.size());
+
+        when(articleRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+        // when: 페이지 0의 게시글 조회
+        Page<Article> result = articleService.findArticles(0);
+
+        // then: 반환된 게시글 수와 전체 게시글 수 확인
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(result.getContent()).hasSize(15); // 첫 페이지에 15개 게시글
+        softly.assertThat(result.getTotalElements()).isEqualTo(30); // 전체 게시글 수
+        softly.assertThat(result.getNumber()).isEqualTo(0); // 첫 페이지
+        softly.assertAll();
+        verify(articleRepository).findAll(any(Pageable.class));
     }
 
     @Test
