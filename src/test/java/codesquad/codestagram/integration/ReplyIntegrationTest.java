@@ -67,6 +67,28 @@ public class ReplyIntegrationTest {
     }
 
     @Test
+    @DisplayName("댓글 수정 테스트")
+    public void testUpdateReply() throws Exception {
+        // 먼저 댓글 추가
+        Reply reply = new Reply("원본 댓글", user, board);
+        board.addReply(reply); // 양방향 관계 설정
+        replyRepository.save(reply);
+
+        // 댓글 수정 (PUT /boards/{boardId}/replies/{replyId})
+        mockMvc.perform(put("/boards/" + board.getBoardId() + "/replies/" + reply.getId())
+                        .session(session)
+                        .param("content", "수정된 댓글 내용"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/boards/" + board.getBoardId()));
+
+        // DB
+        Board updatedBoard = boardRepository.findById(board.getBoardId()).orElseThrow();
+        assertThat(updatedBoard.getReplies()).hasSize(1);
+        Reply updatedReply = updatedBoard.getReplies().get(0);
+        assertThat(updatedReply.getContent()).isEqualTo("수정된 댓글 내용");
+    }
+
+    @Test
     @DisplayName("댓글 삭제 테스트")
     public void testDeleteReply() throws Exception {
         // 먼저 댓글 추가
@@ -91,4 +113,6 @@ public class ReplyIntegrationTest {
         assertThat(updatedBoard.getReplies()).isEmpty();
         assertThat(replyRepository.findById(reply.getId())).isEmpty();
     }
+
+
 }
