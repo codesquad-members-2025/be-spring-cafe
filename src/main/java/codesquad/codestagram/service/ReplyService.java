@@ -39,6 +39,23 @@ public class ReplyService {
         return board.getReplies();
     }
 
+    public Optional<Reply> getReplyById(Long replyId) {
+        return replyRepository.findById(replyId);
+    }
+
+    //댓글 수정
+    @Transactional
+    public boolean updateReply(Long replyId, ReplyForm form, User writer) {
+        Optional<Reply> optionalReply = replyRepository.findByIdAndWriter(replyId, writer);
+        if (optionalReply.isPresent()) {
+            Reply reply = optionalReply.get();
+            reply.setContent(form.getContent());
+            replyRepository.save(reply);
+            return true;
+        }
+        return false;
+    }
+
     //댓글 삭제: 댓글 id와 로그인한 사용자 확인
     @Transactional
     public boolean deleteReply(Long replyId, User writer) {
