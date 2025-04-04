@@ -89,4 +89,11 @@ public class ReplyController {
         replyService.deleteReply(replyId, loggedInUserId);
         return "redirect:/articles/" + articleId;
     }
+
+    @GetMapping("/{replyId}")
+    public String redirectToArticle(@PathVariable Long articleId,
+                                    @PathVariable Long replyId) {
+        // #reply-id: url 해시를 통해 해당 댓글로 스크롤
+        return "redirect:/articles/" + articleId + "#reply-" + replyId;
+    }
 }
