@@ -5,11 +5,15 @@ import codesquad.codestagram.domain.reply.dto.ReplyRequestDto;
 import codesquad.codestagram.domain.reply.dto.ReplyResponseDto;
 import codesquad.codestagram.domain.user.User;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import static codesquad.codestagram.common.constants.PaginationConstatns.DEFAULT_SORT_PROPERTY;
+import static codesquad.codestagram.common.constants.PaginationConstatns.REPLY_PAGE_SIZE;
 
 @RestController
 @RequestMapping("/articles/{articleId}/replies")
@@ -22,11 +26,10 @@ public class ReplyController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<ReplyResponseDto>> getReplies(@PathVariable Long articleId) {
-        List<ReplyResponseDto> replies = replyService.findRepliesByArticle(articleId)
-                .stream()
-                .map(ReplyResponseDto::of)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<ReplyResponseDto>> getReplies(@PathVariable Long articleId,
+                                                             @PageableDefault(size = REPLY_PAGE_SIZE, sort = DEFAULT_SORT_PROPERTY, direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<Reply> repliesPage = replyService.findRepliesByArticle(articleId, pageable);
+        Page<ReplyResponseDto> replies = repliesPage.map(ReplyResponseDto::of);
 
         return ResponseEntity.ok(replies);
     }
