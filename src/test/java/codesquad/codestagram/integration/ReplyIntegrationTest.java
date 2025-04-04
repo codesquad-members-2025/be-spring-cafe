@@ -6,6 +6,7 @@ import codesquad.codestagram.domain.User;
 import codesquad.codestagram.repository.BoardRepository;
 import codesquad.codestagram.repository.ReplyRepository;
 import codesquad.codestagram.repository.UserRepository;
+import codesquad.codestagram.service.ReplyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -27,6 +30,7 @@ public class ReplyIntegrationTest {
     @Autowired private MockMvc mockMvc;
     @Autowired private BoardRepository boardRepository;
     @Autowired private UserRepository userRepository;
+    @Autowired private ReplyService replyService;
     @Autowired private ReplyRepository replyRepository;
 
     private User user;
@@ -61,7 +65,7 @@ public class ReplyIntegrationTest {
         Board updatedBoard = boardRepository.findById(board.getBoardId())
                 .orElseThrow();
         assertThat(updatedBoard.getReplies()).hasSize(1);
-        Reply reply = updatedBoard.getReplies().get(0);
+        Reply reply = updatedBoard.getReplies().getFirst();
         assertThat(reply.getContent()).isEqualTo("댓글 내용 테스트");
         assertThat(reply.getWriter().getId()).isEqualTo(user.getId());
     }
@@ -75,7 +79,7 @@ public class ReplyIntegrationTest {
         replyRepository.save(reply);
 
         // 댓글 수정 (PUT /boards/{boardId}/replies/{replyId})
-        mockMvc.perform(put("/boards/" + board.getBoardId() + "/replies/" + reply.getId())
+        mockMvc.perform(put("/boards/" + board.getBoardId() + "/replies/" + reply.getId() + "/edit")
                         .session(session)
                         .param("content", "수정된 댓글 내용"))
                 .andExpect(status().is3xxRedirection())
@@ -84,7 +88,7 @@ public class ReplyIntegrationTest {
         // DB
         Board updatedBoard = boardRepository.findById(board.getBoardId()).orElseThrow();
         assertThat(updatedBoard.getReplies()).hasSize(1);
-        Reply updatedReply = updatedBoard.getReplies().get(0);
+        Reply updatedReply = updatedBoard.getReplies().getFirst();
         assertThat(updatedReply.getContent()).isEqualTo("수정된 댓글 내용");
     }
 
@@ -108,10 +112,8 @@ public class ReplyIntegrationTest {
                 .andExpect(redirectedUrl("/boards/" + board.getBoardId()));
 
         // DB
-        updatedBoard = boardRepository.findById(board.getBoardId())
-                .orElseThrow();
-        assertThat(updatedBoard.getReplies()).isEmpty();
-        assertThat(replyRepository.findById(reply.getId())).isEmpty();
+        List<Reply> activeRepliesAfter = replyService.getActiveReplies(board);
+        assertThat(activeRepliesAfter).isEmpty();
     }
 
 

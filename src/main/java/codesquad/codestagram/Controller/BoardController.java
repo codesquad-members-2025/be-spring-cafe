@@ -55,7 +55,7 @@ public class BoardController {
         }
         Board board = boardService.getBoardById(boardId)
                 .orElseThrow(BoardNotFoundException::new);
-        List<Reply> activeReplies = replyService.getReplies(board);
+        List<Reply> activeReplies = replyService.getActiveReplies(board);
         model.addAttribute("board", board);
         model.addAttribute("activeReplies", activeReplies);
         return "qna/show"; // 게시글 상세 화면 (qna/show.html)

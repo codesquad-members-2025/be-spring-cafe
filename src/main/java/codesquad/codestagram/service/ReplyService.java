@@ -27,16 +27,21 @@ public class ReplyService {
 
     //댓글작성(추가)
     @Transactional
-    public Reply addReply(ReplyForm form, User writer, Long boardId) {
+    public void addReply(ReplyForm form, User writer, Long boardId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(BoardNotFoundException::new);
         Reply reply = new Reply(form.getContent(), writer, board);
         board.addReply(reply); //보드의 replyList에도 댓글 추가
-        return replyRepository.save(reply);
+        replyRepository.save(reply);
     }
 
     //댓글 조회 : 특정 게시글에 달린 전체 댓글
     public List<Reply> getReplies(Board board) {
+        return replyRepository.findByBoard(board);
+    }
+
+    //댓글 조회 : 특정 게시글에 달린 "deleted == false"인 전체 댓글
+    public List<Reply> getActiveReplies(Board board) {
         return replyRepository.findByBoardAndDeletedFalse(board);
     }
 

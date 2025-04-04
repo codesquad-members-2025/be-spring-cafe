@@ -39,7 +39,12 @@ public class BoardService {
 
 
     public Optional<Board> getBoardById(Long boardId){
-        return boardRepository.findById(boardId);
+        Optional<Board> board = boardRepository.findById(boardId);
+        // board.deleted == true 이면 Optional.empty() 반환
+        if (board.isPresent() && board.get().isDeleted()) {
+            return Optional.empty();
+        }
+        return board;
     }
 
     @Transactional
