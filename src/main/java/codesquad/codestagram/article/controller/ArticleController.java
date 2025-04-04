@@ -87,7 +87,7 @@ public class ArticleController {
             return REDIRECT_LOGIN;
         }
 
-        Article article = articleService.findArticle(id);
+        Article article = articleService.findArticleWithReplies(id);
         model.addAttribute(ARTICLE, article);
         return "qna/show";
     }

@@ -18,7 +18,7 @@ import static codesquad.codestagram.user.service.UserService.USER_NOT_FOUND;
 @Service
 public class ArticleService {
 
-    public static final String NOT_FOUND_ARTICLE = "존재하지 않는 게시글입니다.";
+    public static final String ARTICLE_NOT_FOUND = "존재하지 않는 게시글입니다.";
 
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
@@ -46,14 +46,19 @@ public class ArticleService {
     }
 
     public List<Article> findArticles() {
-        return articleRepository.findAll();
+        return articleRepository.findAllWithRepliesAndWriter();
     }
 
     public Article findArticle(Long id) {
 
         return articleRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException(NOT_FOUND_ARTICLE)
+                () -> new ResourceNotFoundException(ARTICLE_NOT_FOUND)
         );
+    }
+
+    public Article findArticleWithReplies(Long id) {
+        return articleRepository.findByIdWithRepliesAndWriter(id)
+                .orElseThrow(() -> new ResourceNotFoundException(ARTICLE_NOT_FOUND));
     }
 
     public Article findArticleAndVerifyOwner(Long id, Long loggedInUserId) {
