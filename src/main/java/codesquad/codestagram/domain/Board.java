@@ -20,6 +20,8 @@ public class Board {
     @OneToMany(mappedBy = "board", cascade=CascadeType.ALL, orphanRemoval = true)
     private final List<Reply> replyList = new ArrayList<>();
 
+    private boolean deleted = false;
+
     protected Board() { //JPA는 엔티티 클래스를 reflection을 통해 인스턴스화 할때 기본 생성자(파라미터가 없는 생성자) 사용
     }
 
@@ -54,6 +56,15 @@ public class Board {
     public List<Reply> getReplies() {
         return replyList;
     }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
 
 
 
