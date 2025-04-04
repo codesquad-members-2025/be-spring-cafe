@@ -13,9 +13,15 @@
 
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
+        <!-- 에러 메시지가 있으면 표시 -->
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <span th:text="${errorMessage}">오류 메시지</span>
+        </div>
+
         <div class="panel panel-default">
             <header class="qna-header">
-                <h2 class="qna-title" th:text="${article.title}">InitializingBean implements afterPropertiesSet() 호출되지 않는 문제.</h2>
+                <h2 class="qna-title" th:text="${article.title}">게시글 제목</h2>
             </header>
             <div class="content-main">
                 <article class="article">
@@ -24,16 +30,15 @@
                             <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="#" class="article-author-name" th:href="@{/users/{id}(id=${article.writer.id})}" th:text="${article.writer.userId}">kimmunsu</a>
-                            <a href="#" class="article-header-time" title="퍼머링크" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}">
-                                2015-12-30 01:47
+                            <a href="#" class="article-author-name" th:href="@{/users/{id}(id=${article.writer.id})}" th:text="${article.writer.userId}">작성자</a>
+                            <a href="#" class="article-header-time" title="작성일" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}">
+                                2023-03-30 01:47
                                 <i class="icon-link"></i>
                             </a>
                         </div>
                     </div>
                     <div class="article-doc" th:text="${article.content}">
-                        <p>A 에 의존성을 가지는 B라는 클래스가 있습니다.</p><p>B라는 클래스는 InitializingBean 을 상속하고 afterPropertiesSet을 구현하고 있습니다.
-                        서버가 가동되면서 bean들이 초기화되는 시점에 B라는 클래스의 afterPropertiesSet 메소드는</p><p>A라는 클래스의 특정 메소드인 afunc()를 호출하고 있습니다.</p>
+                        게시글 내용이 여기에 표시됩니다.
                     </div>
                     <div class="article-util">
                         <ul class="article-util-list">
@@ -55,115 +60,109 @@
                     </div>
                 </article>
 
+                <!-- 댓글 섹션 시작 -->
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
-                        <p class="qna-comment-count"><strong>2</strong>개의 의견</p>
-                        <div class="qna-comment-slipp-articles">
-
-                            <article class="article" id="answer-1405">
-                                <div class="article-header">
-                                    <div class="article-header-thumb">
-                                        <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
-                                    </div>
-                                    <div class="article-header-text">
-                                        <a href="/users/1/자바지기" class="article-author-name">자바지기</a>
-                                        <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                            2016-01-12 14:06
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="article-doc comment-doc">
-                                    <p>이 글만으로는 원인 파악하기 힘들겠다. 소스 코드와 설정을 단순화해서 공유해 주면 같이 디버깅해줄 수도 있겠다.</p>
-                                </div>
-                                <div class="article-util">
-                                    <ul class="article-util-list">
-                                        <li>
-                                            <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>
-                                        </li>
-                                        <li>
-                                            <form class="delete-answer-form" action="/questions/413/answers/1405" method="POST">
-                                                <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" class="delete-answer-button">삭제</button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </article>
-                            <article class="article" id="answer-1406">
-                                <div class="article-header">
-                                    <div class="article-header-thumb">
-                                        <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
-                                    </div>
-                                    <div class="article-header-text">
-                                        <a href="/users/1/자바지기" class="article-author-name">자바지기</a>
-                                        <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                            2016-01-12 14:06
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="article-doc comment-doc">
-                                    <p>이 글만으로는 원인 파악하기 힘들겠다. 소스 코드와 설정을 단순화해서 공유해 주면 같이 디버깅해줄 수도 있겠다.</p>
-                                </div>
-                                <div class="article-util">
-                                    <ul class="article-util-list">
-                                        <li>
-                                            <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>
-                                        </li>
-                                        <li>
-                                            <form class="form-delete" action="/questions/413/answers/1405" method="POST">
-                                                <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" class="delete-answer-button">삭제</button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </article>
-                            <form class="submit-write">
-                                <div class="form-group" style="padding:14px;">
-                                    <textarea class="form-control" placeholder="Update your status"></textarea>
-                                </div>
-                                <button class="btn btn-success pull-right" type="button">답변하기</button>
-                                <div class="clearfix" />
-                            </form>
+                        <div id="comment-count-section">
+                            <p class="qna-comment-count"><strong th:text="${article.replies.size()}">0</strong>개의 의견</p>
                         </div>
+
+                        <!-- 댓글 목록 -->
+                        <div class="qna-comment-slipp-articles">
+                            <!-- 각 댓글별 항목 -->
+                            <article class="article" th:each="reply : ${article.replies}" th:id="'reply-' + ${reply.id}">
+                                <!-- 댓글 표시 영역 -->
+                                <div class="reply-content-display" th:id="'reply-display-' + ${reply.id}">
+                                    <div class="article-header">
+                                        <div class="article-header-thumb">
+                                            <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
+                                        </div>
+                                        <div class="article-header-text">
+                                            <a th:href="@{/users/{id}(id=${reply.writer.id})}" class="article-author-name"
+                                               th:text="${reply.writer.userId}">댓글 작성자</a>
+                                            <a th:href="'#reply-' + ${reply.id}" class="article-header-time" title="작성일"
+                                               th:text="${#temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}">
+                                                2023-03-30 01:47
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="article-doc comment-doc">
+                                        <p th:text="${reply.content}">댓글 내용</p>
+                                    </div>
+                                    <div class="article-util">
+                                        <ul class="article-util-list">
+                                            <!-- 자신의 댓글에만 수정/삭제 버튼 표시 -->
+                                            <th:block th:if="${session.LOGGED_IN_USER_ID != null && session.LOGGED_IN_USER_ID == reply.writer.id}">
+                                                <li>
+                                                    <a href="javascript:void(0);" th:onclick="'showEditForm(' + ${reply.id} + ')'">수정</a>
+                                                </li>
+                                                <li>
+                                                    <form th:action="@{/articles/{articleId}/replies/{replyId}(articleId=${article.id},replyId=${reply.id})}"
+                                                          method="POST" onsubmit="return confirm('댓글을 삭제하시겠습니까?');">
+                                                        <input type="hidden" name="_method" value="DELETE">
+                                                        <button type="submit" class="delete-reply-button">삭제</button>
+                                                    </form>
+                                                </li>
+                                            </th:block>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- 댓글 수정 폼 (초기에 숨김) -->
+                                <div class="reply-edit-form" th:id="'reply-form-' + ${reply.id}" style="display:none;">
+                                    <form th:action="@{/articles/{articleId}/replies/{replyId}(articleId=${article.id},replyId=${reply.id})}" method="post">
+                                        <input type="hidden" name="_method" value="PUT">
+                                        <div class="form-group" style="padding:14px;">
+                                            <textarea class="form-control" name="content" th:text="${reply.content}" required></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-sm pull-right">수정 완료</button>
+                                        <button type="button" class="btn btn-default btn-sm pull-right"
+                                                th:onclick="'hideEditForm(' + ${reply.id} + ')'" style="margin-right:5px;">취소</button>
+                                        <div class="clearfix"></div>
+                                    </form>
+                                </div>
+                            </article>
+
+                            <!-- 댓글이 없을 경우 메시지 표시 -->
+                            <div th:if="${article.replies.isEmpty()}" class="text-center">
+                                <p>아직 댓글이 없습니다.</p>
+                            </div>
+                        </div>
+
+                        <!-- 댓글 작성 폼 -->
+                        <form class="submit-write" method="post" th:action="@{/articles/{id}/replies(id=${article.id})}">
+                            <div class="form-group" style="padding:14px;">
+                                <textarea class="form-control" name="content" placeholder="댓글을 입력하세요" required></textarea>
+                            </div>
+                            <button class="btn btn-success pull-right" type="submit">댓글 작성</button>
+                            <div class="clearfix"></div>
+                        </form>
                     </div>
                 </div>
+                <!-- 댓글 섹션 끝 -->
             </div>
         </div>
     </div>
 </div>
 
-<script type="text/template" id="answerTemplate">
-    <article class="article">
-        <div class="article-header">
-            <div class="article-header-thumb">
-                <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
-            </div>
-            <div class="article-header-text">
-                <a href="#" class="article-author-name">{0}</a>
-                <div class="article-header-time">{1}</div>
-            </div>
-        </div>
-        <div class="article-doc comment-doc">
-            {2}
-        </div>
-        <div class="article-util">
-            <ul class="article-util-list">
-                <li>
-                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
-                </li>
-                <li>
-                    <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="delete-answer-button">삭제</button>
-                    </form>
-                </li>
-            </ul>
-        </div>
-    </article>
-</script>
-
 <!-- 공통 스크립트 사용 -->
 <div th:replace="~{fragments :: scripts}"></div>
+
+<!-- 댓글 수정 관련 스크립트 -->
+<script>
+    function showEditForm(replyId) {
+        // 댓글 표시 영역 숨기기
+        document.getElementById('reply-display-' + replyId).style.display = 'none';
+        // 수정 폼 표시
+        document.getElementById('reply-form-' + replyId).style.display = 'block';
+    }
+
+    function hideEditForm(replyId) {
+        // 수정 폼 숨기기
+        document.getElementById('reply-form-' + replyId).style.display = 'none';
+        // 댓글 표시 영역 표시
+        document.getElementById('reply-display-' + replyId).style.display = 'block';
+    }
+</script>
 </body>
 </html>
