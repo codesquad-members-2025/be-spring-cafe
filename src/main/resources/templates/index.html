@@ -11,30 +11,42 @@
             max-width: 600px;
             margin: 20px auto;
         }
-
         .post-header {
             padding: 10px;
             display: flex;
             align-items: center;
         }
-
         .profile-img {
             width: 32px;
             height: 32px;
             border-radius: 50%;
             margin-right: 10px;
         }
-
         .post-actions {
             padding: 10px;
         }
-
         .post-actions i {
             margin-right: 15px;
             font-size: 1.5rem;
             cursor: pointer;
         }
-
+        /* Pagination style */
+        .pagination a {
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            text-decoration: none;
+            color: #007bff;
+        }
+        .pagination a.active {
+            font-weight: bold;
+            background-color: #007bff;
+            color: #fff;
+        }
+        .pagination a.disabled {
+            pointer-events: none;
+            color: #ccc;
+        }
     </style>
 </head>
 <body>
@@ -49,7 +61,7 @@
                 <i class="bi bi-pencil-square"></i> 게시글 작성
             </a>
         </div>
-        
+
         <div class="post-container">
             <!-- 게시물 반복 시작 -->
             <div th:each="article : ${articles}" class="card mb-4">
@@ -60,6 +72,26 @@
                 </div>
             </div>
             <!-- 게시물 반복 끝 -->
+        </div>
+
+        <!-- 페이지네이션 영역 -->
+        <div class="d-flex justify-content-center mt-4 pagination">
+            <!-- 이전 페이지 링크 (현재 페이지가 1이면 비활성화) -->
+            <a th:if="${pagination.page > 1}"
+               th:href="@{/(page=${pagination.page - 2})}">이전</a>
+            <a th:if="${pagination.page == 1}" class="disabled">이전</a>
+
+            <!-- 페이지 번호 링크 -->
+            <span th:each="i : ${#numbers.sequence(1, pagination.totalPages)}">
+                <a th:href="@{/(page=${i - 1})}"
+                   th:text="${i}"
+                   th:classappend="${i == pagination.page} ? ' active' : ''"></a>
+            </span>
+
+            <!-- 다음 페이지 링크 (현재 페이지가 마지막 페이지면 비활성화) -->
+            <a th:if="${pagination.page < pagination.totalPages}"
+               th:href="@{/(page=${pagination.page})}">다음</a>
+            <a th:if="${pagination.page == pagination.totalPages}" class="disabled">다음</a>
         </div>
     </div>
 </div>
