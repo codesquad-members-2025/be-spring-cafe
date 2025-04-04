@@ -22,7 +22,7 @@ public class ReplyController {
 
     //댓글작성(추가)
     @PostMapping("/boards/{boardId}/replies")
-    public String addReply(@PathVariable Long boardId,
+    public String addReply(@PathVariable("boardId") Long boardId,
                            @ModelAttribute ReplyForm form,
                            HttpSession session,
                            RedirectAttributes redirectAttributes) {
