@@ -30,11 +30,17 @@ public class Article {
     @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
     private List<Reply> replies = new ArrayList<>();
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
     public Article(User writer, String title, String content) {
         this.writer = writer;
         this.title = title;
         this.content = content;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = this.updatedAt =  LocalDateTime.now();
     }
 
     protected Article() {
@@ -64,14 +70,36 @@ public class Article {
     public void updateArticle(String title, String content) {
         this.title = title;
         this.content = content;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public List<Reply> getReplies() {
         return replies;
     }
 
-    public int getReplyCount() {
-        return replies.size();
+    public Long getReplyCount() {
+        return replies.stream()
+                .filter(reply -> !reply.isDeleted())
+                .count();
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void markAsDeleted() {
+        this.deleted = true;
+    }
+
+    public boolean hasRepliesByOtherUsers() {
+        Long articleWriterId = this.writer.getId();
+        return replies.stream()
+                .filter(reply -> !reply.isDeleted())
+                .anyMatch(reply -> !reply.isWrittenBy(articleWriterId));
+    }
+
+    public void markRepliesAsDeleted() {
+        replies.forEach(Reply::markAsDeleted);
     }
 }
 

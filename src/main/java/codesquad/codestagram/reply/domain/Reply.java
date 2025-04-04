@@ -27,11 +27,18 @@ public class Reply {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
+    @Column(nullable = false)
+    private boolean deleted = false;
+
+
     public Reply(Article article, User writer, String content) {
         this.article = article;
         this.writer = writer;
         this.content = content;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = this.updatedAt = LocalDateTime.now();
     }
 
     public Reply() {
@@ -59,9 +66,18 @@ public class Reply {
 
     public void updateContent(String content) {
         this.content = content;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public boolean isWrittenBy(Long userId) {
         return this.writer.getId().equals(userId);
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void markAsDeleted() {
+        this.deleted = true;
     }
 }
