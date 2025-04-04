@@ -77,14 +77,14 @@ public class ReplyController {
                               @PathVariable("replyId") Long replyId,
                               HttpSession session,
                               RedirectAttributes redirectAttributes) {
+        // 로그인 여부 체크
         if (!AuthUtil.isLogined(session, redirectAttributes)) {
             return "redirect:/users/login";
         }
         User user = (User) session.getAttribute("user");
 
-        if (!replyService.deleteReply(replyId, user)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "댓글 삭제 권한이 없습니다.");
-        }
+        // 서비스 계층으로 삭제 요청 (예외 발생 시 글로벌 핸들러가 처리)
+        replyService.deleteReply(replyId, user);
         return "redirect:/boards/" + boardId;
     }
 }

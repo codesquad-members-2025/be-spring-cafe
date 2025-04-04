@@ -1,10 +1,12 @@
 package codesquad.codestagram.Controller;
 
 import codesquad.codestagram.domain.Board;
+import codesquad.codestagram.domain.Reply;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.BoardForm;
 import codesquad.codestagram.exception.BoardNotFoundException;
 import codesquad.codestagram.service.BoardService;
+import codesquad.codestagram.service.ReplyService;
 import codesquad.codestagram.util.AuthUtil;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
@@ -21,17 +23,20 @@ import java.util.*;
 @Controller
 public class BoardController {
     private final BoardService boardService;
+    private final ReplyService replyService;
+
     private static final Logger log  = LoggerFactory.getLogger(BoardController.class);
 
     @Autowired // 생성자가 1개면 spring4.3 이상에서는 자동 주입됨. 하지만 명시적으로 적어주기 잘 모르니까...
-    public BoardController(BoardService boardService) {
+    public BoardController(BoardService boardService, ReplyService replyService) {
         this.boardService = boardService;
+        this.replyService = replyService;
     }
 
 
     @GetMapping("/")
     public String listBoards(Model model) {
-        List<Board> boards = boardService.getAllBoards();
+        List<Board> boards = boardService.getAllBoards(); //여기서 content는 가져올 필요 없음
         log.info("현재 저장된 게시글 개수: {}",  boards.size());
         model.addAttribute("boards", boards);
         return "index"; // 게시글 목록 화면
@@ -50,8 +55,9 @@ public class BoardController {
         }
         Board board = boardService.getBoardById(boardId)
                 .orElseThrow(BoardNotFoundException::new);
-
+        List<Reply> activeReplies = replyService.getReplies(board);
         model.addAttribute("board", board);
+        model.addAttribute("activeReplies", activeReplies);
         return "qna/show"; // 게시글 상세 화면 (qna/show.html)
     }
     //글 작성 화면
@@ -119,14 +125,17 @@ public class BoardController {
                               HttpSession session,
                               RedirectAttributes redirectAttributes) {
 
-        Board board = boardService.getBoardById(boardId)
-                .orElseThrow(BoardNotFoundException::new);
-
-        if (!AuthUtil.isAuthorized(session, board.getWriter().getId(), redirectAttributes)) {
-            return "redirect:/boards/" + boardId;
+        if (!AuthUtil.isLogined(session, redirectAttributes)) {
+            return "redirect:/users/login";
         }
 
-        boardService.deleteBoard(boardId);
+        User user = (User) session.getAttribute("user");
+        if (!boardService.deleteBoard(boardId, user)) {
+            // 삭제 조건에 맞지 않으면 플래시 메시지에 오류 메시지 저장
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "게시글 작성자와 댓글 작성자가 모두 동일한 경우에만 삭제할 수 있습니다.");
+            return "redirect:/boards/" + boardId;
+        }
         return "redirect:/";
     }
 

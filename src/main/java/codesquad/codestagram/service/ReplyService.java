@@ -4,7 +4,7 @@ import codesquad.codestagram.domain.Board;
 import codesquad.codestagram.domain.Reply;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.ReplyForm;
-import codesquad.codestagram.exception.ReplyNotFoundException
+import codesquad.codestagram.exception.ReplyNotFoundException;
 import codesquad.codestagram.exception.BoardNotFoundException;
 import codesquad.codestagram.repository.BoardRepository;
 import codesquad.codestagram.repository.ReplyRepository;
@@ -37,7 +37,7 @@ public class ReplyService {
 
     //댓글 조회 : 특정 게시글에 달린 전체 댓글
     public List<Reply> getReplies(Board board) {
-        return board.getReplies();
+        return replyRepository.findByBoardAndDeletedFalse(board);
     }
 
     public Optional<Reply> getReplyById(Long replyId) {

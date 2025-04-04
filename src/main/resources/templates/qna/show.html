@@ -56,9 +56,9 @@
                     <!-- 댓글  -->
                     <div class="qna-comment">
                         <div class="qna-comment-slipp">
-                            <p class="qna-comment-count"><strong th:text="${#lists.size(board.replies)}">0</strong>개의 의견</p>
+                            <p class="qna-comment-count"><strong th:text="${#lists.size(activeReplies)}">0</strong>개의 의견</p>
                             <div class="qna-comment-slipp-articles">
-                                <div th:each="reply : ${board.replies}">
+                                <div th:each="reply : ${activeReplies}">
                                     <article class="article">
                                         <div class="article-header">
                                             <div class="article-header-thumb">
