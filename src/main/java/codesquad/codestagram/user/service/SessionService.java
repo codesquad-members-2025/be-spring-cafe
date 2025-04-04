@@ -40,9 +40,7 @@ public class SessionService {
     public String popRedirectUrl(HttpSession session) {
         Object redirectUrl = session.getAttribute(REDIRECT_URL_SESSION_KEY);
         session.removeAttribute(REDIRECT_URL_SESSION_KEY);
-        if (redirectUrl instanceof String) {
-            return (String)redirectUrl;
-        }
-        return "/";
+
+        return (redirectUrl instanceof String s) ? s : "/";
     }
 }
