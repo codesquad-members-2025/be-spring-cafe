@@ -1,2 +1,7 @@
-package codesquad.codestagram.reply.repository;public interface ReplyRepository {
+package codesquad.codestagram.reply.repository;
+
+import codesquad.codestagram.reply.domain.Reply;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ReplyRepository extends JpaRepository<Reply, Long> {
 }
