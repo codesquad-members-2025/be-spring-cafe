@@ -16,20 +16,22 @@ public class LoginService {
     }
 
     //로그인 검증
-    public User validate(String userId, String password) {
+    public User validateLogin(String userId, String password) {
         User user = userRepository.findByUserId(userId);
-        if(user != null && user.getPassword().equals(password)){
+        //1. 피드백 : equals -> matchPassword 메서드로 구현
+        if(user != null && user.matchPassword(password)){
             return user;
         }
         return null;
     }
 
-    public boolean validateUpdate(User loginUser, String userId) {
+    //validateUpdate -> validateUserOwnership로 메서드 이름 fix
+    // loginUser가 본인의 정보에 대한 권한을 가지고 있는지 검증한다
+    public boolean validateUserOwnership(User loginUser, String userId) {
         return loginUser != null && loginUser.getUserId().equals(userId);
     }
 
-    //회원 정보 수정
-    @Transactional
+    //회원 정보 수정 -> @Transactional 제거
     public void updateUserInfo(User loginUser, String password, String name, String email, HttpSession session) throws Exception {
         if(loginUser.getPassword().equals(password)){
             loginUser.setName(name);
@@ -41,4 +43,5 @@ public class LoginService {
             throw new Exception("비밀번호가 일치해야 수정이 가능합니다");
         }
     }
+
 }

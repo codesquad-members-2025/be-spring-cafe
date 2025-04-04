@@ -3,35 +3,59 @@ package codesquad.codestagram.article.controller;
 import codesquad.codestagram.article.domain.Article;
 import codesquad.codestagram.article.repository.ArticleRepository;
 import codesquad.codestagram.article.service.ArticleService;
+import codesquad.codestagram.domain.User;
+import codesquad.codestagram.login.service.LoginService;
+import codesquad.codestagram.service.UserService;
+import codesquad.codestagram.util.SessionUtil;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+
+import static codesquad.codestagram.util.SessionUtil.SESSION_USER_KEY;
 
 @Controller
 public class ArticleController {
 
     private final ArticleService articleService;
+    private final LoginService loginService;
 
-    public ArticleController(ArticleService articleService, ArticleRepository articleRepository) {
+    public ArticleController(ArticleService articleService,LoginService loginService) {
         this.articleService = articleService;
+        this.loginService = loginService;
     }
 
     //글쓰기 폼 렌더링
     @GetMapping("/qna/form")
-    public String showArticleForm(){
-        return "qna/form";
+    public String showArticleForm(HttpSession session,Model model){
+        if(SessionUtil.isUserLoggedIn(session)){
+            model.addAttribute("article", new Article());
+            return "qna/form";
+        }
+        else return "redirect:/auth/login";
     }
 
     //게시글 데이터 저장하기
     @PostMapping("/articles")
-    public String createArticle(@ModelAttribute Article article){
-        articleService.write(article);
-        return "redirect:/";
+    public String createArticle(@ModelAttribute Article article, HttpSession session){
+
+        if(SessionUtil.isUserLoggedIn(session)){
+            User user = (User) session.getAttribute(SESSION_USER_KEY);
+
+            article.setWriter(user);
+
+            articleService.write(article);
+            return "redirect:/";
+        }
+        //로그인하지 않은 사용자가 글쓰기 페이지에 접근할 경우 로그인 페이지로 이동
+        else return "redirect:/auth/login";
     }
 
-    //게시글 목록 구현하기
+    //게시글 목록 구현하기 -> 로그인하지 않은 사용자는 게시글 목록만 볼 수 있다
     @GetMapping("/")
     public String getArticleList(Model model){
         List<Article> articles = articleService.getAllArticles();
@@ -40,12 +64,99 @@ public class ArticleController {
     }
 
 
-    // 게시글 상세 보기 구현하기
-    @GetMapping("/articles/{id}")
-    public String getArticleById(@PathVariable("id") Long id, Model model) {
+    // 게시글 상세 보기 구현하기 -> 로그인한 사용자만 게시글의 세부 내용을 볼 수 있다
+    @GetMapping("/articles/{articleId}")
+    public String getArticleById(@PathVariable("articleId") Long id, Model model, HttpSession session) {
+        if(SessionUtil.isUserLoggedIn(session)){
+            Article article = articleService.getArticleById(id);
+            model.addAttribute("article", article);
+            return "qna/show";
+        }
+        else {
+            return "error/401";
+        }
+
+    }
+
+
+    //게시글 수정 폼 보여주기
+    @GetMapping("/articles/{id}/updateForm")
+    public String updateForm(@PathVariable("id") Long id, Model model, HttpSession session){
+        if(SessionUtil.isUserLoggedIn(session)) {
+            Article article = articleService.getArticleById(id);
+            model.addAttribute("article", article);
+            return "qna/updateForm";
+        }else
+            return "error/405";
+    }
+
+
+
+    //게시글 수정하기
+    @PutMapping("/articles/{articleId}/update")
+    public String updateArticleById(
+            @PathVariable("articleId")Long id,
+            @ModelAttribute Article article,
+            HttpSession session,
+            RedirectAttributes redirectAttributes
+    ){
+        User loginUser = (User) session.getAttribute(SESSION_USER_KEY); //getAttribute가 Object 객체를 반환하기 때문에 User로 캐스팅 해줘야함
+
+        if(loginUser == null){
+            return "redirect:/auth/login";
+        }
+
+        Article existingArticle = articleService.getArticleById(id);// 기존 글 정보 가져오기
+
+        if(existingArticle == null){
+            return "redirect:/error/not-found"; // 글이 존재하지 않는 경우 404 페이지로 이동
+        }
+        boolean updatePossible = loginService.validateUserOwnership(loginUser, existingArticle.getWriter().getUserId());
+
+        if(updatePossible){
+            articleService.updateArticle(id, article);
+            return "redirect:/";
+        }else{
+            redirectAttributes.addFlashAttribute("errorMessage", "다른 사람의 글을 수정할 수 없습니다");
+            return "redirect:/error/forbidden";
+        }
+    }
+
+
+
+    //게시글 삭제하기
+    @DeleteMapping("/articles/{articleId}/delete")
+    public String deleteArticleById(
+        @PathVariable("articleId") Long id,
+        HttpSession session,
+        RedirectAttributes redirectAttributes //에러 메시지 전달을 위한 객체
+    ){
+        User loginUser = (User) session.getAttribute(SESSION_USER_KEY); // -> Optional로
+
+        if(loginUser == null){ // ->
+            return "redirect:/auth/login";
+        }
+
         Article article = articleService.getArticleById(id);
-        model.addAttribute("article", article);
-        return "qna/show";
+
+        if(article == null){ //게시글이 없을 경우
+            return "redirect:/error/not-found"; //404 페이지
+        }
+
+        boolean isPossibleDelete = loginService.validateUserOwnership(loginUser, article.getWriter().getUserId());
+
+        if(isPossibleDelete){
+            articleService.deleteArticle(id);
+            return "redirect:/";
+        }else{
+            redirectAttributes.addFlashAttribute("errorMessage", "다른 사람의 글을 삭제할 수 없습니다");
+            return "redirect:/error/forbidden";
+        }
+    }
+
+    @GetMapping("/error/forbidden")
+    public String forbidden() {
+        return "error/forbidden"; // error/forbidden.html 보여줌
     }
 
 }
