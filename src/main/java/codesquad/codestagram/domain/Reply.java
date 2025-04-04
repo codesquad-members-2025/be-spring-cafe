@@ -21,6 +21,8 @@ public class Reply {
     @JoinColumn(name = "board_id")
     private Board board;
 
+    private boolean deleted = false;
+
     // 기본 생성자
     protected Reply() {}
 
@@ -29,6 +31,15 @@ public class Reply {
         this.content = content;
         this.writer = writer;
         this.board = board;
+    }
+
+    // Getter/Setter
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     // Getter, Setter
