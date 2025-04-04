@@ -73,8 +73,8 @@ class ArticleServiceTest {
 
         when(articleRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        // when: 페이지 0의 게시글 조회
-        Page<Article> result = articleService.findArticles(0);
+        // when: Pageable 객체를 이용해 페이지 0의 게시글 조회
+        Page<Article> result = articleService.findArticles(pageable);
 
         // then: 반환된 게시글 수와 전체 게시글 수 확인
         SoftAssertions softly = new SoftAssertions();

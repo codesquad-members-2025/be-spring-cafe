@@ -1,18 +1,14 @@
 package codesquad.codestagram.domain;
 
-import codesquad.codestagram.common.dto.PaginationDto;
 import codesquad.codestagram.domain.article.Article;
-import codesquad.codestagram.domain.article.ArticleRepository;
 import codesquad.codestagram.domain.article.ArticleService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 @Controller
 public class ViewController {
@@ -24,15 +20,10 @@ public class ViewController {
     }
 
     @GetMapping("")
-    public String index(@RequestParam(defaultValue = "0") int page,
+    public String index(@PageableDefault(size = 15, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                         Model model) {
-        Page<Article> articles = articleService.findArticles(page);
-        PaginationDto pagination = PaginationDto.of(articles.getNumber() + 1,
-                articles.getSize(),
-                articles.getTotalElements());
-
+        Page<Article> articles = articleService.findArticles(pageable);
         model.addAttribute("articles", articles);
-        model.addAttribute("pagination", pagination);
 
         return "index";
     }

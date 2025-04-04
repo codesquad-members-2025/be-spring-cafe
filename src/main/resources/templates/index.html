@@ -64,7 +64,7 @@
 
         <div class="post-container">
             <!-- 게시물 반복 시작 -->
-            <div th:each="article : ${articles}" class="card mb-4">
+            <div th:each="article : ${articles.content}" class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title" th:text="${article.title}">제목</h5>
                     <p class="card-text" th:text="${article.content}">내용</p>
@@ -76,22 +76,22 @@
 
         <!-- 페이지네이션 영역 -->
         <div class="d-flex justify-content-center mt-4 pagination">
-            <!-- 이전 페이지 링크 (현재 페이지가 1이면 비활성화) -->
-            <a th:if="${pagination.page > 1}"
-               th:href="@{/(page=${pagination.page - 2})}">이전</a>
-            <a th:if="${pagination.page == 1}" class="disabled">이전</a>
+            <!-- 이전 페이지 링크 -->
+            <a th:if="${articles.hasPrevious()}"
+               th:href="@{/(page=${articles.number - 1})}">이전</a>
+            <a th:if="${!articles.hasPrevious()}" class="disabled">이전</a>
 
-            <!-- 페이지 번호 링크 -->
-            <span th:each="i : ${#numbers.sequence(1, pagination.totalPages)}">
-                <a th:href="@{/(page=${i - 1})}"
-                   th:text="${i}"
-                   th:classappend="${i == pagination.page} ? ' active' : ''"></a>
-            </span>
+            <!-- 페이지 번호 링크 (0부터 시작하므로 +1 표시) -->
+            <span th:each="i : ${#numbers.sequence(0, articles.totalPages - 1)}">
+                    <a th:href="@{/(page=${i})}"
+                       th:text="${i + 1}"
+                       th:classappend="${i} == ${articles.number} ? ' active' : ''"></a>
+                </span>
 
-            <!-- 다음 페이지 링크 (현재 페이지가 마지막 페이지면 비활성화) -->
-            <a th:if="${pagination.page < pagination.totalPages}"
-               th:href="@{/(page=${pagination.page})}">다음</a>
-            <a th:if="${pagination.page == pagination.totalPages}" class="disabled">다음</a>
+            <!-- 다음 페이지 링크 -->
+            <a th:if="${articles.hasNext()}"
+               th:href="@{/(page=${articles.number + 1})}">다음</a>
+            <a th:if="${!articles.hasNext()}" class="disabled">다음</a>
         </div>
     </div>
 </div>

@@ -26,9 +26,7 @@ public class ArticleService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Article> findArticles(int page) {
-        Pageable pageable = PageRequest.of(page, 15, Sort.by("createdAt").descending());
-
+    public Page<Article> findArticles(Pageable pageable) {
         return articleRepository.findAll(pageable);
     }
 
