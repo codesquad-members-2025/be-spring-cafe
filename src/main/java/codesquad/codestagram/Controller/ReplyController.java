@@ -52,7 +52,7 @@ public class ReplyController {
         return "redirect:/boards/" + boardId;
     }
 
-    @PutMapping("/boards/{boardId}/replies/{replyId}")
+    @PutMapping("/boards/{boardId}/replies/{replyId}/edit")
     public String updateReply(@PathVariable("boardId") Long boardId,
                               @PathVariable("replyId") Long replyId,
                               @ModelAttribute ReplyForm form,
