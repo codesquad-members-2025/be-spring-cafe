@@ -1,5 +1,6 @@
 package codesquad.codestagram.domain;
 
+import codesquad.codestagram.common.constants.PaginationConstatns;
 import codesquad.codestagram.domain.article.Article;
 import codesquad.codestagram.domain.article.ArticleService;
 import org.springframework.data.domain.Page;
@@ -9,6 +10,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import static codesquad.codestagram.common.constants.PaginationConstatns.DEFAULT_PAGE_SIZE;
+import static codesquad.codestagram.common.constants.PaginationConstatns.DEFAULT_SORT_PROPERTY;
 
 @Controller
 public class ViewController {
@@ -20,7 +24,7 @@ public class ViewController {
     }
 
     @GetMapping("")
-    public String index(@PageableDefault(size = 15, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+    public String index(@PageableDefault(size = DEFAULT_PAGE_SIZE, sort = DEFAULT_SORT_PROPERTY, direction = Sort.Direction.DESC) Pageable pageable,
                         Model model) {
         Page<Article> articles = articleService.findArticles(pageable);
         model.addAttribute("articles", articles);
