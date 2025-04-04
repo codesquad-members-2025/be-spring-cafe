@@ -53,4 +53,17 @@ deploy.sh파일은 도커 빌드를 진행시키고, 기존 컨테이너 중지 
 그리고 데이터가 저장되는 h2-data 디렉토리를 컨테이너 외부에 만들고, 컨테이너 내부의 h2-data와 마운트 시켜 데이터가 외부에 저장되도록 했다.  
 이를 통해 컨테이너가 중지되고 삭제되어도, 데이터가 유지될 수 있도록 했다.
 
-배포 URL - http://52.79.209.189/
+배포 URL - http://15.164.102.138:8080/
+
+## 스프링 카페 7단계 - ajax 댓글 구현
+ReplyController를 RestController로 변경하여 ResponseEntity를 반환하였고, 요청은 ajax로 보내, 새로고침 없이 댓글이 추가 삭제 되도록 구현했다.  
+RestController로 변경하며, RestControllerAdvice도 추가했는데, RestController에서 발생한 예외라고 해서 RestControllerAdvice가 처리하는게 아니라 좀 힘들었다.  
+그래서 각 Advice에 우선순위를 설정하거나 대상 클래스를 명시적으로 지정해줘야 했다.  
+그래서 RestControllerAdvice에 우선순위를 주고, 대상 클래스를 ReplyController로 지정해 주었다.  
+이번 미션에서는 javascript를 사용할 일이 많아 좀 어려웠던 것 같다.  
+
+배포는 로컬에서 빌드를 하고, .jar 파일을 scp를 사용하여 EC2로 복사했습니다.  
+EC2에 mysql을 받고, 추가 볼륨을 마운트해서 그곳에 mysql의 데이터가 저장되도록 변경했습니다.  
+또한 메모리가 부족할 가능성을 막기 위해 스왑메모리 파일을 설정해주었습니다.
+
+배포 URL - http://15.164.102.138:8080/

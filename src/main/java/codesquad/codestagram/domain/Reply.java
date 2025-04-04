@@ -24,7 +24,7 @@ public class Reply {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
     private String text;
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
     private boolean deleted = false;
 
     protected Reply() {}
@@ -33,7 +33,7 @@ public class Reply {
         this.article = article;
         this.user = user;
         this.text = text;
-        this.createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+        this.createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
     }
 
     public Long getId() {
@@ -57,8 +57,7 @@ public class Reply {
     }
 
     public String getCreatedAt() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return createdAt.format(formatter);
+        return createdAt.format(DateTimeFormatter.ISO_INSTANT);
     }
 
     public boolean isAuthor(User user) {

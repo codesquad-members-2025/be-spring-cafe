@@ -7,7 +7,7 @@ import codesquad.codestagram.utility.TextUtility;
 public class ReplyViewDto {
     private Long id;
     private String userId;
-    private String userName;
+    private String name;
     private String text;
     private String createdAt;
 
@@ -17,15 +17,15 @@ public class ReplyViewDto {
         User user = reply.getUser();
         this.id = reply.getId();
         this.userId = user.getUserId();
-        this.userName = user.getName();
+        this.name = user.getName();
         this.text = TextUtility.escapeAndConvertNewlines(reply.getText());
         this.createdAt = reply.getCreatedAt();
     }
 
-    public ReplyViewDto(Long id, String userId, String userName, String text, String createdAt) {
+    public ReplyViewDto(Long id, String userId, String name, String text, String createdAt) {
         this.id = id;
         this.userId = userId;
-        this.userName = userName;
+        this.name = name;
         this.text = TextUtility.escapeAndConvertNewlines(text);
         this.createdAt = createdAt;
     }
@@ -38,8 +38,8 @@ public class ReplyViewDto {
         return userId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getName() {
+        return name;
     }
 
     public String getText() {
