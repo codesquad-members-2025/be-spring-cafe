@@ -17,6 +17,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/users/saveForm")
+    public String saveForm() {
+        return "user/form";
+    }
+
     @PostMapping("/users")
     public String addUser(@ModelAttribute User user) {
         userService.save(user);

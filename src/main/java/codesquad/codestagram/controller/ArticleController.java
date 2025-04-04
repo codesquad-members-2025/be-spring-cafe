@@ -1,13 +1,15 @@
 package codesquad.codestagram.controller;
 
 
+
+import codesquad.codestagram.dto.RequestArticleDto;
 import codesquad.codestagram.service.ArticleService;
+import codesquad.codestagram.session.SessionConst;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -21,11 +23,91 @@ public class ArticleController {
         this.articleService = articleService;
     }
 
+    @GetMapping("/articles")
+    public String getArticleForm(HttpSession session){
+        User loginUser = (User)session.getAttribute(SessionConst.LOGIN_USER);
+        if(loginUser == null){
+            return "user/login";
+        }
+        return "qna/form.html";
+    }
+
     @PostMapping("/articles")
-    public String writeArticle(@ModelAttribute Article article){
-        articleService.save(article);
+    public String writeArticle(@ModelAttribute RequestArticleDto requestArticle, HttpSession session) {
+        User loginUser = (User)session.getAttribute(SessionConst.LOGIN_USER);
+        if(loginUser == null){
+            return "user/login";
+        }
+
+        articleService.save(requestArticle);
         return "redirect:/";
     }
+
+
+    @GetMapping("/articles/edit/{articleId}")
+    public String showArticleEditForm(@PathVariable Long articleId,
+                                      Model model,
+                                      HttpSession session,
+                                      RedirectAttributes redirectAttributes) {
+        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_USER);
+        if(loginUser == null){
+            return "user/login";
+        }
+
+        Article article = articleService.findById(articleId);
+
+        if(loginUser.getId().equals(article.getUser().getId())){
+            model.addAttribute("article", article);
+            return "article/edit";
+        }
+
+        redirectAttributes.addFlashAttribute("errorMessage", "본인이 작성한 글만 수정할 수 있습니다.");
+        return "redirect:/articles/" + articleId;
+    }
+
+    @PutMapping("/articles/{articleId}")
+    public String editArticle(@ModelAttribute RequestArticleDto editArticleInfo,
+                              @PathVariable Long articleId,
+                              HttpSession session,
+                              RedirectAttributes redirectAttributes) {
+
+        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_USER);
+        if(loginUser == null){
+            return "user/login";
+        }
+
+        Article article = articleService.findById(articleId);
+
+        if(loginUser.getId().equals(article.getUser().getId())){
+            articleService.edit(articleId, editArticleInfo);
+            return "redirect:/articles/" + articleId;
+        }
+
+        redirectAttributes.addFlashAttribute("errorMessage", "본인이 작성한 글만 수정할 수 있습니다.");
+        return "redirect:/articles/edit/" + articleId;
+    }
+
+    @DeleteMapping("/articles/{articleId}")
+    public String deleteArticle(@PathVariable Long articleId,
+                                HttpSession session,
+                                RedirectAttributes redirectAttributes){
+        Article article = articleService.findById(articleId);
+        User loginUser = (User) session.getAttribute(SessionConst.LOGIN_USER);
+
+        if(loginUser == null){
+            return "user/login";
+        }
+
+
+        if(article.getUser().getId().equals(loginUser.getId())){
+            articleService.delete(article);
+            return "redirect:/";
+        }
+
+        redirectAttributes.addFlashAttribute("errorMessage", "본인이 작성한 글만 삭제할 수 있습니다.");
+        return "redirect:/articles/" + articleId;
+    }
+
 
     @GetMapping("/")
     public String showArticles(Model model){
@@ -42,6 +124,8 @@ public class ArticleController {
         model.addAttribute("article", article);
         return "article/show";
     }
+
+
 
 
 }

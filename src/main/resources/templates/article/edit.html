@@ -63,34 +63,46 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="../index.html">Posts</a></li>
-                <li><a href="../user/login.html" role="button">로그인</a></li>
-                <li><a href="user/form.html" role="button">회원가입</a></li>
-                <li><a href="#" role="button">로그아웃</a></li>
-                <li><a href="#" role="button">개인정보수정</a></li>
+                <!-- 🔹 로그인 상태가 아닐 때 -->
+                <li th:if="${session.loginUser == null}"><a href="/users/login">로그인</a></li>
+                <li th:if="${session.loginUser == null}"><a href="/users/saveForm">회원가입</a></li>
+
+                <!-- 🔹 로그인 상태일 때 -->
+                <!--                <li th:if="${session.loginUser != null}"><a href="/users/logout">로그아웃</a></li>-->
+                <li th:if="${session.loginUser != null}">
+                    <form th:action="@{/users/logout}" method="post">
+                        <button type="submit" class="btn btn-link">로그아웃</button>
+                    </form>
+                </li>
+                <li th:if="${session.loginUser != null}"><a th:href="@{'/users/' + ${session.loginUser.id} + '/form'}">개인정보수정</a></li>
+                <li th:if="${session.loginUser != null}">
+                    <span>환영합니다, <b th:text="${session.loginUser.userId}"></b> 님!</span>
+                </li>
             </ul>
         </div>
     </div>
 </div>
 
 <div class="container" id="main">
-   <div class="col-md-6 col-md-offset-3">
+   <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
       <div class="panel panel-default content-main">
-          <form name="question" method="post" action="/users/login" th:object="${loginForm}">
-              <!-- 🔹 글로벌 에러 메시지 출력 -->
-              <div th:if="${session.loginUser != null and #fields.hasGlobalErrors()}" class="alert alert-danger">
-                  <p th:each="error : ${#fields.globalErrors()}" th:text="${error}"></p>
-              </div>
-
+          <form name="question" method="post" th:action="@{/articles/{articleId}(articleId=${article.id})}">
+              <input type="hidden" name="_method" value="PUT">
               <div class="form-group">
-                  <label for="userId">사용자 아이디</label>
-                  <input class="form-control" id="userId" name="userId" placeholder="User ID">
+                  <label for="writer">글쓴이</label>
+                  <input class="form-control" id="writer" name="writer"
+                         th:value="${session.loginUser.name}" placeholder="글쓴이" readonly />
               </div>
               <div class="form-group">
-                  <label for="password">비밀번호</label>
-                  <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                  <label for="title">제목</label>
+                  <input type="text" class="form-control" id="title" name="title" placeholder="제목"/>
               </div>
-              <button type="submit" class="btn btn-success clearfix pull-right">로그인</button>
+              <div class="form-group">
+                  <label for="contents">내용</label>
+                  <textarea name="contents" id="contents" rows="5" class="form-control"></textarea>
+              </div>
+              <input type="hidden" name="userId" th:value="${session.loginUser.id}">
+              <button type="submit" class="btn btn-success clearfix pull-right">수정하기</button>
               <div class="clearfix" />
           </form>
         </div>

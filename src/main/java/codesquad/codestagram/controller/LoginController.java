@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -20,12 +21,18 @@ public class LoginController {
         this.loginService = loginService;
     }
 
+    @GetMapping("/users/login")
+    public String getLoginForm(){
+        return "user/login";
+    }
+
+
     @PostMapping("/users/login")
     public String login(@Valid @ModelAttribute LoginForm loginForm,
                         BindingResult bindingResult,
-                        HttpServletRequest request){
+                        HttpSession session){
 
-        if(bindingResult.hasErrors()){
+      if(bindingResult.hasErrors()){
             return "user/login";
         }
 
@@ -36,17 +43,13 @@ public class LoginController {
             return "user/login";
         }
 
-        HttpSession session = request.getSession();
+
         session.setAttribute(SessionConst.LOGIN_USER, user);
-
-
-
         return "redirect:/";
     }
 
     @PostMapping("users/logout")
-    public String logout(HttpServletRequest request){
-        HttpSession session = request.getSession(false);
+    public String logout(HttpSession session){
         if(session != null){
             session.invalidate();
         }
