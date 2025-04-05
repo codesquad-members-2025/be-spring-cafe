@@ -17,6 +17,15 @@
             <h2 th:text="${article.title}" class="mb-0">게시글 제목</h2>
         </div>
         <div class="card-body">
+            <!-- 작성자 정보 -->
+            <div class="text-muted small mb-2">
+                작성자:
+                <strong th:text="${user.name}">작성자</strong>
+                <span th:if="${article.userId == session.sessionedUser?.id}">
+                    (내 글)
+                </span>
+
+            </div>
             <!-- 게시글 생성 및 수정 시간 -->
             <div class="text-muted small mb-2">
                 작성일:

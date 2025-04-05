@@ -2,6 +2,7 @@ package codesquad.codestagram.domain.article;
 
 import codesquad.codestagram.common.constants.SessionConstants;
 import codesquad.codestagram.domain.user.User;
+import codesquad.codestagram.domain.user.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,9 +13,11 @@ import org.springframework.web.bind.annotation.*;
 public class ArticleController {
 
     private final ArticleService articleService;
+    private final UserService userService;
 
-    public ArticleController(ArticleService articleService) {
+    public ArticleController(ArticleService articleService, UserService userService) {
         this.articleService = articleService;
+        this.userService = userService;
     }
 
     // 게시물 생성
@@ -34,6 +37,9 @@ public class ArticleController {
                               Model model) {
         Article article = articleService.findArticle(id);
         model.addAttribute("article", article);
+
+        User user = userService.getUserProfile(article.getUserId());
+        model.addAttribute("user", user);
 
         return "article/view";
     }

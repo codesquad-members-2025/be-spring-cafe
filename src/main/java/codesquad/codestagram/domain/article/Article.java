@@ -27,6 +27,10 @@ public class Article extends BaseEntity {
         return id;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
     public String getTitle() {
         return title;
     }
