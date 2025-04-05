@@ -27,7 +27,7 @@ public class ArticleService {
 
     @Transactional(readOnly = true)
     public Page<Article> findArticles(Pageable pageable) {
-        return articleRepository.findAll(pageable);
+        return articleRepository.findByDeleted(false, pageable);
     }
 
     @Transactional
