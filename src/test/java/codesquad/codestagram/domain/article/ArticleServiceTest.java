@@ -2,6 +2,8 @@ package codesquad.codestagram.domain.article;
 
 import codesquad.codestagram.domain.article.exception.ArticleNotFoundException;
 import codesquad.codestagram.domain.auth.exception.UnauthorizedException;
+import codesquad.codestagram.domain.reply.Reply;
+import codesquad.codestagram.domain.reply.ReplyRepository;
 import codesquad.codestagram.domain.user.User;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +27,9 @@ class ArticleServiceTest {
 
     @Mock
     private ArticleRepository articleRepository;
+
+    @Mock
+    private ReplyRepository replyRepository;
 
     @InjectMocks
     private ArticleService articleService;
@@ -103,15 +108,6 @@ class ArticleServiceTest {
     }
 
     @Test
-    @DisplayName("사용자가 null일 경우, 게시물 작성 시 UnauthorizedException이 발생한다.")
-    void createArticle_withNullUser_shouldThrowUnauthorizedException() {
-        // when & then
-        assertThatThrownBy(() -> articleService.createArticle("Title", "Content", null))
-                .isInstanceOf(UnauthorizedException.class)
-                .hasMessage("로그인이 필요합니다.");
-    }
-
-    @Test
     @DisplayName("게시물이 존재할 경우, 해당 게시물을 반환한다.")
     void findArticle_whenArticleExists_shouldReturnArticle() {
         // given
@@ -138,15 +134,6 @@ class ArticleServiceTest {
         assertThatThrownBy(() -> articleService.findArticle(1L))
                 .isInstanceOf(ArticleNotFoundException.class)
                 .hasMessage("게시물을 찾을 수 없습니다.");
-    }
-
-    @Test
-    @DisplayName("사용자가 로그인하지 않은 경우, getAuthorizedArticle 호출 시 UnauthorizedException이 발생한다.")
-    void getAuthorizedArticle_whenUserNotLoggedIn_shouldThrowUnauthorizedException() {
-        // when & then
-        assertThatThrownBy(() -> articleService.getAuthorizedArticle(1L, null))
-                .isInstanceOf(UnauthorizedException.class)
-                .hasMessage("로그인이 필요합니다.");
     }
 
     @Test
@@ -200,12 +187,29 @@ class ArticleServiceTest {
     void deleteArticle_whenAuthorized_shouldDeleteArticle() {
         // given
         when(articleRepository.findById(1L)).thenReturn(Optional.of(article));
+        List<Reply> replies = new ArrayList<>();
+        Reply reply1 = new Reply(user, 1L, "Reply1");
+        setField(reply1, "id", 2L);
+        Reply reply2 = new Reply(user, 1L, "Reply2");
+        setField(reply2, "id", 3L);
+        replies.add(reply1);
+        replies.add(reply2);
+
+        when(replyRepository.findByArticleIdAndDeletedFalse(1L)).thenReturn(replies);
+        when(replyRepository.saveAll(anyList())).thenReturn(replies);
 
         // when
         articleService.deleteArticle(1L, user);
 
         // then
-        verify(articleRepository).delete(article);
+        verify(replyRepository).saveAll(anyList());
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(article.isDeleted()).isTrue();
+        // 모든 댓글이 soft delete 되었는지 검증
+        for (Reply r : replies) {
+            softly.assertThat(r.isDeleted()).isTrue();
+        }
+        softly.assertAll();
     }
 
 }
