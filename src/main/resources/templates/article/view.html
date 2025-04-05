@@ -17,6 +17,23 @@
             <h2 th:text="${article.title}" class="mb-0">게시글 제목</h2>
         </div>
         <div class="card-body">
+            <!-- 작성자 정보 -->
+            <div class="text-muted small mb-2">
+                작성자:
+                <strong th:text="${user.name}">작성자</strong>
+                <span th:if="${article.userId == session.sessionedUser?.id}">
+                    (내 글)
+                </span>
+
+            </div>
+            <!-- 게시글 생성 및 수정 시간 -->
+            <div class="text-muted small mb-2">
+                작성일:
+                <span th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}">2025-04-01 13:00</span>
+                <span th:if="${article.updatedAt != null and article.updatedAt != article.createdAt}">
+        | 수정일: <span th:text="${#temporals.format(article.updatedAt, 'yyyy-MM-dd HH:mm')}">2025-04-01 14:00</span>
+                </span>
+            </div>
             <div class="mb-4">
                 <pre class="card-text" style="white-space: pre-wrap;" th:text="${article.content}">게시글 내용</pre>
             </div>
@@ -38,28 +55,25 @@
         </div>
     </div>
 
-    <!-- 댓글 목록 카드 -->
     <div class="card mt-4">
         <div class="card-header">
             <h4>댓글</h4>
         </div>
         <div class="card-body">
-            <ul class="list-group" id="replies-container">
-                <!-- AJAX로 채워질 댓글 목록 -->
-            </ul>
+            <ul class="list-group" id="replies-container"></ul>
+            <div class="d-grid mt-3">
+                <button id="load-more-btn" class="btn btn-outline-secondary">댓글 더보기</button>
+            </div>
         </div>
     </div>
 
     <!-- 댓글 작성 폼 -->
     <div class="card mt-4">
-        <div class="card-header">
-            <h4>댓글 작성</h4>
-        </div>
+        <div class="card-header"><h4>댓글 작성</h4></div>
         <div class="card-body">
             <form id="reply-form">
                 <div class="mb-3">
-                    <textarea id="reply-content" class="form-control" rows="3" placeholder="댓글을 입력하세요."
-                              required></textarea>
+                    <textarea id="reply-content" class="form-control" rows="3" placeholder="댓글을 입력하세요." required></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">댓글 등록</button>
             </form>
@@ -69,14 +83,17 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-</body>
 <script th:inline="javascript">
     const articleId = [[${article.id}]];
-    const sessionUserName = [[${session.sessionedUser != null ? session.sessionedUser.name : null}]];
+    const sessionUserName = [[${session.sessionedUser?.name}]];
+    let currentPage = 0;
+    const size = 5;
+    let isLastPage = false;
 
     $(document).ready(function () {
-        loadReplies();
+        loadReplies(currentPage);
 
+        // 댓글 등록
         $("#reply-form").on("submit", function (e) {
             e.preventDefault();
             const content = $("#reply-content").val().trim();
@@ -87,46 +104,53 @@
                 url: `/articles/${articleId}/replies`,
                 contentType: "application/json",
                 data: JSON.stringify({ content }),
-                success: function () {
+                success: function (newReply) {
                     $("#reply-content").val('');
-                    loadReplies();
+                    const replyHtml = renderReplyHtml(newReply);
+                    const $container = $("#replies-container");
+
+                    // 새 댓글을 맨 위에 추가
+                    $container.prepend(replyHtml);
+
+                    // 최대 5개까지만 유지
+                    if ($container.children().length > size) {
+                        $container.children().last().remove();
+                    }
                 },
-                error: function () {
-                    alert("댓글 등록 실패");
-                }
+                error: () => alert("댓글 등록 실패")
             });
+        });
+
+        // 댓글 더보기
+        $("#load-more-btn").on("click", function () {
+            if (!isLastPage) {
+                loadReplies(++currentPage);
+            }
         });
     });
 
-    function loadReplies() {
+    function loadReplies(page) {
         $.ajax({
             type: "GET",
-            url: `/articles/${articleId}/replies`,
-            success: function (replies) {
-                const container = $("#replies-container");
-                if (replies.length === 0) {
-                    container.html('<li class="list-group-item">댓글이 없습니다.</li>');
-                    return;
+            url: `/articles/${articleId}/replies?page=${page}&size=${size}`,
+            success: function (data) {
+                const replies = data.content;
+                isLastPage = data.last;
+
+                if (replies.length === 0 && page === 0) {
+                    $("#replies-container").html('<li class="list-group-item">댓글이 없습니다.</li>');
+                } else {
+                    replies.forEach(reply => {
+                        const replyHtml = renderReplyHtml(reply);
+                        $("#replies-container").append(replyHtml);
+                    });
                 }
 
-                const replyHtml = replies.map(reply => `
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>${reply.writerName}</strong>
-                            <p class="mt-2 mb-0">${reply.content}</p>
-                        </div>
-                        ${reply.writerName === sessionUserName ? `
-                        <button class="btn btn-danger btn-sm" onclick="deleteReply(${reply.id})">
-                            삭제
-                        </button>` : ''}
-                    </li>
-                `).join('');
-
-                container.html(replyHtml);
+                if (isLastPage) {
+                    $("#load-more-btn").hide();
+                }
             },
-            error: function () {
-                alert("댓글 불러오기 실패");
-            }
+            error: () => alert("댓글 불러오기 실패")
         });
     }
 
@@ -137,13 +161,35 @@
             type: "DELETE",
             url: `/articles/${articleId}/replies/${replyId}`,
             success: function () {
-                loadReplies();
+                $(`#reply-${replyId}`).remove();
             },
-            error: function () {
-                alert("댓글 삭제 실패");
-            }
+            error: () => alert("댓글 삭제 실패")
         });
     }
-</script>
 
+    function renderReplyHtml(reply) {
+        const time = formatDateTime(reply.createdAt);
+        return `
+        <li class="list-group-item d-flex justify-content-between align-items-start" id="reply-${reply.id}">
+            <div>
+                <strong>${reply.writerName}</strong>
+                <div class="text-muted small mb-1">${time}</div>
+                <p class="mb-0">${reply.content}</p>
+            </div>
+            ${reply.writerName === sessionUserName ? `
+            <button class="btn btn-danger btn-sm ms-2" onclick="deleteReply(${reply.id})">삭제</button>` : ''}
+        </li>`;
+    }
+
+    function formatDateTime(dateString) {
+        const date = new Date(dateString);
+        const yyyy = date.getFullYear();
+        const MM = String(date.getMonth() + 1).padStart(2, '0');
+        const dd = String(date.getDate()).padStart(2, '0');
+        const HH = String(date.getHours()).padStart(2, '0');
+        const mm = String(date.getMinutes()).padStart(2, '0');
+        return `${yyyy}-${MM}-${dd} ${HH}:${mm}`;
+    }
+</script>
+</body>
 </html>

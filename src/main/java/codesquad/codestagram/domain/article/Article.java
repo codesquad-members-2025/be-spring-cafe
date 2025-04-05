@@ -1,10 +1,11 @@
 package codesquad.codestagram.domain.article;
 
+import codesquad.codestagram.common.entity.BaseEntity;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "article")
-public class Article {
+public class Article extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,13 +13,11 @@ public class Article {
     private Long userId;
     private String title;
     private String content;
-    private boolean deleted;
 
     public Article(Long UserId, String title, String content) {
         this.userId = UserId;
         this.title = title;
         this.content = content;
-        this.deleted = false;
     }
 
     public Article() {
@@ -26,6 +25,10 @@ public class Article {
 
     public Long getId() {
         return id;
+    }
+
+    public Long getUserId() {
+        return userId;
     }
 
     public String getTitle() {
@@ -44,16 +47,8 @@ public class Article {
         this.content = content;
     }
 
-    public void delete() {
-        this.deleted = true;
-    }
-
     public boolean isSameWriter(Long userId) {
         return this.userId.equals(userId);
-    }
-
-    public boolean isDeleted() {
-        return deleted;
     }
 
 }

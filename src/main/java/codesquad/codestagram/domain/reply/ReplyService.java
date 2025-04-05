@@ -4,10 +4,10 @@ import codesquad.codestagram.domain.article.ArticleRepository;
 import codesquad.codestagram.domain.auth.exception.UnauthorizedException;
 import codesquad.codestagram.domain.reply.exception.ReplyNotFoundException;
 import codesquad.codestagram.domain.user.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class ReplyService {
@@ -31,8 +31,8 @@ public class ReplyService {
     }
 
     @Transactional(readOnly = true)
-    public List<Reply> findRepliesByArticle(Long articleId) {
-        return replyRepository.findByArticleIdAndDeletedFalse(articleId);
+    public Page<Reply> findRepliesByArticle(Long articleId, Pageable pageable) {
+        return replyRepository.findByArticleIdAndDeletedFalse(articleId, pageable);
     }
 
     @Transactional
