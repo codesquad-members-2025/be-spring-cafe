@@ -6,9 +6,7 @@ import codesquad.codestagram.domain.reply.Reply;
 import codesquad.codestagram.domain.reply.ReplyRepository;
 import codesquad.codestagram.domain.user.User;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
