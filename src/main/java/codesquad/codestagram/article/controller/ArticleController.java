@@ -3,6 +3,7 @@ package codesquad.codestagram.article.controller;
 import codesquad.codestagram.article.domain.Article;
 import codesquad.codestagram.article.dto.ArticleRequest;
 import codesquad.codestagram.article.service.ArticleService;
+import codesquad.codestagram.common.exception.error.ForbiddenException;
 import codesquad.codestagram.common.exception.error.InvalidRequestException;
 import codesquad.codestagram.user.service.SessionService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -137,7 +138,8 @@ public class ArticleController {
 
     @DeleteMapping("/articles/{id}")
     public String delete(@PathVariable Long id,
-                         HttpServletRequest request) {
+                         HttpServletRequest request,
+                         RedirectAttributes redirectAttributes) {
 
         HttpSession session = request.getSession();
 
@@ -148,7 +150,12 @@ public class ArticleController {
         }
 
         Long loggedInUserId = loggedInUserIdOpt.get();
-        articleService.delete(id, loggedInUserId);
-        return REDIRECT_HOME;
+        try {
+            articleService.delete(id, loggedInUserId);
+            return REDIRECT_HOME;
+        } catch (ForbiddenException e) {
+            redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
+            return "redirect:/articles/" + id;
+        }
     }
 }

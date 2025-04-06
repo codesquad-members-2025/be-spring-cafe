@@ -50,10 +50,15 @@ public class ArticleService {
     }
 
     public Article findArticle(Long id) {
-
-        return articleRepository.findById(id).orElseThrow(
+        Article article = articleRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(ARTICLE_NOT_FOUND)
         );
+
+        if (article.isDeleted()) {
+            throw new ResourceNotFoundException(ARTICLE_NOT_FOUND);
+        }
+
+        return article;
     }
 
     public Article findArticleWithReplies(Long id) {
@@ -75,9 +80,16 @@ public class ArticleService {
         article.updateArticle(request.title(), request.contents());
     }
 
+    @Transactional
     public void delete(Long id, Long loggedInUserId) {
         Article article = findArticleAndVerifyOwner(id, loggedInUserId);
-        articleRepository.delete(article);
+
+        if (article.hasRepliesByOtherUsers()) {
+            throw new ForbiddenException("다른 사용자가 작성한 댓글이 있는 게시글은 삭제할 수 없습니다.");
+        }
+
+        article.markAsDeleted();
+        article.markRepliesAsDeleted();
     }
 
     private void validateArticleOwner(Long loggedInUserId, Article article) {

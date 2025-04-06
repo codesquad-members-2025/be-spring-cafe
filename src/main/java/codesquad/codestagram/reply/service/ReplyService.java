@@ -63,7 +63,7 @@ public class ReplyService {
         if(!reply.isWrittenBy(loggedInUserId)){
             throw new ForbiddenException("자신의 댓글만 삭제할 수 있습니다.");
         }
-        replyRepository.delete(reply);
+        reply.markAsDeleted();
     }
 
     private Reply findById(Long replyId){

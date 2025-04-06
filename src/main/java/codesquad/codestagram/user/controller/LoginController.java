@@ -1,6 +1,7 @@
 package codesquad.codestagram.user.controller;
 
 import codesquad.codestagram.common.exception.error.InvalidRequestException;
+import codesquad.codestagram.common.exception.error.ResourceNotFoundException;
 import codesquad.codestagram.user.domain.User;
 import codesquad.codestagram.user.dto.LoginRequest;
 import codesquad.codestagram.user.service.SessionService;
@@ -19,7 +20,6 @@ import static codesquad.codestagram.article.controller.ArticleController.*;
 @Controller
 @RequestMapping("/users")
 public class LoginController {
-
 
     private final UserService userService;
     private final SessionService sessionService;
@@ -46,7 +46,7 @@ public class LoginController {
 
             String redirectUrl = sessionService.popRedirectUrl(session);
             return "redirect:" + redirectUrl;
-        } catch (InvalidRequestException e) {
+        } catch (InvalidRequestException | ResourceNotFoundException e) {
             redirectAttributes.addFlashAttribute(ERROR_MESSAGE, e.getMessage());
             return "redirect:/users/login";
         }

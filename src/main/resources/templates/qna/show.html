@@ -64,13 +64,13 @@
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
                         <div id="comment-count-section">
-                            <p class="qna-comment-count"><strong th:text="${article.replies.size()}">0</strong>개의 의견</p>
+                            <p class="qna-comment-count"><strong th:text="${article.replyCount}">0</strong>개의 의견</p>
                         </div>
 
                         <!-- 댓글 목록 -->
                         <div class="qna-comment-slipp-articles">
-                            <!-- 각 댓글별 항목 -->
-                            <article class="article" th:each="reply : ${article.replies}" th:id="'reply-' + ${reply.id}">
+                            <!-- 각 댓글별 항목 - 삭제된 댓글은 표시하지 않음 -->
+                            <article class="article" th:each="reply : ${article.replies}" th:if="${!reply.deleted}" th:id="'reply-' + ${reply.id}">
                                 <!-- 댓글 표시 영역 -->
                                 <div class="reply-content-display" th:id="'reply-display-' + ${reply.id}">
                                     <div class="article-header">
@@ -124,7 +124,7 @@
                             </article>
 
                             <!-- 댓글이 없을 경우 메시지 표시 -->
-                            <div th:if="${article.replies.isEmpty()}" class="text-center">
+                            <div th:if="${article.replyCount == 0}" class="text-center">
                                 <p>아직 댓글이 없습니다.</p>
                             </div>
                         </div>
