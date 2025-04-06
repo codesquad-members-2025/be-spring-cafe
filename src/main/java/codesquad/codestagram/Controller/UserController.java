@@ -1,6 +1,7 @@
 package codesquad.codestagram.Controller;
 
 import codesquad.codestagram.domain.User;
+import codesquad.codestagram.dto.UpdateUser;
 import codesquad.codestagram.dto.UserForm;
 import codesquad.codestagram.exception.UserNotFoundException;
 import codesquad.codestagram.service.UserService;
@@ -108,14 +109,14 @@ public class UserController {
 
     @PutMapping("/users/{id}/update")
     public String updateUser(@PathVariable("id") Long id,
-                             @ModelAttribute("updateDto") UserForm.UpdateUser updateDto,
+                             @ModelAttribute("updateDto") UpdateUser form,
                              HttpSession session,
                              RedirectAttributes redirectAttributes) {
         if (!AuthUtil.isAuthorized(session, id, redirectAttributes)) {
             return "redirect:/users/profile";
         }
 
-        if (!userService.updateUser(id, updateDto)) {
+        if (!userService.updateUser(id, form)) {
             log.info("redirecting to /users/edit/{}?error=invalidPassword", id);
             redirectAttributes.addFlashAttribute("errorMessage", "❗ 비밀번호가 일치하지 않습니다.");
             return "redirect:/users/edit/" + id;

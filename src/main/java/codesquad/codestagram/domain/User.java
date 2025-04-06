@@ -1,5 +1,6 @@
 package codesquad.codestagram.domain;
 
+import codesquad.codestagram.dto.UpdateUser;
 import codesquad.codestagram.dto.UserForm;
 import jakarta.persistence.*;
 
@@ -29,10 +30,10 @@ public class User {
         return new User(form.getLoginId(), form.getName(), form.getPassword(), form.getEmail());
     }
 
-    public void updateform(UserForm.UpdateUser update) {
-        this.password = update.getNewPassword();
-        this.name = update.getName();
-        this.email = update.getEmail();
+    public void update(UpdateUser form) {
+        this.password = form.getNewPassword();
+        this.name = form.getName();
+        this.email = form.getEmail();
     }
 
 
