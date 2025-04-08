@@ -5,12 +5,8 @@ import codesquad.codestagram.domain.auth.exception.UnauthorizedException;
 import codesquad.codestagram.domain.reply.exception.ReplyNotFoundException;
 import codesquad.codestagram.domain.user.exception.DuplicatedUserException;
 import codesquad.codestagram.domain.user.exception.UserNotFoundException;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @ControllerAdvice
