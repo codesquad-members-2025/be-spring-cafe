@@ -53,27 +53,59 @@
                         </div>
                     </article>
 
-                    <!-- 댓글 입력 폼 (기능 미구현 상태) -->
+                    <!-- 댓글  -->
                     <div class="qna-comment">
                         <div class="qna-comment-slipp">
-                            <p class="qna-comment-count"><strong>0</strong>개의 의견</p>
+                            <p class="qna-comment-count"><strong th:text="${#lists.size(activeReplies)}">0</strong>개의 의견</p>
                             <div class="qna-comment-slipp-articles">
-                                <!-- 댓글 리스트 들어올 자리 -->
-                            </div>
-
-                            <form class="submit-write" action="#" method="POST">
-                                <div class="form-group" style="padding:14px;">
-                                    <textarea class="form-control" placeholder="댓글을 입력하세요..."></textarea>
+                                <div th:each="reply : ${activeReplies}">
+                                    <article class="article">
+                                        <div class="article-header">
+                                            <div class="article-header-thumb">
+                                                <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
+                                            </div>
+                                            <div class="article-header-text">
+                                                <span class="article-author-name" th:text="${reply.writer.name}">작성자</span>
+                                            </div>
+                                        </div>
+                                        <div class="article-doc comment-doc">
+                                            <p th:text="${reply.content}">댓글 내용</p>
+                                        </div>
+                                        <div class="article-util">
+                                            <ul class="article-util-list" th:if="${reply.writer.id == session.user.id}">
+                                                <li>
+                                                    <a href="#" class="link-modify-article"
+                                                       th:attr="data-reply-id=${reply.id}, data-board-id=${board.boardId}"
+                                                       onclick="showEditForm(this); return false;">수정</a>
+                                                </li>
+                                                <li>
+                                                    <form class="delete-answer-form" th:action="@{/boards/{boardId}/replies/{replyId}(boardId=${board.boardId},replyId=${reply.id})}" method="POST">
+                                                        <input type="hidden" name="_method" value="DELETE">
+                                                        <button type="submit" class="delete-answer-button">삭제</button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </article>
                                 </div>
-                                <button class="btn btn-success pull-right" type="button">댓글 작성</button>
-                                <div class="clearfix"></div>
-                            </form>
+
+                                <!-- 댓글 입력 폼 (새 댓글 추가) -->
+                                <form class="submit-write" th:action="@{/boards/{boardId}/replies(boardId=${board.boardId})}" method="post">
+                                    <div class="form-group" style="padding:14px;">
+                                        <!-- name을 content로 변경 -->
+                                        <textarea class="form-control" name="content" placeholder="댓글을 입력하세요" required></textarea>
+                                    </div>
+                                    <button class="btn btn-success pull-right" type="submit">답변하기</button>
+                                    <div class="clearfix"></div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 
     <script type="text/template" id="answerTemplate">
         <article class="article">
@@ -90,21 +122,44 @@
                 {2}
             </div>
             <div class="article-util">
-            <ul class="article-util-list">
-                <li>
-                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
-                </li>
-                <li>
-                    <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
-                        <input type="hidden" name="_method" value="DELETE">
-                         <button type="submit" class="delete-answer-button">삭제</button>
-                    </form>
-                </li>
-            </ul>
+                <ul class="article-util-list">
+                    <li>
+                        <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
+                    </li>
+                    <li>
+                        <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="delete-answer-button">삭제</button>
+                        </form>
+                    </li>
+                </ul>
             </div>
         </article>
     </script>
 
+    <!-- 인라인 수정 폼 템플릿: 만약 JS로 동적으로 처리하지 않으면, 별도의 템플릿 없이 JS를 이용 -->
+    <script>
+        function showEditForm(button) {
+            // 버튼의 data 속성에서 replyId와 boardId 추출
+            const replyId = button.getAttribute("data-reply-id");
+            const boardId = button.getAttribute("data-board-id");
+            // 댓글 article 요소를 찾고, 그 안의 .article-doc 영역을 선택
+            const articleElem = button.closest(".article");
+            const contentText = articleElem.querySelector(".article-doc p").innerText;
+
+            // 수정 폼 HTML 구성 (PUT 요청으로 전송)
+            const formHTML = `
+            <form method="post" action="/boards/${boardId}/replies/${replyId}/edit">
+                <input type="hidden" name="_method" value="PUT" />
+                <textarea name="content" class="form-control" required>${contentText}</textarea>
+                <button type="submit" class="btn btn-primary btn-sm">수정 완료</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="location.reload();">취소</button>
+            </form>
+        `;
+            // 댓글의 article-doc 영역을 수정 폼으로 대체
+            articleElem.querySelector(".article-doc").innerHTML = formHTML;
+        }
+    </script>
     <!-- script references -->
     <th:block th:replace="~{layout/footer :: footer}"></th:block>
 </body>

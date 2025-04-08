@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>댓글 수정 - SLiPP Java Web Programming</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<!-- 헤더와 서브네비게이션 포함 -->
+<th:block th:replace="~{layout/header :: header}"></th:block>
+<th:block th:replace="~{layout/subnav :: subnav}"></th:block>
+
+<div class="container" id="main">
+
+    <div class="col-md-8 col-md-offset-2">
+        <div class="panel panel-default content-main">
+            <div class="panel-heading">
+                <h3>댓글 수정</h3>
+            </div>
+            <div class="panel-body">
+                <form th:action="@{/boards/{boardId}/replies/{replyId}(boardId=${reply.board.boardId}, replyId=${reply.id})}" method="post">
+                    <!-- HTTP PUT 메소드 오버라이딩 -->
+                    <input type="hidden" name="_method" value="PUT">
+
+                    <div class="form-group">
+                        <label for="content">댓글 내용</label>
+                        <!-- 기존 댓글 내용을 미리 보여주도록 함 -->
+                        <textarea id="content" name="content" class="form-control" rows="3" th:text="${reply.content}"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">수정하기</button>
+                    <a th:href="@{/boards/{boardId}(boardId=${reply.board.boardId})}" class="btn btn-default">취소</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- footer 포함 -->
+<th:block th:replace="~{layout/footer :: footer}"></th:block>
+</body>
+</html>

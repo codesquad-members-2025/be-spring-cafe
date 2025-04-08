@@ -1,6 +1,7 @@
 package codesquad.codestagram.service;
 
 import codesquad.codestagram.domain.User;
+import codesquad.codestagram.dto.UpdateUser;
 import codesquad.codestagram.dto.UserForm;
 import codesquad.codestagram.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -29,13 +30,6 @@ public class UserService {
         return true;
     }
 
-    private void validateDuplicateUser(User user) {
-        //같은 아이디 중복 회원 x
-        userRepository.findByLoginId(user.getLoginId())
-                .ifPresent(u -> {
-                    throw new IllegalStateException("User already exists");
-                });
-    }
 
     /**
      * 전체 회원 조회
@@ -57,16 +51,15 @@ public class UserService {
      */
 
     @Transactional
-    public boolean updateUser(Long id, UserForm.UpdateUser update ) {
+    public boolean updateUser(Long id, UpdateUser form) {
         Optional<User> optionalUser = userRepository.findById(id);
         //실행 흐름상 유저가 없을 수는 없지만 . 사이에 누군가가 삭제했을 수도 있으니 넣어주기.
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            if (!user.getPassword().equals(update.getCurrentPassword())) {
+            if (!user.getPassword().equals(form.getCurrentPassword())) {
                 return false; // 비밀번호 틀림
             }
-            user.updateform(update);
-            userRepository.save(user);
+            user.update(form);
             return true;
         }
         return false; // 유저 없음
