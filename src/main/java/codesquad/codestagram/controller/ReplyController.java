@@ -2,15 +2,14 @@ package codesquad.codestagram.controller;
 
 import codesquad.codestagram.domain.Reply;
 import codesquad.codestagram.domain.User;
+import codesquad.codestagram.dto.ReplyResponseDto;
+import codesquad.codestagram.exception.NotLoggedInException;
 import codesquad.codestagram.service.ReplyService;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 public class ReplyController {
 
     private final ReplyService replyService;
@@ -20,17 +19,25 @@ public class ReplyController {
     }
 
     @PostMapping("/articles/{index}/answers")
-    public String addAnswer(@PathVariable Long index, @RequestParam String text, HttpSession session) {
+    public ResponseEntity<ReplyResponseDto> addAnswer(@PathVariable Long index, @RequestParam String text, HttpSession session) {
         User user = (User) session.getAttribute("loginUser");
-        replyService.addReplyToArticle(user, index, text);
-        return "redirect:/articles/{index}";
+        if (user == null) {
+            throw new NotLoggedInException("로그인이 필요합니다.");
+        }
+
+        Reply reply = replyService.addReplyToArticle(user, index, text);
+        return ResponseEntity.ok(ReplyResponseDto.from(reply));
     }
 
     @DeleteMapping("/articles/{articleId}/answers/{replyId}")
-    public String addAnswer(@PathVariable Long articleId, @PathVariable Long replyId, HttpSession session) {
+    public ResponseEntity<?> addAnswer(@PathVariable Long articleId, @PathVariable Long replyId, HttpSession session) {
         User user = (User) session.getAttribute("loginUser");
+        if (user == null) {
+            throw new NotLoggedInException("로그인이 필요합니다.");
+        }
+
         Reply reply = replyService.findReplyIfOwner(user,replyId);
         replyService.deleteReply(reply);
-        return "redirect:/articles/" + articleId;
+        return ResponseEntity.noContent().build();
     }
 }

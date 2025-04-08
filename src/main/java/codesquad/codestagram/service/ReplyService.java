@@ -3,16 +3,11 @@ package codesquad.codestagram.service;
 import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.Reply;
 import codesquad.codestagram.domain.User;
-import codesquad.codestagram.dto.ReplyViewDto;
 import codesquad.codestagram.exception.ReplyNotFoundException;
 import codesquad.codestagram.exception.UnauthorizedAccessException;
 import codesquad.codestagram.repository.ReplyRepository;
-import codesquad.codestagram.utility.TextUtility;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class ReplyService {

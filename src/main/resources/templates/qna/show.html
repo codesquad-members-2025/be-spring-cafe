@@ -6,6 +6,7 @@
 {{> partials/subnav}}
 <div class="container" id="main">
     {{> partials/error}}
+    <div id="errorContainer"></div>
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
           <header class="qna-header">
@@ -18,8 +19,8 @@
                           <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
                       </div>
                       <div class="article-header-text">
-                          <a href="/users/92/kimmunsu" class="article-author-name">{{article.user.userId}}</a>
-                          <a href="/questions/413" class="article-header-time" title="퍼머링크">
+                          <a href="/users/92/kimmunsu" class="article-author-name">{{article.user.name}}</a>
+                          <a href="/questions/413" class="article-header-time utc-time" title="퍼머링크">
                               {{article.createdAt}}
                               <i class="icon-link"></i>
                           </a>
@@ -48,8 +49,8 @@
 
               <div class="qna-comment">
                   <div class="qna-comment-slipp">
-                      <p class="qna-comment-count"><strong>{{replyCount}}</strong>개의 의견</p>
-                      <div class="qna-comment-slipp-articles">
+                      <p class="qna-comment-count"><strong id="replyCount">{{replyCount}}</strong>개의 의견</p>
+                      <div class="qna-comment-slipp-articles" id="answer-list">
                          {{#replyDtoList}}
                           <article class="article" id="answer-1405">
                               <div class="article-header">
@@ -57,8 +58,8 @@
                                       <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
                                   </div>
                                   <div class="article-header-text">
-                                      <a href="/users/{{userId}}" class="article-author-name">{{userName}}</a>
-                                      <a href="#answer-1434" class="article-header-time" title="퍼머링크">
+                                      <a href="/users/{{userId}}" class="article-author-name">{{name}}</a>
+                                      <a href="#answer-1434" class="article-header-time utc-time" title="퍼머링크">
                                           {{createdAt}}
                                       </a>
                                   </div>
@@ -81,15 +82,14 @@
                               </div>
                           </article>
                           {{/replyDtoList}}
-
-                          <form class="submit-write" method="post" action="/articles/{{article.id}}/answers">
-                              <div class="form-group" style="padding:14px;">
-                                  <textarea class="form-control" name="text" placeholder="Update your status"></textarea>
-                              </div>
-                              <button class="btn btn-success pull-right" type="submit">답변하기</button>
-                              <div class="clearfix" />
-                          </form>
                       </div>
+                      <form class="submit-write" method="post" action="/articles/{{article.id}}/answers">
+                          <div class="form-group" style="padding:14px;">
+                              <textarea class="form-control" name="text" placeholder="Update your status"></textarea>
+                          </div>
+                          <button class="btn btn-success pull-right" type="submit">답변하기</button>
+                          <div class="clearfix" />
+                      </form>
                   </div>
               </div>
           </div>
@@ -105,7 +105,7 @@
 			</div>
 			<div class="article-header-text">
 				<a href="#" class="article-author-name">{0}</a>
-				<div class="article-header-time">{1}</div>
+				<div class="article-header-time utc-time">{1}</div>
 			</div>
 		</div>
 		<div class="article-doc comment-doc">
@@ -117,7 +117,7 @@
 				<a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
 			</li>
 			<li>
-				<form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
+				<form class="delete-answer-form" action="/articles/{3}/answers/{4}" method="POST">
 					<input type="hidden" name="_method" value="DELETE">
                      <button type="submit" class="delete-answer-button">삭제</button>
 				</form>
@@ -126,8 +126,126 @@
 		</div>
 	</article>
 </script>
-
 <!-- script references -->
 {{> partials/footer}}
+
+<!--댓글 작성-->
+<script>
+    $(function () {
+        $('.submit-write').on('submit', function (e) {
+            e.preventDefault(); // 기본 제출 막기
+
+            const form = $(this);
+            const url = form.attr('action');
+            const formData = form.serialize(); // 폼 데이터 직렬화
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (response) {
+                    $('#errorContainer').empty();
+
+                    form.find('textarea').val('');
+
+                    const template = $("#answerTemplate").html();
+
+                    const utcDate = response.createdAt;
+                    const date = new Date(utcDate);
+                    const localDateString = date.toLocaleString(undefined, {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false  // 24시간 형식으로 표시
+                    });
+
+                    const filled = template
+                        .replaceAll("{0}", response.name)
+                        .replaceAll("{1}", localDateString)
+                        .replaceAll("{2}", response.text)
+                        .replaceAll("{3}", response.articleId)
+                        .replaceAll("{4}", response.replyId);
+
+                    $('#answer-list').append(filled); // 필요한 경우 답변 목록 갱신
+
+                    const countElement = $('#replyCount');
+                    const current = parseInt(countElement.text());
+                    countElement.text(current + 1);
+                },
+                error: function (xhr) {
+                    const err = JSON.parse(xhr.responseText);
+                    const html = `
+                        <div class="alert alert-danger" role="alert">
+                            <strong>[${xhr.status}]</strong><br>
+                            ${err.message}
+                        </div>
+                    `;
+                    $('#errorContainer').html(html);
+                }
+            });
+        });
+    });
+</script>
+
+<!-- 댓글 삭제 -->
+<script>
+    $(function () {
+        $(document).on('click', '.delete-answer-button', function (e) {
+            e.preventDefault();
+
+            const form = $(this).closest('form');
+            const url = form.attr('action');
+            const answerElement = $(this).closest('article.article');
+
+            $.ajax({
+                type: 'DELETE',
+                url: url,
+                success: function () {
+                    $('#errorContainer').empty();
+                    answerElement.remove();       // ✅ 댓글 DOM 제거
+
+                    const countElement = $('#replyCount');
+                    const current = parseInt(countElement.text());
+                    countElement.text(current - 1);
+                },
+                error: function (xhr) {
+                    const err = JSON.parse(xhr.responseText);
+                    const html = `
+                    <div class="alert alert-danger" role="alert">
+                        <strong>[${xhr.status}]</strong><br>
+                        ${err.message}
+                    </div>
+                `;
+                    $('#errorContainer').html(html);
+                }
+            });
+        });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const timeElements = document.querySelectorAll('.utc-time');
+        timeElements.forEach(el => {
+            // 서버에서 보내는 UTC 시간 문자열 (예: "2025-04-03T12:00:00Z")
+            const utcString = el.textContent.trim();
+            const date = new Date(utcString);
+            // 사용자의 로컬 시간대로 변환
+            const localDateString = date.toLocaleString(undefined, {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            el.textContent = localDateString;
+        });
+    });
+</script>
+
 	</body>
 </html>

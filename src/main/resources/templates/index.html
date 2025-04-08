@@ -18,8 +18,8 @@
                           </strong>
                           <div class="auth-info">
                               <i class="icon-add-comment"></i>
-                              <span class="time">{{createdAt}}</span>
-                              <a href="./user/profile.html" class="author">{{user.userId}}</a>
+                              <span class="time utc-time">{{createdAt}}</span>
+                              <a href="./user/profile.html" class="author">{{user.name}}</a>
                           </div>
                           <div class="reply" title="댓글">
                               <i class="icon-reply"></i>
@@ -58,6 +58,28 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const timeElements = document.querySelectorAll('.utc-time');
+        timeElements.forEach(el => {
+            // 서버에서 보내는 UTC 시간 문자열 (예: "2025-04-03T12:00:00Z")
+            const utcString = el.textContent.trim();
+            const date = new Date(utcString);
+            // 사용자의 로컬 시간대로 변환
+            const localDateString = date.toLocaleString(undefined, {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            el.textContent = localDateString;
+        });
+    });
+</script>
 
 <!--login modal-->
 <!--

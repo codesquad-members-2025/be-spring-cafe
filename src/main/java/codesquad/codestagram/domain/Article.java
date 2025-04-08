@@ -29,7 +29,7 @@ public class Article {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "article")
     @Where(clause = "deleted = false")
     private List<Reply> replies = new ArrayList<>();
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
     private boolean deleted = false;
 
     protected Article() {}
@@ -38,7 +38,7 @@ public class Article {
         this.user = user;
         this.title = title;
         this.content = content;
-        this.createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+        this.createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
     }
 
     public User getUser() {
@@ -73,8 +73,7 @@ public class Article {
     }
 
     public String getCreatedAt() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return createdAt.format(formatter);
+        return createdAt.format(DateTimeFormatter.ISO_INSTANT);
     }
 
     public boolean isAuthor(User user) {
