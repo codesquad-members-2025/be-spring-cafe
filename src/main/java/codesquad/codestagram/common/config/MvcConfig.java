@@ -1,4 +1,4 @@
-package codesquad.codestagram.config;
+package codesquad.codestagram.common.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
